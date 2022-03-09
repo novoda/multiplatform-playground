@@ -41,7 +41,7 @@ void main() {
       // act
       final result = await usecase(NoParams());
       //assert
-      expect(result, Right(tArticlesList));
+      expect(result, null);
       verify(mockArticlesRepository.getTopHeadlines());
       verifyNoMoreInteractions(mockArticlesRepository);
     },
