@@ -1,8 +1,7 @@
 name: Run Checks
 on:
-  pull_request:
-    paths:
-    - './flutter/news/**'
+ workflow_dispatch:
+
 jobs:
   test:
     runs-on: ubuntu-latest
