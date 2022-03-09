@@ -1,0 +1,22 @@
+name: Run Checks
+on:
+ pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Run Test and Static Analysis
+    steps:
+      - uses: actions/checkout@v3     
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.10.3'
+      - name: Retrieve Dependencies
+        working-directory: ./flutter/news
+        run: flutter pub get
+      - name: Run the tests
+        working-directory: ./flutter/news
+        run: flutter test
+      - name: Run the static analysis
+        working-directory: ./flutter/news
+        run: flutter analyze
