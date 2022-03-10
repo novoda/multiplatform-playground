@@ -16,6 +16,9 @@ jobs:
       - name: Retrieve Dependencies
         working-directory: ./flutter/news
         run: flutter pub get
+      - name: build runner
+        working-directory: ./flutter/news
+        run: flutter pub run build_runner build
       - name: Run the tests
         working-directory: ./flutter/news
         run: flutter test
