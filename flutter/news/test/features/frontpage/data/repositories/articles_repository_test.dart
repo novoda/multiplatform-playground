@@ -9,10 +9,10 @@ import 'package:news/features/frontpage/data/datasource/articles_data_source.dar
 import 'package:news/features/frontpage/data/datasource/articles_local_data_source.dart';
 import 'package:news/features/frontpage/data/models/article_model.dart';
 import 'package:news/features/frontpage/data/models/source_model.dart';
-import 'package:news/features/frontpage/data/repositories/articles_repository_impl.dart';
+import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
 
-import 'articles_repository_impl_test.mocks.dart';
+import 'articles_repository_test.mocks.dart';
 
 
 @GenerateMocks([NetworkInfo, ArticlesLocalDataSource])
@@ -23,7 +23,7 @@ import 'articles_repository_impl_test.mocks.dart';
       as: #MockArticlesRemoteDataSourceForTest, returnNullOnMissingStub: true),
 ])
 void main() {
-  late ArticlesRepositoryImpl repository;
+  late ArticlesRepository repository;
   late MockArticlesRemoteDataSource mockArticlesRemoteDataSource;
   late MockArticlesLocalDataSource mockArticlesLocalDataSource;
   late MockNetworkInfo mockNetworkInfo;
@@ -32,7 +32,7 @@ void main() {
     mockArticlesRemoteDataSource = MockArticlesRemoteDataSource();
     mockArticlesLocalDataSource = MockArticlesLocalDataSource();
     mockNetworkInfo = MockNetworkInfo();
-    repository = ArticlesRepositoryImpl(
+    repository = ArticlesRepository(
         remoteDataSource: mockArticlesRemoteDataSource,
         localDataSource: mockArticlesLocalDataSource,
         networkInfo: mockNetworkInfo);
@@ -79,12 +79,11 @@ void main() {
       test(
         'should return remote data when call to remote data is success',
         () async {
-          // arrange
           when(mockArticlesRemoteDataSource.getTopHeadlines())
               .thenAnswer((realInvocation) async => tArticlesModelList);
-          // act
+
           final result = await repository.getTopHeadlines();
-          //assert
+
           verify(mockArticlesRemoteDataSource.getTopHeadlines());
           expect(result, Right(tArticleList));
         },
@@ -93,12 +92,11 @@ void main() {
       test(
         'should return server failure when call to remote data fails',
         () async {
-          // arrange
           when(mockArticlesRemoteDataSource.getTopHeadlines())
               .thenThrow(ServerException("exception"));
-          // act
+
           final result = await repository.getTopHeadlines();
-          //assert
+
           verify(mockArticlesRemoteDataSource.getTopHeadlines());
           verifyZeroInteractions(mockArticlesLocalDataSource);
           expect(result, const Left(ServerFailure("exception")));
@@ -108,12 +106,11 @@ void main() {
       test(
         'should cache data locally when call to remote data is success',
         () async {
-          // arrange
           when(mockArticlesRemoteDataSource.getTopHeadlines())
               .thenAnswer((realInvocation) async => tArticlesModelList);
-          // act
+
           await repository.getTopHeadlines();
-          //assert
+
           verify(mockArticlesRemoteDataSource.getTopHeadlines());
           verify(mockArticlesLocalDataSource
               .cacheTopHeadlines(tArticlesModelList));
@@ -125,12 +122,11 @@ void main() {
       test(
         'should return cached data when device is offline && has cache data',
         () async {
-          // arrange
           when(mockArticlesLocalDataSource.getLastTopHeadlines())
               .thenAnswer((realInvocation) async => tArticlesModelList);
-          // act
+
           final result = await repository.getTopHeadlines();
-          //assert
+
           verifyNoMoreInteractions(mockArticlesRemoteDataSource);
           verify(mockArticlesLocalDataSource.getLastTopHeadlines());
           expect(result, Right(tArticleList));
@@ -140,12 +136,11 @@ void main() {
       test(
         'should return cached failure when there is no cached values',
         () async {
-          // arrange
           when(mockArticlesLocalDataSource.getLastTopHeadlines())
               .thenThrow(CacheException("cacheException"));
-          // act
+
           final result = await repository.getTopHeadlines();
-          //assert
+
           verifyNoMoreInteractions(mockArticlesRemoteDataSource);
           verify(mockArticlesLocalDataSource.getLastTopHeadlines());
           expect(result, const Left(CacheFailure("cacheException")));

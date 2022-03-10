@@ -8,29 +8,53 @@ import 'network_info_test.mocks.dart';
 
 @GenerateMocks([InternetConnectionChecker])
 void main() {
-  late NetworkInfoImpl networkInfoImpl;
+  late NetworkInfo networkInfo;
   late MockInternetConnectionChecker mockInternetConnectionChecker;
 
   setUp(() {
     mockInternetConnectionChecker = MockInternetConnectionChecker();
-    networkInfoImpl = NetworkInfoImpl(mockInternetConnectionChecker);
+    networkInfo = NetworkInfo(mockInternetConnectionChecker);
   });
 
   group("isConnected", () {
     test(
       'should forward the call to InternetConnectChecker.hasConnection',
       () async {
-        // arrange
-        final tHasConnectionFuture = Future.value(true);
-
+        final hasConnectionFuture = Future.value(true);
         when(mockInternetConnectionChecker.hasConnection)
-            .thenAnswer((_) => tHasConnectionFuture);
-        // act
-        final result = networkInfoImpl.isConnected;
-        //assert
+            .thenAnswer((_) => hasConnectionFuture);
+
+        final result = networkInfo.isConnected;
+
         verify(mockInternetConnectionChecker.hasConnection);
-        expect(result, tHasConnectionFuture);
+        expect(result, hasConnectionFuture);
+      },
+    );
+
+    test(
+      'should return true if the device has connection',
+      () async {
+        when(mockInternetConnectionChecker.hasConnection)
+            .thenAnswer((_) async => true);
+
+        final result = await networkInfo.isConnected;
+
+        verify(mockInternetConnectionChecker.hasConnection);
+        expect(result, true);
       },
     );
   });
+
+  test(
+    'should return false if the device has connection',
+    () async {
+      when(mockInternetConnectionChecker.hasConnection)
+          .thenAnswer((_) async => false);
+
+      final result = await networkInfo.isConnected;
+
+      verify(mockInternetConnectionChecker.hasConnection);
+      expect(result, false);
+    },
+  );
 }

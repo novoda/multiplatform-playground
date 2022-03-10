@@ -4,27 +4,24 @@ import 'package:news/core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
 import '../../domain/entities/article.dart';
-import '../../domain/repositories/articles_repository.dart';
 import '../datasource/articles_data_source.dart';
 import '../datasource/articles_local_data_source.dart';
 
-class ArticlesRepositoryImpl implements ArticlesRepository {
+class ArticlesRepository {
   final ArticlesLocalDataSource localDataSource;
   final ArticlesRemoteDataSource remoteDataSource;
   final NetworkInfo networkInfo;
 
-  ArticlesRepositoryImpl(
+  ArticlesRepository(
       {required this.localDataSource,
       required this.remoteDataSource,
       required this.networkInfo});
 
-  @override
   Future<Either<Failure, List<Article>>> getEverythingAbout(String query) {
     // TODO: implement getEverythingAbout
     throw UnimplementedError();
   }
 
-  @override
   Future<Either<Failure, List<Article>>> getTopHeadlines() async {
     if (await networkInfo.isConnected) {
       try {
