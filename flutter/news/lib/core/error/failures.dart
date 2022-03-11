@@ -1,25 +1,9 @@
-
-
-abstract class Failure {
-  const Failure([dynamic message]);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Failure && runtimeType == other.runtimeType;
-
-  @override
-  int get hashCode => 0;
-}
+import 'package:news/core/result.dart';
 
 class ServerFailure extends Failure {
-  final String message;
-
-  const ServerFailure(this.message);
+  ServerFailure(String message) : super(message);
 }
 
 class CacheFailure extends Failure {
-  final String message;
-
-  const CacheFailure(this.message);
+  CacheFailure(String message) : super(message);
 }

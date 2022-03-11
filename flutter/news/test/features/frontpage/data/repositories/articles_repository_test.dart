@@ -1,21 +1,17 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:news/core/error/exceptions.dart';
 import 'package:news/core/error/failures.dart';
-import 'package:news/core/network/network_info.dart';
+import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/datasource/articles_data_source.dart';
 import 'package:news/features/frontpage/data/datasource/articles_local_data_source.dart';
 import 'package:news/features/frontpage/data/models/article_model.dart';
 import 'package:news/features/frontpage/data/models/source_model.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
-import 'package:news/features/frontpage/domain/entities/article.dart';
 
 import 'articles_repository_test.mocks.dart';
 
-
-@GenerateMocks([NetworkInfo, ArticlesLocalDataSource])
+@GenerateMocks([ArticlesLocalDataSource])
 @GenerateMocks([
   ArticlesRemoteDataSource
 ], customMocks: [
@@ -24,128 +20,78 @@ import 'articles_repository_test.mocks.dart';
 ])
 void main() {
   late ArticlesRepository repository;
-  late MockArticlesRemoteDataSource mockArticlesRemoteDataSource;
-  late MockArticlesLocalDataSource mockArticlesLocalDataSource;
-  late MockNetworkInfo mockNetworkInfo;
-
+  late MockArticlesRemoteDataSource remoteDataSource;
+  late MockArticlesLocalDataSource localDataSource;
+  final remoteArticles = [
+    ArticleModel(
+        source: SourceModel(id: "id", name: "remote"),
+        author: "author",
+        title: "title",
+        description: "description",
+        url: "url",
+        urlToImage: "urlToImage",
+        publishedAt: "publishedAt",
+        content: "content")
+  ];
+  final localArticles = [
+    ArticleModel(
+        source: SourceModel(id: "id", name: "local"),
+        author: "author",
+        title: "title",
+        description: "description",
+        url: "url",
+        urlToImage: "urlToImage",
+        publishedAt: "publishedAt",
+        content: "content")
+  ];
   setUp(() {
-    mockArticlesRemoteDataSource = MockArticlesRemoteDataSource();
-    mockArticlesLocalDataSource = MockArticlesLocalDataSource();
-    mockNetworkInfo = MockNetworkInfo();
+    remoteDataSource = MockArticlesRemoteDataSource();
+    localDataSource = MockArticlesLocalDataSource();
     repository = ArticlesRepository(
-        remoteDataSource: mockArticlesRemoteDataSource,
-        localDataSource: mockArticlesLocalDataSource,
-        networkInfo: mockNetworkInfo);
+        remoteDataSource: remoteDataSource, localDataSource: localDataSource);
   });
 
-  void runTestsOnline(Function body) {
-    group("device is online", () {
-      setUp(() {
-        when(mockNetworkInfo.isConnected)
-            .thenAnswer((realInvocation) async => true);
-      });
+  test(
+    'GIVEN remote fetch will succeed WHEN getting top articles THEN saves articles on local AND returns local articles',
+    () async {
+      when(remoteDataSource.topHeadLines())
+          .thenAnswer((realInvocation) async => Result.success(remoteArticles));
+      when(localDataSource.topHadLines())
+          .thenAnswer((realInvocation) async => Result.success(localArticles));
 
-      body();
-    });
-  }
+      var result = await repository.topHeadlines();
 
-  void runTestsOffline(Function body) {
-    group("device is offline", () {
-      setUp(() {
-        when(mockNetworkInfo.isConnected)
-            .thenAnswer((realInvocation) async => false);
-      });
+      verify(localDataSource.save(topHeadlines: remoteArticles));
+      expect(result.data, localArticles);
+    },
+  );
 
-      body();
-    });
-  }
+  test(
+    'GIVEN remote fetch will fail WHEN getting top articles THEN does not saves articles on local AND returns local articles',
+    () async {
+      when(remoteDataSource.topHeadLines()).thenAnswer((realInvocation) async =>
+          Result.failure(ServerFailure("Failure reading from server")));
+      when(localDataSource.topHadLines())
+          .thenAnswer((realInvocation) async => Result.success(localArticles));
 
-  group("get top Articles", () {
-    final tArticlesModelList = [
-      ArticleModel(
-          source: SourceModel(id: "id", name: "name"),
-          author: "author",
-          title: "title",
-          description: "description",
-          url: "url",
-          urlToImage: "urlToImage",
-          publishedAt: "publishedAt",
-          content: "content")
-    ];
-    final List<Article> tArticleList = tArticlesModelList;
+      var result = await repository.topHeadlines();
 
-    runTestsOnline((){
+      verifyNever(localDataSource.save(topHeadlines: remoteArticles));
+      expect(result.data, localArticles);
+    },
+  );
 
-      test(
-        'should return remote data when call to remote data is success',
-        () async {
-          when(mockArticlesRemoteDataSource.getTopHeadlines())
-              .thenAnswer((realInvocation) async => tArticlesModelList);
+  test(
+    'GIVEN local fetch will fail WHEN getting top articles THEN returns failure',
+    () async {
+      when(remoteDataSource.topHeadLines())
+          .thenAnswer((realInvocation) async => Result.success(remoteArticles));
+      when(localDataSource.topHadLines()).thenAnswer((realInvocation) async =>
+          Result.failure(CacheFailure('Error reading from cache')));
 
-          final result = await repository.getTopHeadlines();
+      var result = await repository.topHeadlines();
 
-          verify(mockArticlesRemoteDataSource.getTopHeadlines());
-          expect(result, Right(tArticleList));
-        },
-      );
-
-      test(
-        'should return server failure when call to remote data fails',
-        () async {
-          when(mockArticlesRemoteDataSource.getTopHeadlines())
-              .thenThrow(ServerException("exception"));
-
-          final result = await repository.getTopHeadlines();
-
-          verify(mockArticlesRemoteDataSource.getTopHeadlines());
-          verifyZeroInteractions(mockArticlesLocalDataSource);
-          expect(result, const Left(ServerFailure("exception")));
-        },
-      );
-
-      test(
-        'should cache data locally when call to remote data is success',
-        () async {
-          when(mockArticlesRemoteDataSource.getTopHeadlines())
-              .thenAnswer((realInvocation) async => tArticlesModelList);
-
-          await repository.getTopHeadlines();
-
-          verify(mockArticlesRemoteDataSource.getTopHeadlines());
-          verify(mockArticlesLocalDataSource
-              .cacheTopHeadlines(tArticlesModelList));
-        },
-      );
-    });
-
-    runTestsOffline((){
-      test(
-        'should return cached data when device is offline && has cache data',
-        () async {
-          when(mockArticlesLocalDataSource.getLastTopHeadlines())
-              .thenAnswer((realInvocation) async => tArticlesModelList);
-
-          final result = await repository.getTopHeadlines();
-
-          verifyNoMoreInteractions(mockArticlesRemoteDataSource);
-          verify(mockArticlesLocalDataSource.getLastTopHeadlines());
-          expect(result, Right(tArticleList));
-        },
-      );
-
-      test(
-        'should return cached failure when there is no cached values',
-        () async {
-          when(mockArticlesLocalDataSource.getLastTopHeadlines())
-              .thenThrow(CacheException("cacheException"));
-
-          final result = await repository.getTopHeadlines();
-
-          verifyNoMoreInteractions(mockArticlesRemoteDataSource);
-          verify(mockArticlesLocalDataSource.getLastTopHeadlines());
-          expect(result, const Left(CacheFailure("cacheException")));
-        },
-      );
-    });
-  });
+      expect(result.failure, isInstanceOf<CacheFailure>());
+    },
+  );
 }

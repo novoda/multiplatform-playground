@@ -1,8 +1,8 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:news/core/usecases/usecase.dart';
+import 'package:news/core/error/failures.dart';
+import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/domain/entities/source.dart';
@@ -13,36 +13,46 @@ import 'get_top_headlines_test.mocks.dart';
 @GenerateMocks([ArticlesRepository])
 void main() {
   late GetTopHeadlines usecase;
-  late MockArticlesRepository mockArticlesRepository;
-  late List<Article> tArticlesList;
+  late MockArticlesRepository articlesRepository;
+  late List<Article> topArticles;
 
   setUp(() {
-    mockArticlesRepository = MockArticlesRepository();
-    usecase = GetTopHeadlines(mockArticlesRepository);
-    tArticlesList = [Article(
-        source: Source(id: "id", name: "name"),
-        author: "author",
-        title: "title",
-        description: "description",
-        url: "url",
-        urlToImage: "urlToImage",
-        publishedAt: "publishedAt",
-        content: "content")];
+    articlesRepository = MockArticlesRepository();
+    usecase = GetTopHeadlines(articlesRepository);
+    topArticles = [
+      Article(
+          source: Source(id: "id", name: "name"),
+          author: "author",
+          title: "title",
+          description: "description",
+          url: "url",
+          urlToImage: "urlToImage",
+          publishedAt: "publishedAt",
+          content: "content")
+    ];
   });
 
+  test(
+    'GIVEN reading top headlines will succeed WHEN reading top articles THEN returns top articles',
+    () async {
+      when(articlesRepository.topHeadlines())
+          .thenAnswer((_) async => Result.success(topArticles));
 
+      final result = await usecase.topHeadlines();
+
+      expect(result.data, topArticles);
+    },
+  );
 
   test(
-    'should get list of top headlines from repository ',
+    'GIVEN reading top headlines will faill WHEN reading top articles THEN returns failure',
     () async {
-      when(mockArticlesRepository.getTopHeadlines())
-          .thenAnswer((_) async => Right(tArticlesList));
+      when(articlesRepository.topHeadlines()).thenAnswer((_) async =>
+          Result.failure(ServerFailure("Error reading from server")));
 
-      final result = await usecase(NoParams());
+      final result = await usecase.topHeadlines();
 
-      expect(result, Right(tArticlesList));
-      verify(mockArticlesRepository.getTopHeadlines());
-      verifyNoMoreInteractions(mockArticlesRepository);
+      expect(result.failure, isInstanceOf<ServerFailure>());
     },
   );
 }
