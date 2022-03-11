@@ -3,7 +3,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
 import 'package:news/core/result.dart';
-import 'package:news/core/usecases/usecase.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/domain/entities/source.dart';
@@ -39,7 +38,7 @@ void main() {
       when(articlesRepository.topHeadlines())
           .thenAnswer((_) async => Result.success(topArticles));
 
-      final result = await usecase(NoParams());
+      final result = await usecase.topHeadlines();
 
       expect(result.data, topArticles);
     },
@@ -51,7 +50,7 @@ void main() {
       when(articlesRepository.topHeadlines()).thenAnswer((_) async =>
           Result.failure(ServerFailure("Error reading from server")));
 
-      final result = await usecase(NoParams());
+      final result = await usecase.topHeadlines();
 
       expect(result.failure, isInstanceOf<ServerFailure>());
     },

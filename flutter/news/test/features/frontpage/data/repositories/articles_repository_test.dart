@@ -54,14 +54,14 @@ void main() {
   test(
     'GIVEN remote fetch will succeed WHEN getting top articles THEN saves articles on local AND returns local articles',
     () async {
-      when(remoteDataSource.getTopHeadlines())
+      when(remoteDataSource.topHeadLines())
           .thenAnswer((realInvocation) async => Result.success(remoteArticles));
-      when(localDataSource.getLastTopHeadlines())
+      when(localDataSource.topHadLines())
           .thenAnswer((realInvocation) async => Result.success(localArticles));
 
       var result = await repository.topHeadlines();
 
-      verify(localDataSource.cacheTopHeadlines(remoteArticles));
+      verify(localDataSource.save(topHeadlines: remoteArticles));
       expect(result.data, localArticles);
     },
   );
@@ -69,15 +69,14 @@ void main() {
   test(
     'GIVEN remote fetch will fail WHEN getting top articles THEN does not saves articles on local AND returns local articles',
     () async {
-      when(remoteDataSource.getTopHeadlines()).thenAnswer(
-          (realInvocation) async =>
-              Result.failure(ServerFailure("Failure reading from server")));
-      when(localDataSource.getLastTopHeadlines())
+      when(remoteDataSource.topHeadLines()).thenAnswer((realInvocation) async =>
+          Result.failure(ServerFailure("Failure reading from server")));
+      when(localDataSource.topHadLines())
           .thenAnswer((realInvocation) async => Result.success(localArticles));
 
       var result = await repository.topHeadlines();
 
-      verifyNever(localDataSource.cacheTopHeadlines(remoteArticles));
+      verifyNever(localDataSource.save(topHeadlines: remoteArticles));
       expect(result.data, localArticles);
     },
   );
@@ -85,11 +84,10 @@ void main() {
   test(
     'GIVEN local fetch will fail WHEN getting top articles THEN returns failure',
     () async {
-      when(remoteDataSource.getTopHeadlines())
+      when(remoteDataSource.topHeadLines())
           .thenAnswer((realInvocation) async => Result.success(remoteArticles));
-      when(localDataSource.getLastTopHeadlines()).thenAnswer(
-          (realInvocation) async =>
-              Result.failure(CacheFailure('Error reading from cache')));
+      when(localDataSource.topHadLines()).thenAnswer((realInvocation) async =>
+          Result.failure(CacheFailure('Error reading from cache')));
 
       var result = await repository.topHeadlines();
 

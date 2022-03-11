@@ -11,16 +11,16 @@ class ArticlesRepository {
   ArticlesRepository(
       {required this.localDataSource, required this.remoteDataSource});
 
-  Future<Result<List<Article>>> getEverythingAbout(String query) {
+  Future<Result<List<Article>>> everythingAbout(String query) {
     // TODO: implement getEverythingAbout
     throw UnimplementedError();
   }
 
   Future<Result<List<Article>>> topHeadlines() async {
-    final result = await remoteDataSource.getTopHeadlines();
+    final result = await remoteDataSource.topHeadLines();
     if (result.isSuccess) {
-      localDataSource.cacheTopHeadlines(result.data);
+      localDataSource.save(topHeadlines: result.data);
     }
-    return localDataSource.getLastTopHeadlines();
+    return localDataSource.topHadLines();
   }
 }
