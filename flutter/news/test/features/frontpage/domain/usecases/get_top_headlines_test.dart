@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news/core/usecases/usecase.dart';
+import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/domain/entities/source.dart';
-import 'package:news/features/frontpage/domain/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/usecases/get_top_headlines.dart';
 
 import 'get_top_headlines_test.mocks.dart';
@@ -35,12 +35,11 @@ void main() {
   test(
     'should get list of top headlines from repository ',
     () async {
-      // arrange
       when(mockArticlesRepository.getTopHeadlines())
           .thenAnswer((_) async => Right(tArticlesList));
-      // act
+
       final result = await usecase(NoParams());
-      //assert
+
       expect(result, Right(tArticlesList));
       verify(mockArticlesRepository.getTopHeadlines());
       verifyNoMoreInteractions(mockArticlesRepository);

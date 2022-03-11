@@ -2,9 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/domain/entities/source.dart';
-import 'package:news/features/frontpage/domain/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/usecases/get_everything_about.dart';
 import 'package:news/features/frontpage/domain/usecases/get_top_headlines.dart';
 
@@ -37,12 +37,11 @@ void main() {
   test(
     'should get list articles about X from repository ',
         () async {
-      // arrange
       when(mockArticlesRepository.getEverythingAbout(tQuery))
           .thenAnswer((_) async => Right(tArticlesList));
-      // act
+
       final result = await usecase(Params(query: tQuery));
-      //assert
+
       expect(result, Right(tArticlesList));
       verify(mockArticlesRepository.getEverythingAbout(tQuery));
       verifyNoMoreInteractions(mockArticlesRepository);
