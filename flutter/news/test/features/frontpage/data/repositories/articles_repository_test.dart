@@ -23,124 +23,78 @@ void main() {
   late ArticlesRepository repository;
   late MockArticlesRemoteDataSource remoteDataSource;
   late MockArticlesLocalDataSource localDataSource;
-  late MockNetworkInfo networkInfo;
-
+  final remoteArticles = [
+    ArticleModel(
+        source: SourceModel(id: "id", name: "remote"),
+        author: "author",
+        title: "title",
+        description: "description",
+        url: "url",
+        urlToImage: "urlToImage",
+        publishedAt: "publishedAt",
+        content: "content")
+  ];
+  final localArticles = [
+    ArticleModel(
+        source: SourceModel(id: "id", name: "local"),
+        author: "author",
+        title: "title",
+        description: "description",
+        url: "url",
+        urlToImage: "urlToImage",
+        publishedAt: "publishedAt",
+        content: "content")
+  ];
   setUp(() {
     remoteDataSource = MockArticlesRemoteDataSource();
     localDataSource = MockArticlesLocalDataSource();
-    networkInfo = MockNetworkInfo();
     repository = ArticlesRepository(
-        remoteDataSource: remoteDataSource,
-        localDataSource: localDataSource,
-        networkInfo: networkInfo);
+        remoteDataSource: remoteDataSource, localDataSource: localDataSource);
   });
 
-  void runTestsOnline(Function body) {
-    group("device is online", () {
-      setUp(() {
-        when(networkInfo.isConnected)
-            .thenAnswer((realInvocation) async => true);
-      });
+  test(
+    'GIVEN remote fetch will succeed WHEN getting top articles THEN saves articles on local AND returns local articles',
+    () async {
+      when(remoteDataSource.getTopHeadlines())
+          .thenAnswer((realInvocation) async => Result.success(remoteArticles));
+      when(localDataSource.getLastTopHeadlines())
+          .thenAnswer((realInvocation) async => Result.success(localArticles));
 
-      body();
-    });
-  }
+      var result = await repository.topHeadlines();
 
-  void runTestsOffline(Function body) {
-    group("device is offline", () {
-      setUp(() {
-        when(networkInfo.isConnected)
-            .thenAnswer((realInvocation) async => false);
-      });
+      verify(localDataSource.cacheTopHeadlines(remoteArticles));
+      expect(result.data, localArticles);
+    },
+  );
 
-      body();
-    });
-  }
+  test(
+    'GIVEN remote fetch will fail WHEN getting top articles THEN does not saves articles on local AND returns local articles',
+    () async {
+      when(remoteDataSource.getTopHeadlines()).thenAnswer(
+          (realInvocation) async =>
+              Result.failure(ServerFailure("Failure reading from server")));
+      when(localDataSource.getLastTopHeadlines())
+          .thenAnswer((realInvocation) async => Result.success(localArticles));
 
-  group("get top Articles", () {
-    final topArticles = [
-      ArticleModel(
-          source: SourceModel(id: "id", name: "name"),
-          author: "author",
-          title: "title",
-          description: "description",
-          url: "url",
-          urlToImage: "urlToImage",
-          publishedAt: "publishedAt",
-          content: "content")
-    ];
+      var result = await repository.topHeadlines();
 
-    runTestsOnline(() {
-      test(
-        'should return remote data when call to remote data is success',
-        () async {
-          when(remoteDataSource.getTopHeadlines()).thenAnswer(
-              (realInvocation) async => Result.success(topArticles));
+      verifyNever(localDataSource.cacheTopHeadlines(remoteArticles));
+      expect(result.data, localArticles);
+    },
+  );
 
-          final result = await repository.topHeadlines();
+  test(
+    'GIVEN local fetch will fail WHEN getting top articles THEN returns failure',
+    () async {
+      when(remoteDataSource.getTopHeadlines())
+          .thenAnswer((realInvocation) async => Result.success(remoteArticles));
+      when(localDataSource.getLastTopHeadlines()).thenAnswer(
+          (realInvocation) async =>
+              Result.failure(CacheFailure('Error reading from cache')));
 
-          verify(remoteDataSource.getTopHeadlines());
-          expect(result.data, topArticles);
-        },
-      );
+      var result = await repository.topHeadlines();
 
-      test(
-        'should return server failure when call to remote data fails',
-        () async {
-          when(remoteDataSource.getTopHeadlines()).thenAnswer(
-              (realInvocation) async =>
-                  Result.failure(ServerFailure("exception")));
-
-          final result = await repository.topHeadlines();
-
-          verify(remoteDataSource.getTopHeadlines());
-          verifyZeroInteractions(localDataSource);
-          expect(result.failure, isInstanceOf<ServerFailure>());
-        },
-      );
-
-      test(
-        'should cache data locally when call to remote data is success',
-        () async {
-          when(remoteDataSource.getTopHeadlines()).thenAnswer(
-              (realInvocation) async => Result.success(topArticles));
-
-          await repository.topHeadlines();
-
-          verify(remoteDataSource.getTopHeadlines());
-          verify(localDataSource.cacheTopHeadlines(topArticles));
-        },
-      );
-    });
-
-    runTestsOffline(() {
-      test(
-        'should return cached data when device is offline && has cache data',
-        () async {
-          when(localDataSource.getLastTopHeadlines()).thenAnswer(
-              (realInvocation) async => Result.success(topArticles));
-
-          final result = await repository.topHeadlines();
-
-          verifyNoMoreInteractions(remoteDataSource);
-          verify(localDataSource.getLastTopHeadlines());
-          expect(result.data, topArticles);
-        },
-      );
-
-      test(
-        'should return cached failure when there is no cached values',
-        () async {
-          when(localDataSource.getLastTopHeadlines()).thenAnswer(
-              (realInvocation) async =>
-                  Result.failure(CacheFailure("problem reading from cache")));
-          final result = await repository.topHeadlines();
-
-          verifyNoMoreInteractions(remoteDataSource);
-          verify(localDataSource.getLastTopHeadlines());
-          expect(result.failure, isInstanceOf<CacheFailure>());
-        },
-      );
-    });
-  });
+      expect(result.failure, isInstanceOf<CacheFailure>());
+    },
+  );
 }
