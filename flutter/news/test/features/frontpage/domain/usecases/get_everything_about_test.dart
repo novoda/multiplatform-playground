@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:news/core/error/failures.dart';
 import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
@@ -13,14 +14,14 @@ import 'get_top_headlines_test.mocks.dart';
 @GenerateMocks([ArticlesRepository])
 void main() {
   late GetEverythingAbout usecase;
-  late MockArticlesRepository mockArticlesRepository;
-  late List<Article> topArticles;
-  late String tQuery;
+  late MockArticlesRepository articlesRepository;
+  late List<Article> matchingArticles;
+  late String query;
 
   setUp(() {
-    mockArticlesRepository = MockArticlesRepository();
-    usecase = GetEverythingAbout(mockArticlesRepository);
-    topArticles = [
+    articlesRepository = MockArticlesRepository();
+    usecase = GetEverythingAbout(articlesRepository);
+    matchingArticles = [
       Article(
           source: Source(id: "id", name: "name"),
           author: "author",
@@ -31,20 +32,30 @@ void main() {
           publishedAt: "publishedAt",
           content: "content")
     ];
-    tQuery = "war";
+    query = "peace";
   });
 
   test(
-    'should get list articles about X from repository ',
+    'GIVEN getting everything about will succeed WHEN calling use case THEN returns matching articles ',
     () async {
-      when(mockArticlesRepository.getEverythingAbout(tQuery))
-          .thenAnswer((_) async => Result.success(topArticles));
+      when(articlesRepository.getEverythingAbout(query))
+          .thenAnswer((_) async => Result.success(matchingArticles));
 
-      final result = await usecase(Params(query: tQuery));
+      final result = await usecase(Params(query: query));
 
-      expect(result, Result.success(topArticles));
-      verify(mockArticlesRepository.getEverythingAbout(tQuery));
-      verifyNoMoreInteractions(mockArticlesRepository);
+      expect(result.data, matchingArticles);
+    },
+  );
+
+  test(
+    'GIVEN getting everything about will fail WHEN calling use case THEN returns failure ',
+    () async {
+      when(articlesRepository.getEverythingAbout(query)).thenAnswer(
+          (_) async => Result.failure(ServerFailure("Error on server")));
+
+      final result = await usecase(Params(query: query));
+
+      expect(result.failure, isInstanceOf<ServerFailure>());
     },
   );
 }

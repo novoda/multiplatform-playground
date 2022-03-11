@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:news/core/error/failures.dart';
 import 'package:news/core/result.dart';
 import 'package:news/core/usecases/usecase.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
@@ -33,16 +34,26 @@ void main() {
   });
 
   test(
-    'should get list of top headlines from repository ',
+    'GIVEN reading top headlines will succeed WHEN reading top articles THEN returns top articles',
     () async {
       when(articlesRepository.topHeadlines())
           .thenAnswer((_) async => Result.success(topArticles));
 
       final result = await usecase(NoParams());
 
-      expect(result, Result.success(topArticles));
-      verify(articlesRepository.topHeadlines());
-      verifyNoMoreInteractions(articlesRepository);
+      expect(result.data, topArticles);
+    },
+  );
+
+  test(
+    'GIVEN reading top headlines will faill WHEN reading top articles THEN returns failure',
+    () async {
+      when(articlesRepository.topHeadlines()).thenAnswer((_) async =>
+          Result.failure(ServerFailure("Error reading from server")));
+
+      final result = await usecase(NoParams());
+
+      expect(result.failure, isInstanceOf<ServerFailure>());
     },
   );
 }
