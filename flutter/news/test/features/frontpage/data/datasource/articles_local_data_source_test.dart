@@ -1,18 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
-import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/datasource/articles_local_data_source.dart';
 import 'package:news/features/frontpage/data/models/article_model.dart';
 import 'package:news/features/frontpage/data/models/source_model.dart';
 
-import '../repositories/articles_repository_test.mocks.dart';
+import 'articles_local_data_source_test.mocks.dart';
 
-@GenerateMocks([ArticlesLocalDataSource])
+@GenerateMocks([ArticlesLocalDataSource, JsonCodec])
 void main() {
   late ArticlesLocalDataSource localDataSource;
-  late MockArticlesLocalDataSource mockLocalDataSource;
 
   final articles = [
     ArticleModel(
@@ -26,14 +26,10 @@ void main() {
         content: "content")
   ];
 
-  setUp(() {
-    localDataSource = ArticlesLocalDataSource();
-    mockLocalDataSource = MockArticlesLocalDataSource();
-  });
-
   test(
     'GIVEN articles list successfully saved WHEN getting articles THEN returns correct list of articles ',
     () async {
+      localDataSource = ArticlesLocalDataSource(const JsonCodec());
       localDataSource.save(topHeadlines: articles);
 
       var result = await localDataSource.topHeadLines();
@@ -45,6 +41,8 @@ void main() {
   test(
     'GIVEN nothing is saved in cache WHEN getting articles THEN returns CacheFailure ',
     () async {
+      localDataSource = ArticlesLocalDataSource(const JsonCodec());
+
       var result = await localDataSource.topHeadLines();
 
       expect(result.failure, CacheFailure("No headlines saved"));
@@ -52,14 +50,14 @@ void main() {
   );
 
   test(
-    'GIVEN articles list successfully saved WHEN getting articles fails decoding THEN returns { ',
+    'GIVEN will fail to decode list from json WHEN getting articles THEN returns CacheFailure { ',
     () async {
-      when(mockLocalDataSource.topHeadLines()).thenAnswer(
-          (realInvocation) async =>
-              Result.failure(CacheFailure("Failure reading from server")));
+      var jsonCodec = MockJsonCodec();
+      localDataSource = ArticlesLocalDataSource(jsonCodec);
+      when(jsonCodec.decode(any))
+          .thenThrow(JsonUnsupportedObjectError("Error"));
 
-      mockLocalDataSource.save(topHeadlines: articles);
-      var result = await mockLocalDataSource.topHeadLines();
+      var result = await localDataSource.topHeadLines();
 
       expect(result.failure, CacheFailure("No headlines saved"));
     },

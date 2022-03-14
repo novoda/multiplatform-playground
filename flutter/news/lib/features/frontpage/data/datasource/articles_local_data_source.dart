@@ -8,10 +8,13 @@ import '../../../../core/result.dart';
 
 class ArticlesLocalDataSource {
   String _topHeadlinesJson = "";
+  final JsonCodec _codec;
+
+  ArticlesLocalDataSource(this._codec);
 
   Future<Result<List<ArticleModel>>> topHeadLines() {
     try {
-      var jsonMap = json.decode(_topHeadlinesJson);
+      var jsonMap = _codec.decode(_topHeadlinesJson);
 
       List<ArticleModel> articles = List<ArticleModel>.from(
           jsonMap.map((model) => ArticleModel.fromJson(model)));
@@ -22,13 +25,14 @@ class ArticlesLocalDataSource {
         return Future.value(Result.failure(CacheFailure("No headlines saved")));
       }
     } catch (e) {
-      return Future.value(Result.failure(CacheFailure("No headlines saved")));
+      return Future.value(
+          Result.failure(CacheFailure("Error decoding stored headlines")));
     }
   }
 
   Future<void> save({required List<ArticleModel> topHeadlines}) async {
     if (topHeadlines.isNotEmpty) {
-      _topHeadlinesJson = jsonEncode(topHeadlines);
+      _topHeadlinesJson = _codec.encode(topHeadlines);
     }
   }
 }
