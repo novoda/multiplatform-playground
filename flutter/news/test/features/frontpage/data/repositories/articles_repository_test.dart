@@ -56,7 +56,7 @@ void main() {
     () async {
       when(remoteDataSource.topHeadLines())
           .thenAnswer((realInvocation) async => Result.success(remoteArticles));
-      when(localDataSource.topHadLines())
+      when(localDataSource.topHeadLines())
           .thenAnswer((realInvocation) async => Result.success(localArticles));
 
       var result = await repository.topHeadlines();
@@ -71,7 +71,7 @@ void main() {
     () async {
       when(remoteDataSource.topHeadLines()).thenAnswer((realInvocation) async =>
           Result.failure(ServerFailure("Failure reading from server")));
-      when(localDataSource.topHadLines())
+      when(localDataSource.topHeadLines())
           .thenAnswer((realInvocation) async => Result.success(localArticles));
 
       var result = await repository.topHeadlines();
@@ -86,7 +86,7 @@ void main() {
     () async {
       when(remoteDataSource.topHeadLines())
           .thenAnswer((realInvocation) async => Result.success(remoteArticles));
-      when(localDataSource.topHadLines()).thenAnswer((realInvocation) async =>
+      when(localDataSource.topHeadLines()).thenAnswer((realInvocation) async =>
           Result.failure(CacheFailure('Error reading from cache')));
 
       var result = await repository.topHeadlines();

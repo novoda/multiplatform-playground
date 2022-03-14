@@ -21,6 +21,6 @@ class ArticlesRepository {
     if (result.isSuccess) {
       localDataSource.save(topHeadlines: result.data);
     }
-    return localDataSource.topHadLines();
+    return localDataSource.topHeadLines();
   }
 }
