@@ -8,24 +8,29 @@ import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
 import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/datasource/articles_remote_data_source.dart';
+import 'package:news/features/frontpage/data/datasource/key_provider.dart';
 import 'package:news/features/frontpage/data/models/article_model.dart';
 import 'package:news/features/frontpage/data/models/base_news_response_model.dart';
 
 import '../../../../core/fixtures/fixture_reader.dart';
 import 'articles_remote_data_source_test.mocks.dart';
 
-@GenerateMocks([http.Client])
+@GenerateMocks([http.Client, KeyProvider])
 void main() {
   late ArticlesRemoteDataSource remoteDataSource;
-  late MockClient mockHttpClient;
+  late MockClient httpClient;
+  late MockKeyProvider keyProvider;
 
   final testResult = Result.success(
       BaseNewsResponseModel.fromJson(json.decode(fixture("articles.json")))
           .articles as List<ArticleModel>);
 
   setUp(() {
-    mockHttpClient = MockClient();
-    remoteDataSource = ArticlesRemoteDataSource(client: mockHttpClient);
+    httpClient = MockClient();
+    keyProvider = MockKeyProvider();
+    when(keyProvider.newsApiKey()).thenReturn("1250012360");
+    remoteDataSource =
+        ArticlesRemoteDataSource(client: httpClient, keyProvider: keyProvider);
   });
 
   test(
@@ -33,14 +38,14 @@ void main() {
     'being used should be /v2/top-headlines',
     () async {
       // arrange
-      when(mockHttpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
+      when(httpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
           (_) async => http.Response(fixture("articles.json"), 200, headers: {
                 HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
               }));
       // act
       remoteDataSource.topHeadLines();
       //assert
-      verify(mockHttpClient.get(
+      verify(httpClient.get(
           Uri.parse("https://newsapi.org/v2/top-headlines?country=us"),
           headers: anyNamed("headers")));
     },
@@ -51,7 +56,7 @@ void main() {
     'returns 200 Then response should be List<ArticleModel>',
     () async {
       // arrange
-      when(mockHttpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
+      when(httpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
           (_) async => http.Response(fixture("articles.json"), 200, headers: {
                 HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
               }));
@@ -67,7 +72,7 @@ void main() {
     'returns 404 Then response should be ServerFailure',
     () async {
       // arrange
-      when(mockHttpClient.get(any, headers: anyNamed("headers")))
+      when(httpClient.get(any, headers: anyNamed("headers")))
           .thenAnswer((_) async => http.Response("Error", 404));
       // act
       final call = remoteDataSource.topHeadLines;
