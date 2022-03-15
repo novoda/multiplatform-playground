@@ -1,8 +1,8 @@
 import 'package:news/core/result.dart';
 
 import '../../domain/entities/article.dart';
-import '../datasource/articles_data_source.dart';
 import '../datasource/articles_local_data_source.dart';
+import '../datasource/articles_remote_data_source.dart';
 
 class ArticlesRepository {
   final ArticlesLocalDataSource localDataSource;

@@ -4,13 +4,13 @@ import 'package:news/features/frontpage/domain/entities/article.dart';
 class ArticleModel extends Article {
   ArticleModel(
       {required SourceModel source,
-      required String author,
-      required String title,
-      required String description,
-      required String url,
-      required String urlToImage,
-      required String publishedAt,
-      required String content})
+      required String? author,
+      required String? title,
+      required String? description,
+      required String? url,
+      required String? urlToImage,
+      required String? publishedAt,
+      required String? content})
       : super(
             source: source,
             author: author,
