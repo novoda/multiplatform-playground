@@ -5,11 +5,11 @@ class ArticleModel extends Article {
   ArticleModel(
       {required SourceModel source,
       required String? author,
-      required String? title,
+      required String title,
       required String? description,
-      required String? url,
+      required String url,
       required String? urlToImage,
-      required String? publishedAt,
+      required String publishedAt,
       required String? content})
       : super(
             source: source,

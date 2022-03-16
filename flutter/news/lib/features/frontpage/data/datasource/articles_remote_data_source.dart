@@ -21,7 +21,7 @@ class ArticlesRemoteDataSource {
           BaseNewsResponseModel.fromJson(json.decode(response.body)).articles
               as List<ArticleModel>);
     } else {
-      throw ServerFailure("Server failure");
+      return Result.failure(ServerFailure("Server failure"));
     }
   }
 
