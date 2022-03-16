@@ -50,7 +50,7 @@ void main() {
   );
 
   test(
-    'GIVEN will fail to decode list from json WHEN getting articles THEN returns CacheFailure { ',
+    'GIVEN will fail to decode list from json WHEN getting articles THEN returns CacheFailure ',
     () async {
       var jsonCodec = MockJsonCodec();
       localDataSource = ArticlesLocalDataSource(jsonCodec);
