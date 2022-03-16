@@ -64,14 +64,14 @@ void main() {
     'GIVEN topHeadlines request is done WHEN request fails and '
     'returns 404 THEN response should be ServerFailure',
     () async {
-      when(mockHttpClient.get(any, headers: anyNamed("headers")))
-          .thenAnswer((_) async => http.Response("Error", 404, headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
-      }));
+      when(mockHttpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
+          (_) async => http.Response("Error", 404, headers: {
+                HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
+              }));
 
       final result = await remoteDataSource.topHeadLines();
 
-      expect(result.failure,  const TypeMatcher<ServerFailure>());
+      expect(result.failure, isA<ServerFailure>());
     },
   );
 }
