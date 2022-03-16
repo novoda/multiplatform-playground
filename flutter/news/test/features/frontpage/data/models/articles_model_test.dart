@@ -1,17 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:news/features/frontpage/data/models/article_model.dart';
-import 'package:news/features/frontpage/data/models/base_news_response_model.dart';
-import 'package:news/features/frontpage/data/models/source_model.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
+import 'package:news/features/frontpage/domain/entities/base_news_response.dart';
+import 'package:news/features/frontpage/domain/entities/source.dart';
 
 import '../../../../core/fixtures/fixture_reader.dart';
 
 void main() {
-  final tArticle = ArticleModel(
-      source: SourceModel(id: null, name: "Lifehacker.com"),
-      author: "Jeff Somers",
+  const article = Article(
+      source: Source(id: null, name: "Lifehacker.com"),
+      author: 'Jeff Somers',
       title: "Is the Crypto Bubble Going to Burst?",
       description: "Even if you aren’t paying attention to Bitcoin",
       url:
@@ -21,14 +20,13 @@ void main() {
       publishedAt: "2022-02-09T16:00:00Z",
       content: "Even if you arent paying attention to Bitcoin");
 
-  final tResponse = BaseNewsResponseModel(
-      status: "ok", totalResults: 1, articles: [tArticle]);
+  const response =
+      BaseNewsResponse(status: "ok", totalResults: 1, articles: [article]);
 
   test(
     'should be subclass of Articles entity',
     () async {
-      //assert
-      expect(tArticle, isA<Article>());
+      expect(article, isA<Article>());
     },
   );
 
@@ -39,9 +37,9 @@ void main() {
         final Map<String, dynamic> jsonMap =
             json.decode(fixture("articles.json"));
 
-        final result = BaseNewsResponseModel.fromJson(jsonMap);
+        final result = BaseNewsResponse.fromJson(jsonMap);
 
-        expect(result, equals(tResponse));
+        expect(result, equals(response));
       },
     );
   });
@@ -50,7 +48,7 @@ void main() {
     test(
       'should return JSON map containing the data',
       () async {
-        final result = tResponse.toJson();
+        final result = response.toJson();
 
         final expectedMap = {
           "status": "ok",

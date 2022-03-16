@@ -5,9 +5,9 @@ import 'package:news/core/error/failures.dart';
 import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/datasource/articles_local_data_source.dart';
 import 'package:news/features/frontpage/data/datasource/articles_remote_data_source.dart';
-import 'package:news/features/frontpage/data/models/article_model.dart';
-import 'package:news/features/frontpage/data/models/source_model.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
+import 'package:news/features/frontpage/domain/entities/article.dart';
+import 'package:news/features/frontpage/domain/entities/source.dart';
 
 import 'articles_repository_test.mocks.dart';
 
@@ -22,9 +22,9 @@ void main() {
   late ArticlesRepository repository;
   late MockArticlesRemoteDataSource remoteDataSource;
   late MockArticlesLocalDataSource localDataSource;
-  final remoteArticles = [
-    ArticleModel(
-        source: SourceModel(id: "id", name: "remote"),
+  const remoteArticles = [
+    Article(
+        source: Source(id: "id", name: "remote"),
         author: "author",
         title: "title",
         description: "description",
@@ -33,9 +33,9 @@ void main() {
         publishedAt: "publishedAt",
         content: "content")
   ];
-  final localArticles = [
-    ArticleModel(
-        source: SourceModel(id: "id", name: "local"),
+  const localArticles = [
+    Article(
+        source: Source(id: "id", name: "local"),
         author: "author",
         title: "title",
         description: "description",

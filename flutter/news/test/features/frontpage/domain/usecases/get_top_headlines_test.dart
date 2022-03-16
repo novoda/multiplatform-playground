@@ -20,7 +20,7 @@ void main() {
     articlesRepository = MockArticlesRepository();
     usecase = GetTopHeadlines(articlesRepository);
     topArticles = [
-      Article(
+      const Article(
           source: Source(id: "id", name: "name"),
           author: "author",
           title: "title",

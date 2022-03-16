@@ -1,83 +1,47 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
-import 'package:news/core/result.dart';
+import 'package:news/core/news_api_client.dart';
 import 'package:news/features/frontpage/data/datasource/articles_remote_data_source.dart';
-import 'package:news/features/frontpage/data/datasource/key_provider.dart';
-import 'package:news/features/frontpage/data/models/article_model.dart';
-import 'package:news/features/frontpage/data/models/base_news_response_model.dart';
+import 'package:news/features/frontpage/domain/entities/base_news_response.dart';
 
 import '../../../../core/fixtures/fixture_reader.dart';
 import 'articles_remote_data_source_test.mocks.dart';
 
-@GenerateMocks([http.Client, KeyProvider])
+@GenerateMocks([NewsApiClient])
 void main() {
   late ArticlesRemoteDataSource remoteDataSource;
-  late MockClient httpClient;
-  late MockKeyProvider keyProvider;
-
-  final testResult = Result.success(
-      BaseNewsResponseModel.fromJson(json.decode(fixture("articles.json")))
-          .articles as List<ArticleModel>);
+  late MockNewsApiClient apiClient;
 
   setUp(() {
-    httpClient = MockClient();
-    keyProvider = MockKeyProvider();
-    when(keyProvider.newsApiKey()).thenReturn("1250012360");
-    remoteDataSource =
-        ArticlesRemoteDataSource(client: httpClient, keyProvider: keyProvider);
+    apiClient = MockNewsApiClient();
+    remoteDataSource = ArticlesRemoteDataSource(client: apiClient);
   });
 
   test(
-    'Given Get request is done When doing the request Then the endpoint '
-    'being used should be /v2/top-headlines',
+    'GIVEN topHeadlines request is done WHEN request is successful 200 THEN response should be List<ArticleModel>',
     () async {
-      // arrange
-      when(httpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
-          (_) async => http.Response(fixture("articles.json"), 200, headers: {
-                HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
-              }));
-      // act
-      remoteDataSource.topHeadLines();
-      //assert
-      verify(httpClient.get(
-          Uri.parse("https://newsapi.org/v2/top-headlines?country=us"),
-          headers: anyNamed("headers")));
-    },
-  );
+      var response =
+          BaseNewsResponse.fromJson(json.decode(fixture("articles.json")));
+      when(apiClient.topHeadLines()).thenAnswer((_) async => response);
 
-  test(
-    'Given topHeadlines request is done When request is successful and '
-    'returns 200 Then response should be List<ArticleModel>',
-    () async {
-      // arrange
-      when(httpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
-          (_) async => http.Response(fixture("articles.json"), 200, headers: {
-                HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
-              }));
-      // act
       final result = await remoteDataSource.topHeadLines();
-      //assert
-      expect(result, testResult);
+
+      expect(result.data, response.articles);
     },
   );
 
   test(
-    'Given topHeadlines request is done When request fails and '
-    'returns 404 Then response should be ServerFailure',
+    'GIVEN topHeadlines request is done WHEN request fails THEN response should be ServerFailure',
     () async {
-      // arrange
-      when(httpClient.get(any, headers: anyNamed("headers")))
-          .thenAnswer((_) async => http.Response("Error", 404));
-      // act
-      final call = remoteDataSource.topHeadLines;
-      //assert
-      expect(() => call(), throwsA(const TypeMatcher<ServerFailure>()));
+      when(apiClient.topHeadLines()).thenAnswer((_) async => throw Exception());
+
+      final result = await remoteDataSource.topHeadLines();
+
+      expect(result.failure, isInstanceOf<ServerFailure>());
     },
   );
 }

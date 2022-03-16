@@ -21,7 +21,7 @@ void main() {
     articlesRepository = MockArticlesRepository();
     usecase = GetEverythingAbout(articlesRepository);
     matchingArticles = [
-      Article(
+      const Article(
           source: Source(id: "id", name: "name"),
           author: "author",
           title: "title",

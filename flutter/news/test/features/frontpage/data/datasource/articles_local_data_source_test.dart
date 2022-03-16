@@ -5,8 +5,8 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
 import 'package:news/features/frontpage/data/datasource/articles_local_data_source.dart';
-import 'package:news/features/frontpage/data/models/article_model.dart';
-import 'package:news/features/frontpage/data/models/source_model.dart';
+import 'package:news/features/frontpage/domain/entities/article.dart';
+import 'package:news/features/frontpage/domain/entities/source.dart';
 
 import 'articles_local_data_source_test.mocks.dart';
 
@@ -15,8 +15,8 @@ void main() {
   late ArticlesLocalDataSource localDataSource;
 
   final articles = [
-    ArticleModel(
-        source: SourceModel(id: "id", name: "local"),
+    const Article(
+        source: Source(id: "id", name: "local"),
         author: "author",
         title: "title",
         description: "description",

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:news/core/result.dart';
-import 'package:news/features/frontpage/data/models/article_model.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/result.dart';
+import '../../domain/entities/article.dart';
 
 class ArticlesLocalDataSource {
   String _topHeadlinesJson = "";
@@ -12,12 +12,12 @@ class ArticlesLocalDataSource {
 
   ArticlesLocalDataSource(this._codec);
 
-  Future<Result<List<ArticleModel>>> topHeadLines() {
+  Future<Result<List<Article>>> topHeadLines() {
     try {
       var jsonMap = _codec.decode(_topHeadlinesJson);
 
-      List<ArticleModel> articles = List<ArticleModel>.from(
-          jsonMap.map((model) => ArticleModel.fromJson(model)));
+      List<Article> articles =
+          List<Article>.from(jsonMap.map((model) => Article.fromJson(model)));
 
       if (articles.isNotEmpty) {
         return Future.value(Result.success(articles));
@@ -30,7 +30,7 @@ class ArticlesLocalDataSource {
     }
   }
 
-  Future<void> save({required List<ArticleModel> topHeadlines}) async {
+  Future<void> save({required List<Article> topHeadlines}) async {
     if (topHeadlines.isNotEmpty) {
       _topHeadlinesJson = _codec.encode(topHeadlines);
     }
