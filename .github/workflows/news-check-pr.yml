@@ -9,7 +9,21 @@ jobs:
     runs-on: ubuntu-latest
     name: Run Test and Static Analysis
     steps:
-      - uses: actions/checkout@v3     
+      - uses: actions/checkout@v3
+
+      - id: 'auth'
+        uses: 'google-github-actions/authv0'
+        with:
+          credentials_json: '${{ secrets.gcp_credentials }}'
+
+      - uses: actions/setup-node@v2
+          with:
+            node-version: '14'
+
+      - run: npm install firebase --save
+
+      - run: ./fetch-screts.sh 
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '2.10.3'
