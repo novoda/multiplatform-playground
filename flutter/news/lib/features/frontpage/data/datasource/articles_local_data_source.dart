@@ -6,6 +6,7 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/result.dart';
 import '../../domain/entities/article.dart';
 
+// TODO to include a real persistence layer, something like a database using something like https://drift.simonbinder.eu
 class ArticlesLocalDataSource {
   String _topHeadlinesJson = "";
   final JsonCodec _codec;
