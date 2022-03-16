@@ -34,17 +34,15 @@ void main() {
   });
 
   test(
-    'Given Get request is done When doing the request Then the endpoint '
+    'GIVEN Get request is done WHEN doing the request THEN the endpoint '
     'being used should be /v2/top-headlines',
     () async {
-      // arrange
       when(httpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
           (_) async => http.Response(fixture("articles.json"), 200, headers: {
                 HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
               }));
-      // act
+
       remoteDataSource.topHeadLines();
-      //assert
       verify(httpClient.get(
           Uri.parse("https://newsapi.org/v2/top-headlines?country=us"),
           headers: anyNamed("headers")));
@@ -52,32 +50,32 @@ void main() {
   );
 
   test(
-    'Given topHeadlines request is done When request is successful and '
-    'returns 200 Then response should be List<ArticleModel>',
+    'GIVEN topHeadlines request is done WHEN request is successful and '
+    'returns 200 THEN response should be List<ArticleModel>',
     () async {
-      // arrange
       when(httpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
           (_) async => http.Response(fixture("articles.json"), 200, headers: {
                 HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
               }));
-      // act
+
       final result = await remoteDataSource.topHeadLines();
-      //assert
+
       expect(result, testResult);
     },
   );
 
   test(
-    'Given topHeadlines request is done When request fails and '
-    'returns 404 Then response should be ServerFailure',
+    'GIVEN topHeadlines request is done WHEN request fails and '
+    'returns 404 THEN response should be ServerFailure',
     () async {
-      // arrange
-      when(httpClient.get(any, headers: anyNamed("headers")))
-          .thenAnswer((_) async => http.Response("Error", 404));
-      // act
-      final call = remoteDataSource.topHeadLines;
-      //assert
-      expect(() => call(), throwsA(const TypeMatcher<ServerFailure>()));
+      when(httpClient.get(any, headers: anyNamed("headers"))).thenAnswer(
+          (_) async => http.Response("Error", 404, headers: {
+                HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
+              }));
+
+      final result = await remoteDataSource.topHeadLines();
+
+      expect(result.failure, isA<ServerFailure>());
     },
   );
 }
