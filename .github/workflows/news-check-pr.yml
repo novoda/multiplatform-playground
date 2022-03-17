@@ -24,7 +24,7 @@ jobs:
 
       - name: Creates local file with API key
         working-directory: ./flutter/news
-        run: echo '${{ steps.secrets.outputs.news-api-key }}' > .secrets.env 
+        run: echo "NEWS_API_KEY=${{ steps.secrets.outputs.news-api-key }}" > .secrets_env 
 
       - id: 'flutter'
         uses: subosito/flutter-action@v2
