@@ -25,6 +25,7 @@ jobs:
         run: npm install firebase --save
 
       - name: Retrieve Secrets
+        working-directory: ./flutter/news
         run: ./fetch-screts.sh
 
       - id: 'flutter'
