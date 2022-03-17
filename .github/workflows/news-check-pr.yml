@@ -16,26 +16,34 @@ jobs:
         with:
           credentials_json: '${{ secrets.gcp_credentials }}'
 
-      - uses: actions/setup-node@v2
-          with:
-            node-version: '14'
+      - id: 'npm'
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-      - run: npm install firebase --save
+      - name: Installs Firebase
+        run: npm install firebase --save
 
-      - run: ./fetch-screts.sh 
+      - name: Retrieve Secrets
+        run: ./fetch-screts.sh 
 
-      - uses: subosito/flutter-action@v2
+      - id: 'flutter'
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '2.10.3'
+      
       - name: Retrieve Dependencies
         working-directory: ./flutter/news
         run: flutter pub get
-      - name: build runner
+      
+      - name: Build Runner
         working-directory: ./flutter/news
         run: flutter pub run build_runner build
+
       - name: Run the tests
         working-directory: ./flutter/news
         run: flutter test
+
       - name: Run the static analysis
         working-directory: ./flutter/news
         run: flutter analyze
