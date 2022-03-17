@@ -9,19 +9,40 @@ jobs:
     runs-on: ubuntu-latest
     name: Run Test and Static Analysis
     steps:
-      - uses: actions/checkout@v3     
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3
+
+      - id: 'auth'
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.gcp_credentials }}'
+
+      - id: 'secrets'
+        uses: google-github-actions/get-secretmanager-secrets@v0
+        with:
+          secrets: |-
+            news-api-key:projects/859887479109/secrets/NEWS_API_KEY/versions/1
+
+      - name: Creates local file with API key
+        working-directory: ./flutter/news
+        run: echo "NEWS_API_KEY=${{ steps.secrets.outputs.news-api-key }}" > .secrets_env 
+
+      - id: 'flutter'
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '2.10.3'
+
       - name: Retrieve Dependencies
         working-directory: ./flutter/news
         run: flutter pub get
-      - name: build runner
+
+      - name: Build Runner
         working-directory: ./flutter/news
         run: flutter pub run build_runner build
+
       - name: Run the tests
         working-directory: ./flutter/news
         run: flutter test
+
       - name: Run the static analysis
         working-directory: ./flutter/news
         run: flutter analyze
