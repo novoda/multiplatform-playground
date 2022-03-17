@@ -22,7 +22,7 @@ jobs:
           node-version: '14'
 
       - name: Installs Firebase
-        run: sudo apt-get install -y firebase-tools
+        run: curl -sL https://firebase.tools | bash
 
       - name: Retrieve Secrets
         working-directory: ./flutter/news
