@@ -45,7 +45,7 @@ void main() {
 
       var result = await localDataSource.topHeadLines();
 
-      expect(result.failure, CacheFailure("No headlines saved"));
+      expect(result.failure, const CacheFailure("No headlines saved"));
     },
   );
 
@@ -59,7 +59,8 @@ void main() {
 
       var result = await localDataSource.topHeadLines();
 
-      expect(result.failure, CacheFailure("No headlines saved"));
+      expect(result.failure,
+          const CacheFailure("Error decoding stored headlines"));
     },
   );
 }

@@ -12,7 +12,7 @@ class ArticlesRemoteDataSource {
         .topHeadLines()
         .then((value) => Result<List<Article>>.success(value.articles))
         .catchError((error) => Result<List<Article>>.failure(
-            ServerFailure("Unable to read news from API")));
+            const ServerFailure("Unable to read news from API")));
 
     return result;
   }

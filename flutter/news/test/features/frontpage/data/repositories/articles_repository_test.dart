@@ -70,7 +70,7 @@ void main() {
     'GIVEN remote fetch will fail WHEN getting top articles THEN does not saves articles on local AND returns local articles',
     () async {
       when(remoteDataSource.topHeadLines()).thenAnswer((realInvocation) async =>
-          Result.failure(ServerFailure("Failure reading from server")));
+          Result.failure(const ServerFailure("Failure reading from server")));
       when(localDataSource.topHeadLines())
           .thenAnswer((realInvocation) async => Result.success(localArticles));
 
@@ -87,11 +87,11 @@ void main() {
       when(remoteDataSource.topHeadLines())
           .thenAnswer((realInvocation) async => Result.success(remoteArticles));
       when(localDataSource.topHeadLines()).thenAnswer((realInvocation) async =>
-          Result.failure(CacheFailure('Error reading from cache')));
+          Result.failure(const CacheFailure('Error reading from cache')));
 
       var result = await repository.topHeadlines();
 
-      expect(result.failure, isInstanceOf<CacheFailure>());
+      expect(result.failure, const CacheFailure('Error reading from cache'));
     },
   );
 }
