@@ -22,7 +22,7 @@ jobs:
           node-version: '14'
 
       - name: Installs Firebase
-        run: npm install firebase --save
+        run: npm init && npm install firebase --save
 
       - name: Retrieve Secrets
         working-directory: ./flutter/news
