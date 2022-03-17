@@ -26,7 +26,7 @@ jobs:
 
       - name: Retrieve Secrets
         working-directory: ./flutter/news
-        run: ./fetch-screts.sh
+        run: ./fetch-secrets.sh
 
       - id: 'flutter'
         uses: subosito/flutter-action@v2
