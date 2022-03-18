@@ -20,7 +20,7 @@ void main() {
     articlesRepository = MockArticlesRepository();
     usecase = GetTopHeadlines(articlesRepository);
     topArticles = [
-      Article(
+      const Article(
           source: Source(id: "id", name: "name"),
           author: "author",
           title: "title",
@@ -48,11 +48,11 @@ void main() {
     'GIVEN reading top headlines will faill WHEN reading top articles THEN returns failure',
     () async {
       when(articlesRepository.topHeadlines()).thenAnswer((_) async =>
-          Result.failure(ServerFailure("Error reading from server")));
+          Result.failure(const ServerFailure("Error reading from server")));
 
       final result = await usecase.topHeadlines();
 
-      expect(result.failure, isInstanceOf<ServerFailure>());
+      expect(result.failure, const ServerFailure("Error reading from server"));
     },
   );
 }

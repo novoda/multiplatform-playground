@@ -1,33 +1,23 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:news/core/constants.dart';
 import 'package:news/core/error/failures.dart';
+import 'package:news/core/news_api_client.dart';
 import 'package:news/core/result.dart';
-import 'package:news/features/frontpage/data/datasource/key_provider.dart';
-import 'package:news/features/frontpage/data/models/article_model.dart';
-import 'package:news/features/frontpage/data/models/base_news_response_model.dart';
+import 'package:news/features/frontpage/domain/entities/article.dart';
 
 class ArticlesRemoteDataSource {
-  final http.Client client;
-  final KeyProvider keyProvider;
+  final NewsApiClient client;
+  ArticlesRemoteDataSource({required this.client});
 
-  ArticlesRemoteDataSource({required this.client, required this.keyProvider});
+  Future<Result<List<Article>>> topHeadLines() async {
+    var result = await client
+        .topHeadLines()
+        .then((value) => Result<List<Article>>.success(value.articles))
+        .catchError((error) => Result<List<Article>>.failure(
+            const ServerFailure("Unable to read news from API")));
 
-  Future<Result<List<ArticleModel>>> topHeadLines() async {
-    var url = Uri.https(
-        Constants.baseUrl, Constants.topHeadlinesEndpoint, {'country': 'us'});
-    var response =
-        await client.get(url, headers: {'X-Api-Key': keyProvider.newsApiKey()});
-    if (response.statusCode == 200) {
-      return Result.success(
-          BaseNewsResponseModel.fromJson(json.decode(response.body)).articles
-              as List<ArticleModel>);
-    } else {
-      return Result.failure(ServerFailure("Server failure"));
-    }
+    return result;
   }
 
-  Future<Result<List<ArticleModel>>> getEverythingAbout(String query) {
+  Future<Result<List<Article>>> getEverythingAbout(String query) {
     throw UnimplementedError();
   }
 }

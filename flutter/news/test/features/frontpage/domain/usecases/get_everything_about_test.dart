@@ -21,7 +21,7 @@ void main() {
     articlesRepository = MockArticlesRepository();
     usecase = GetEverythingAbout(articlesRepository);
     matchingArticles = [
-      Article(
+      const Article(
           source: Source(id: "id", name: "name"),
           author: "author",
           title: "title",
@@ -50,11 +50,11 @@ void main() {
     'GIVEN getting everything about will fail WHEN calling use case THEN returns failure ',
     () async {
       when(articlesRepository.everythingAbout(query)).thenAnswer(
-          (_) async => Result.failure(ServerFailure("Error on server")));
+          (_) async => Result.failure(const ServerFailure("Error on server")));
 
       final result = await usecase.everythingAbout(query);
 
-      expect(result.failure, isInstanceOf<ServerFailure>());
+      expect(result.failure, const ServerFailure("Error on server"));
     },
   );
 }
