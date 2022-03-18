@@ -30,7 +30,9 @@ We are trying to give this project a sense of real project by:
 ### On Active Coding:
 
 * We are following ![Trunk Based Development](https://trunkbaseddevelopment.com/) (Perhaps not the most pure approach, but an approximation)
-* We are currently trying to use ![BLOC](https://bloclibrary.dev/#/) alongisde with a ![Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html). A good representation of what we want to achieve is described here: https://dev.to/george_andronchik/clean-architecture-of-flutter-application-part-1-theory-3b6p
+* We are currently trying to use ![BLOC](https://bloclibrary.dev/#/) alongisde with a ![Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html). A good representation of what we want to achieve is described here on the following resources:
+** https://resocoder.com/2020/03/09/flutter-firebase-ddd-course-1-domain-driven-design-principles/
+** https://dev.to/george_andronchik/clean-architecture-of-flutter-application-part-1-theory-3b6p
 * We are trying to actively test our code, using `mockito`: https://pub.dev/packages/mockito
 * We are using `retrofit` for implementing `API Clients`: https://pub.dev/packages/retrofit
 * We are currently using `GitHub Actions` for the CI
