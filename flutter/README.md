@@ -6,7 +6,7 @@ Follow the instructions here in order to setup Flutter to start development: htt
 
 ## Currently working on
 
-* [News App](./news/README.md)
+* [News App](./news/)
 
 ### Useful Visual Studio Code extensions
 
