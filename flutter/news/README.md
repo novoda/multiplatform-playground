@@ -25,7 +25,7 @@ We are trying to give this project a sense of real project by:
 
 * `NEWS_API_KEY`: You have two options:
   - **Option A)** Get a free API KEY from https://newsapi.org/ then add `NEWS_API_KEY=your-key` on a file named `.secrets_env`.
-  - **Option B)** If you are a member of Novoda, request permissions to juanky@novoda.com, after granted run the script `./fetch_secrets.sh`. This will create `.secrets_env` for you.
+  - **Option B)** If you are a member of Novoda just run the script `./fetch_secrets.sh`. This will create `.secrets_env` for you.
 
 ### On Active Coding:
 
