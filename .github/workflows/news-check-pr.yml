@@ -51,7 +51,7 @@ jobs:
         uses: zgosalvez/github-actions-report-lcov@v1
         with:
           working-directory: ./flutter/news
-          coverage-files: ./coverage/lcov.info
+          coverage-files: coverage/lcov.info
           minimum-coverage: 0
           artifact-name: news-code-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
