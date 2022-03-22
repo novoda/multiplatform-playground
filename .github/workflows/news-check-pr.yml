@@ -47,6 +47,10 @@ jobs:
         working-directory: ./flutter/news
         run: flutter test --coverage --machine > test-results.json
 
+      - name: Remove unrequired files from coverage
+        working-directory: ./flutter/news
+        run: flutter pub global run remove_from_coverage:remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$'
+
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v1
         with:
