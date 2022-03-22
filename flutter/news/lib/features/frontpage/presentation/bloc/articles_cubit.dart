@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
-
-import '../../domain/entities/article.dart';
+import 'package:news/features/frontpage/presentation/bloc/top_headlines_viewstate.dart';
 
 part 'top_headlines_state.dart';
 
@@ -12,15 +11,12 @@ class ArticlesCubit extends Cubit<ArticlesState> {
   ArticlesCubit({required this.repository}) : super(TopHeadlinesInitial());
 
   void getTopHeadlines() async {
-    try {
-      emit(TopHeadlinesLoading());
-      final topHeadlines = await repository.topHeadlines();
-      if (topHeadlines.isSuccess) {
-        emit(TopHeadlinesLoaded(topHeadlines.data));
-      } else {
-        emit(TopHeadlinesError());
-      }
-    } catch (e) {
+    emit(TopHeadlinesLoading());
+    final topHeadlines = await repository.topHeadlines();
+    if (topHeadlines.isSuccess) {
+      emit(TopHeadlinesLoaded(topHeadlines.data.take(10)
+          .map((e) => TopHeadlineViewState(e.title, e.url, e.urlToImage)).toList()));
+    } else {
       emit(TopHeadlinesError());
     }
   }

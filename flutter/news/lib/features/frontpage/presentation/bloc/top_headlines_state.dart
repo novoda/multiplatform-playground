@@ -15,7 +15,7 @@ class TopHeadlinesLoading extends ArticlesState {
 }
 
 class TopHeadlinesLoaded extends ArticlesState {
-  final List<Article> topHeadlines;
+  final List<TopHeadlineViewState> topHeadlines;
 
   const TopHeadlinesLoaded(this.topHeadlines);
 
