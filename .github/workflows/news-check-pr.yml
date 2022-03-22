@@ -45,13 +45,12 @@ jobs:
 
       - name: Run the tests
         working-directory: ./flutter/news
-        run: flutter test --coverage --machine > test-reports.json
+        run: flutter test --coverage --machine > test-results.json
 
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v1
         with:
-          working-directory: ./flutter/news
-          coverage-files: coverage/lcov.info
+          coverage-files: ./flutter/news/coverage/lcov.info
           minimum-coverage: 0
           artifact-name: news-code-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
