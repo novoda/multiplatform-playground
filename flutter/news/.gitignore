@@ -91,6 +91,9 @@ unlinked_spec.ds
 # Coverage
 coverage/
 
+# Test Results
+test-results.json
+
 # Symbols
 app.*.symbols
 

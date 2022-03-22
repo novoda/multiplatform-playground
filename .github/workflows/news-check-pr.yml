@@ -1,4 +1,4 @@
-name: Run Checks
+name: Run Checks - News
 on:
   pull_request:
     paths:
@@ -24,7 +24,7 @@ jobs:
 
       - name: Creates local file with API key
         working-directory: ./flutter/news
-        run: echo "NEWS_API_KEY=${{ steps.secrets.outputs.news-api-key }}" > .secrets_env 
+        run: echo "NEWS_API_KEY=${{ steps.secrets.outputs.news-api-key }}" > .secrets_env
 
       - id: 'flutter'
         uses: subosito/flutter-action@v2
@@ -39,10 +39,27 @@ jobs:
         working-directory: ./flutter/news
         run: flutter pub run build_runner build
 
-      - name: Run the tests
-        working-directory: ./flutter/news
-        run: flutter test
-
       - name: Run the static analysis
         working-directory: ./flutter/news
         run: flutter analyze
+
+      - name: Run the tests
+        working-directory: ./flutter/news
+        run: flutter test --coverage --machine > test-reports.json
+
+      - name: Report code coverage
+        uses: zgosalvez/github-actions-report-lcov@v1
+        working-directory: ./flutter/news
+        with:
+          coverage-files: coverage/lcov.*.info
+          minimum-coverage: 0
+          artifact-name: news-code-coverage-report
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Test Reports
+        working-directory: ./flutter/news
+        uses: actions/upload-artifacts@v2
+        if: success() || failure()
+        with:
+          name: test-results
+          path: test-results.json
