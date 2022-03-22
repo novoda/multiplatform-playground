@@ -48,18 +48,18 @@ jobs:
         run: flutter test --coverage --machine > test-reports.json
 
       - name: Report code coverage
-        working-directory: ./flutter/news
         uses: zgosalvez/github-actions-report-lcov@v1
         with:
+          working-directory: ./flutter/news
           coverage-files: coverage/lcov.*.info
           minimum-coverage: 0
           artifact-name: news-code-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Test Reports
-        working-directory: ./flutter/news
         uses: actions/upload-artifacts@v2
         if: success() || failure()
         with:
+          working-directory: ./flutter/news
           name: test-results
           path: test-results.json
