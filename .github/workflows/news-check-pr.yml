@@ -48,8 +48,8 @@ jobs:
         run: flutter test --coverage --machine > test-reports.json
 
       - name: Report code coverage
-        uses: zgosalvez/github-actions-report-lcov@v1
         working-directory: ./flutter/news
+        uses: zgosalvez/github-actions-report-lcov@v1
         with:
           coverage-files: coverage/lcov.*.info
           minimum-coverage: 0
