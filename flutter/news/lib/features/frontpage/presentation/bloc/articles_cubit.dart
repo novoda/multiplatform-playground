@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_viewstate.dart';
 
@@ -12,12 +13,21 @@ class ArticlesCubit extends Cubit<ArticlesState> {
 
   void getTopHeadlines() async {
     emit(TopHeadlinesLoading());
-    final topHeadlines = await repository.topHeadlines();
-    if (topHeadlines.isSuccess) {
-      emit(TopHeadlinesLoaded(topHeadlines.data.take(10)
-          .map((e) => TopHeadlineViewState(e.title, e.url, e.urlToImage)).toList()));
-    } else {
-      emit(TopHeadlinesError());
-    }
+
+    final result = await repository.topHeadlines();
+    result.fold(
+        ifSuccess: (data) => {
+              emit(TopHeadlinesLoaded(data
+                  .take(10)
+                  .map(
+                    (article) => TopHeadlineViewState(
+                      article.title,
+                      article.url,
+                      article.urlToImage,
+                    ),
+                  )
+                  .toList()))
+            },
+        ifFailure: (failure) => emit(TopHeadlinesError()));
   }
 }

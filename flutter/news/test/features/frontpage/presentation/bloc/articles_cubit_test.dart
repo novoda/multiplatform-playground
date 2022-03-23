@@ -5,6 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
 import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
+import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/presentation/bloc/articles_cubit.dart';
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_viewstate.dart';
 
@@ -21,8 +22,9 @@ void main() {
     'THEN emits [TopHeadlinesLoading, TopHeadlinesLoaded]',
     build: () {
       when(repository.topHeadlines()).thenAnswer(
-        (_) async => Result.success(
-            [Stub.article(title: "title", url: "url", imageUrl: "image")]),
+        (_) async => [
+          Stub.article(title: "title", url: "url", imageUrl: "image")
+        ].asSuccess(),
       );
       return ArticlesCubit(repository: repository);
     },
@@ -38,9 +40,10 @@ void main() {
     'WHEN response is failure '
     'THEN emits [TopHeadlinesLoading, TopHeadlinesError]',
     build: () {
-      when(repository.topHeadlines()).thenAnswer((_) async => Result.failure(
-            const CacheFailure("No headlines saved"),
-          ));
+      when(repository.topHeadlines()).thenAnswer(
+        (_) async => const CacheFailure(message: "No headlines saved")
+            .asFailure<List<Article>>(),
+      );
       return ArticlesCubit(repository: repository);
     },
     act: (cubit) => cubit.getTopHeadlines(),
@@ -52,9 +55,9 @@ void main() {
     'WHEN response is successful '
     'THEN verify TopHeadlineViewState is limited to the first 10 elements',
     build: () {
-      when(repository.topHeadlines()).thenAnswer((_) async => Result.success(
-            List.generate(15, (index) => Stub.article(title: "$index")),
-          ));
+      when(repository.topHeadlines()).thenAnswer((_) async =>
+          List.generate(15, (index) => Stub.article(title: "$index"))
+              .asSuccess());
       return ArticlesCubit(repository: repository);
     },
     act: (cubit) => cubit.getTopHeadlines(),

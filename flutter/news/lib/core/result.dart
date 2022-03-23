@@ -1,43 +1,50 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class Failure extends Equatable implements Exception {
-  final String message;
-  const Failure(this.message);
+import 'error/failures.dart';
+part 'result.freezed.dart';
 
-  @override
-  List<Object> get props => [message];
+@freezed
+class Result<S> with _$Result {
+  const Result._();
+  const factory Result.failure({required InternalFailure failure}) = Failure;
+  const factory Result.success({required S data}) = Success<S>;
 }
 
-class Success<S> extends Equatable {
-  final S data;
-  const Success({required this.data});
-
-  @override
-  List<S> get props => [data];
+extension AsSuccess<T> on T {
+  Result<T> asSuccess() {
+    return Result<T>.success(data: this);
+  }
 }
 
-class Result<S> extends Equatable {
-  final Failure? _failure;
-  final S? _data;
+extension AsFailure on InternalFailure {
+  Result<T> asFailure<T>() {
+    return Result<T>.failure(failure: this);
+  }
+}
 
-  const Result(this._data, this._failure);
-
-  factory Result.failure(Failure failure) => Result(null, failure);
-  factory Result.success(S data) => Result(data, null);
-
-  Failure get failure {
-    assert(_failure != null);
-    return _failure!;
+extension ResultExtensions<S> on Result<S> {
+  fold({
+    required Function(S) ifSuccess,
+    required Function(InternalFailure) ifFailure,
+  }) {
+    if (this is Success<S>) {
+      ifSuccess((this as Success).data);
+    } else {
+      ifFailure((this as Failure).failure);
+    }
   }
 
-  S get data {
-    assert(_data != null);
-    return _data!;
+  onSuccess(Function onSuccess) {
+    if (this is Success<S>) {
+      onSuccess(this as Success<S>);
+    }
+    return this;
   }
 
-  bool get isSuccess => _failure == null;
-  bool get isFailure => _failure != null;
-
-  @override
-  List<Object?> get props => [_failure, _data];
+  onFailure(Function onFailure) {
+    if (this is Failure) {
+      onFailure(this as Failure);
+    }
+    return this;
+  }
 }

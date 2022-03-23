@@ -55,14 +55,14 @@ void main() {
     'GIVEN remote fetch will succeed WHEN getting top articles THEN saves articles on local AND returns local articles',
     () async {
       when(remoteDataSource.topHeadLines())
-          .thenAnswer((realInvocation) async => Result.success(remoteArticles));
+          .thenAnswer((realInvocation) async => remoteArticles.asSuccess());
       when(localDataSource.topHeadLines())
-          .thenAnswer((realInvocation) async => Result.success(localArticles));
+          .thenAnswer((realInvocation) async => localArticles.asSuccess());
 
       var result = await repository.topHeadlines();
 
       verify(localDataSource.save(topHeadlines: remoteArticles));
-      expect(result.data, localArticles);
+      expect(result, localArticles.asSuccess());
     },
   );
 
@@ -70,14 +70,15 @@ void main() {
     'GIVEN remote fetch will fail WHEN getting top articles THEN does not saves articles on local AND returns local articles',
     () async {
       when(remoteDataSource.topHeadLines()).thenAnswer((realInvocation) async =>
-          Result.failure(const ServerFailure("Failure reading from server")));
+          const ServerFailure(message: "Failure reading from server")
+              .asFailure<List<Article>>());
       when(localDataSource.topHeadLines())
-          .thenAnswer((realInvocation) async => Result.success(localArticles));
+          .thenAnswer((realInvocation) async => localArticles.asSuccess());
 
       var result = await repository.topHeadlines();
 
       verifyNever(localDataSource.save(topHeadlines: remoteArticles));
-      expect(result.data, localArticles);
+      expect(result, localArticles.asSuccess());
     },
   );
 
@@ -85,13 +86,17 @@ void main() {
     'GIVEN local fetch will fail WHEN getting top articles THEN returns failure',
     () async {
       when(remoteDataSource.topHeadLines())
-          .thenAnswer((realInvocation) async => Result.success(remoteArticles));
+          .thenAnswer((realInvocation) async => remoteArticles.asSuccess());
       when(localDataSource.topHeadLines()).thenAnswer((realInvocation) async =>
-          Result.failure(const CacheFailure('Error reading from cache')));
+          const CacheFailure(message: "Error reading from cache")
+              .asFailure<List<Article>>());
 
       var result = await repository.topHeadlines();
 
-      expect(result.failure, const CacheFailure('Error reading from cache'));
+      expect(
+          result,
+          const CacheFailure(message: 'Error reading from cache')
+              .asFailure<List<Article>>());
     },
   );
 }
