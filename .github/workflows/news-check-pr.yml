@@ -64,6 +64,5 @@ jobs:
         uses: actions/upload-artifact@v3
         if: success() || failure()
         with:
-          working-directory: ./flutter/news
           name: test-results
-          path: test-results.json
+          path: ./flutter/news/test-results.json
