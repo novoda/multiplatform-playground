@@ -28,9 +28,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  remove_from_coverage: ^2.0.0
   mockito: ^5.1.0
   build_runner: ^2.1.2
-
   flutter_lints: ^1.0.0
   retrofit_generator: ^3.0.1
   json_serializable: ^6.1.5

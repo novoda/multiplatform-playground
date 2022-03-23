@@ -1,4 +1,4 @@
-name: 'Test Report'
+name: 'News Test Report'
 on:
   workflow_run:
     workflows: ['Run Checks - News']
@@ -11,6 +11,6 @@ jobs:
     - uses: dorny/test-reporter@v1
       with:
         artifact: test-results
-        name: News Tests
+        name: Tests Results
         path: 'test-results.json'
         reporter: flutter-json
