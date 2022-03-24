@@ -22,14 +22,15 @@ void main() {
     usecase = GetEverythingAbout(articlesRepository);
     matchingArticles = [
       const Article(
-          source: Source(id: "id", name: "name"),
-          author: "author",
-          title: "title",
-          description: "description",
-          url: "url",
-          urlToImage: "urlToImage",
-          publishedAt: "publishedAt",
-          content: "content")
+        source: Source(id: "id", name: "name"),
+        author: "author",
+        title: "title",
+        description: "description",
+        url: "url",
+        urlToImage: "urlToImage",
+        publishedAt: "publishedAt",
+        content: "content",
+      )
     ];
     query = "peace";
   });
@@ -49,16 +50,18 @@ void main() {
   test(
     'GIVEN getting everything about will fail WHEN calling use case THEN returns failure ',
     () async {
-      when(articlesRepository.everythingAbout(query)).thenAnswer((_) async =>
-          const ServerFailure(message: "Error on server")
-              .asFailure<List<Article>>());
+      when(articlesRepository.everythingAbout(query)).thenAnswer(
+        (_) async => const ServerFailure(message: "Error on server")
+            .asFailure<List<Article>>(),
+      );
 
       final result = await usecase.everythingAbout(query);
 
       expect(
-          result,
-          const ServerFailure(message: "Error on server")
-              .asFailure<List<Article>>());
+        result,
+        const ServerFailure(message: "Error on server")
+            .asFailure<List<Article>>(),
+      );
     },
   );
 }

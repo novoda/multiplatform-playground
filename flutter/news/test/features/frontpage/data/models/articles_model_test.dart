@@ -9,16 +9,17 @@ import '../../../../core/fixtures/fixture_reader.dart';
 
 void main() {
   const article = Article(
-      source: Source(id: null, name: "Lifehacker.com"),
-      author: 'Jeff Somers',
-      title: "Is the Crypto Bubble Going to Burst?",
-      description: "Even if you aren’t paying attention to Bitcoin",
-      url:
-          "https://lifehacker.com/is-the-crypto-bubble-going-to-burst-1848475768",
-      urlToImage:
-          "https://i.kinja-img.com/gawker-media/image/upload/c_fill,f_auto,fl_progressive,g_center,h_675,pg_1,q_80,w_1200/976a59b09e0e681e692bd7517498e3f2.jpg",
-      publishedAt: "2022-02-09T16:00:00Z",
-      content: "Even if you arent paying attention to Bitcoin");
+    source: Source(id: null, name: "Lifehacker.com"),
+    author: 'Jeff Somers',
+    title: "Is the Crypto Bubble Going to Burst?",
+    description: "Even if you aren’t paying attention to Bitcoin",
+    url:
+        "https://lifehacker.com/is-the-crypto-bubble-going-to-burst-1848475768",
+    urlToImage:
+        "https://i.kinja-img.com/gawker-media/image/upload/c_fill,f_auto,fl_progressive,g_center,h_675,pg_1,q_80,w_1200/976a59b09e0e681e692bd7517498e3f2.jpg",
+    publishedAt: "2022-02-09T16:00:00Z",
+    content: "Even if you arent paying attention to Bitcoin",
+  );
 
   const response =
       BaseNewsResponse(status: "ok", totalResults: 1, articles: [article]);

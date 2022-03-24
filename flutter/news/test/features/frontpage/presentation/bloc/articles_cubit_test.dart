@@ -32,13 +32,15 @@ void main() {
     act: (cubit) => cubit.getTopHeadlines(),
     expect: () => <ArticlesState>[
       const ArticlesState.loading(),
-      const ArticlesState.loaded(viewState: [
-        TopHeadlineViewState(
-          title: "title",
-          url: "url",
-          imageUrl: "image",
-        )
-      ])
+      const ArticlesState.loaded(
+        viewState: [
+          TopHeadlineViewState(
+            title: "title",
+            url: "url",
+            imageUrl: "image",
+          )
+        ],
+      )
     ],
   );
 
@@ -65,9 +67,10 @@ void main() {
     'WHEN response is successful '
     'THEN verify View State is limited to the first 10 elements',
     build: () {
-      when(repository.topHeadlines()).thenAnswer((_) async =>
-          List.generate(15, (index) => Stub.article(title: "$index"))
-              .asSuccess());
+      when(repository.topHeadlines()).thenAnswer(
+        (_) async => List.generate(15, (index) => Stub.article(title: "$index"))
+            .asSuccess(),
+      );
       return ArticlesCubit(repository: repository);
     },
     act: (cubit) => cubit.getTopHeadlines(),

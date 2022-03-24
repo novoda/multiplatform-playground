@@ -1,10 +1,8 @@
 import 'dart:convert';
 
+import 'package:news/core/error/failures.dart';
 import 'package:news/core/result.dart';
-
-import '../../../../core/error/failures.dart';
-import '../../../../core/result.dart';
-import '../../domain/entities/article.dart';
+import 'package:news/features/frontpage/domain/entities/article.dart';
 
 // TODO to include a real persistence layer, something like a database using something like https://drift.simonbinder.eu
 class ArticlesLocalDataSource {
@@ -23,12 +21,18 @@ class ArticlesLocalDataSource {
       if (articles.isNotEmpty) {
         return Future.value(Result<List<Article>>.success(data: articles));
       } else {
-        return Future.value(const Result<List<Article>>.failure(
-            failure: CacheFailure(message: "No headlines saved")));
+        return Future.value(
+          const Result<List<Article>>.failure(
+            failure: CacheFailure(message: "No headlines saved"),
+          ),
+        );
       }
     } catch (e) {
-      return Future.value(const Result<List<Article>>.failure(
-          failure: CacheFailure(message: "Error decoding stored headlines")));
+      return Future.value(
+        const Result<List<Article>>.failure(
+          failure: CacheFailure(message: "Error decoding stored headlines"),
+        ),
+      );
     }
   }
 
