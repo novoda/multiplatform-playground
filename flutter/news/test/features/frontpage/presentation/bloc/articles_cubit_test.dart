@@ -7,6 +7,7 @@ import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/presentation/bloc/articles_cubit.dart';
+import 'package:news/features/frontpage/presentation/bloc/top_headlines_state.dart';
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_viewstate.dart';
 
 import '../../../../core/utils/extensions.dart';
@@ -19,7 +20,7 @@ void main() {
   blocTest<ArticlesCubit, ArticlesState>(
     'GIVEN topHeadlines is requested '
     'WHEN response is successful '
-    'THEN emits [TopHeadlinesLoading, TopHeadlinesLoaded]',
+    'THEN emits [Loading, Loaded]',
     build: () {
       when(repository.topHeadlines()).thenAnswer(
         (_) async => [
@@ -30,15 +31,21 @@ void main() {
     },
     act: (cubit) => cubit.getTopHeadlines(),
     expect: () => <ArticlesState>[
-      TopHeadlinesLoading(),
-      const TopHeadlinesLoaded([TopHeadlineViewState("title", "url", "image")])
+      const ArticlesState.loading(),
+      const ArticlesState.loaded(viewState: [
+        TopHeadlineViewState(
+          title: "title",
+          url: "url",
+          imageUrl: "image",
+        )
+      ])
     ],
   );
 
   blocTest<ArticlesCubit, ArticlesState>(
     'GIVEN topHeadlines is requested '
     'WHEN response is failure '
-    'THEN emits [TopHeadlinesLoading, TopHeadlinesError]',
+    'THEN emits [Loading, Error]',
     build: () {
       when(repository.topHeadlines()).thenAnswer(
         (_) async => const CacheFailure(message: "No headlines saved")
@@ -47,13 +54,16 @@ void main() {
       return ArticlesCubit(repository: repository);
     },
     act: (cubit) => cubit.getTopHeadlines(),
-    expect: () => <ArticlesState>[TopHeadlinesLoading(), TopHeadlinesError()],
+    expect: () => <ArticlesState>[
+      const ArticlesState.loading(),
+      const ArticlesState.error(),
+    ],
   );
 
   blocTest<ArticlesCubit, ArticlesState>(
     'GIVEN topHeadlines is requested '
     'WHEN response is successful '
-    'THEN verify TopHeadlineViewState is limited to the first 10 elements',
+    'THEN verify View State is limited to the first 10 elements',
     build: () {
       when(repository.topHeadlines()).thenAnswer((_) async =>
           List.generate(15, (index) => Stub.article(title: "$index"))
@@ -62,10 +72,10 @@ void main() {
     },
     act: (cubit) => cubit.getTopHeadlines(),
     verify: (cubit) {
-      final cubitState = cubit.state as TopHeadlinesLoaded;
-      expect(cubitState.topHeadlines.length, 10);
-      expect(cubitState.topHeadlines.first.title, "0");
-      expect(cubitState.topHeadlines.last.title, "9");
+      final cubitState = cubit.state as Loaded;
+      expect(cubitState.viewState.length, 10);
+      expect(cubitState.viewState.first.title, "0");
+      expect(cubitState.viewState.last.title, "9");
     },
   );
 }

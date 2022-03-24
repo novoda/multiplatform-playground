@@ -5,7 +5,6 @@ part 'result.freezed.dart';
 
 @freezed
 class Result<S> with _$Result {
-  const Result._();
   const factory Result.failure({required InternalFailure failure}) = Failure;
   const factory Result.success({required S data}) = Success<S>;
 }

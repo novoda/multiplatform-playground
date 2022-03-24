@@ -1,12 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class TopHeadlineViewState extends Equatable {
-  final String title;
-  final String url;
-  final String imageUrl;
+part 'top_headlines_viewstate.freezed.dart';
 
-  const TopHeadlineViewState(this.title, this.url, this.imageUrl);
-
-  @override
-  List<Object?> get props => [title, url, imageUrl];
+@freezed
+class TopHeadlineViewState with _$TopHeadlineViewState {
+  const factory TopHeadlineViewState({
+    required String title,
+    required String url,
+    required String imageUrl,
+  }) = _TopHeadLineViewState;
 }
