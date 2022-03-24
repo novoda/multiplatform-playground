@@ -19,9 +19,10 @@ class ArticlesRepository {
 
   Future<Result<List<Article>>> topHeadlines() async {
     final result = await remoteDataSource.topHeadLines();
-    result.fold(
-        ifSuccess: (data) => localDataSource.save(topHeadlines: data),
-        ifFailure: (failure) => doNothing(because: "There is nothing to save"));
+    result.when(
+      success: (data) => localDataSource.save(topHeadlines: data),
+      failure: (failure) => doNothing(because: "There is nothing to save"),
+    );
 
     return localDataSource.topHeadLines();
   }

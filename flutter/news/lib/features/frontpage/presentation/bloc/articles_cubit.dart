@@ -14,20 +14,21 @@ class ArticlesCubit extends Cubit<ArticlesState> {
     emit(const ArticlesState.loading());
 
     final result = await repository.topHeadlines();
-    result.fold(
-        ifSuccess: (data) => {
-              emit(ArticlesState.loaded(
-                  viewState: data
-                      .take(10)
-                      .map(
-                        (article) => TopHeadlineViewState(
-                          title: article.title,
-                          url: article.url,
-                          imageUrl: article.urlToImage,
-                        ),
-                      )
-                      .toList()))
-            },
-        ifFailure: (failure) => emit(const ArticlesState.error()));
+    result.when(
+      success: (data) => {
+        emit(ArticlesState.loaded(
+            viewState: data
+                .take(10)
+                .map(
+                  (article) => TopHeadlineViewState(
+                    title: article.title,
+                    url: article.url,
+                    imageUrl: article.urlToImage,
+                  ),
+                )
+                .toList()))
+      },
+      failure: (failure) => emit(const ArticlesState.error()),
+    );
   }
 }
