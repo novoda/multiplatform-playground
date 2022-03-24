@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_state.dart';
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_viewstate.dart';
