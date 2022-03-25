@@ -36,11 +36,11 @@ void main() {
     'GIVEN reading top headlines will succeed WHEN reading top articles THEN returns top articles',
     () async {
       when(articlesRepository.topHeadlines())
-          .thenAnswer((_) async => Result.success(topArticles));
+          .thenAnswer((_) async => topArticles.asSuccess());
 
       final result = await usecase.topHeadlines();
 
-      expect(result.data, topArticles);
+      expect(result, topArticles.asSuccess());
     },
   );
 
@@ -48,11 +48,15 @@ void main() {
     'GIVEN reading top headlines will faill WHEN reading top articles THEN returns failure',
     () async {
       when(articlesRepository.topHeadlines()).thenAnswer((_) async =>
-          Result.failure(const ServerFailure("Error reading from server")));
+          const ServerFailure(message: "Error reading from server")
+              .asFailure<List<Article>>());
 
       final result = await usecase.topHeadlines();
 
-      expect(result.failure, const ServerFailure("Error reading from server"));
+      expect(
+          result,
+          const ServerFailure(message: "Error reading from server")
+              .asFailure<List<Article>>());
     },
   );
 }

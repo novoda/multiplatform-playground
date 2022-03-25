@@ -4,7 +4,9 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
 import 'package:news/core/news_api_client.dart';
+import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/datasource/articles_remote_data_source.dart';
+import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/domain/entities/base_news_response.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 import 'articles_remote_data_source_test.mocks.dart';
@@ -28,7 +30,7 @@ void main() {
 
       final result = await remoteDataSource.topHeadLines();
 
-      expect(result.data, response.articles);
+      expect(result, response.articles.asSuccess());
     },
   );
 
@@ -40,7 +42,9 @@ void main() {
       final result = await remoteDataSource.topHeadLines();
 
       expect(
-          result.failure, const ServerFailure("Unable to read news from API"));
+          result,
+          const ServerFailure(message: "Unable to read news from API")
+              .asFailure<List<Article>>());
     },
   );
 }

@@ -21,14 +21,14 @@ class ArticlesLocalDataSource {
           List<Article>.from(jsonMap.map((model) => Article.fromJson(model)));
 
       if (articles.isNotEmpty) {
-        return Future.value(Result.success(articles));
+        return Future.value(Result<List<Article>>.success(data: articles));
       } else {
-        return Future.value(
-            Result.failure(const CacheFailure("No headlines saved")));
+        return Future.value(const Result<List<Article>>.failure(
+            failure: CacheFailure(message: "No headlines saved")));
       }
     } catch (e) {
-      return Future.value(Result.failure(
-          const CacheFailure("Error decoding stored headlines")));
+      return Future.value(const Result<List<Article>>.failure(
+          failure: CacheFailure(message: "Error decoding stored headlines")));
     }
   }
 

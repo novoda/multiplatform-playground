@@ -1,29 +1,14 @@
-part of 'articles_cubit.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:news/features/frontpage/presentation/bloc/top_headlines_viewstate.dart';
 
-abstract class ArticlesState extends Equatable {
-  const ArticlesState();
-}
+part 'top_headlines_state.freezed.dart';
 
-class TopHeadlinesInitial extends ArticlesState {
-  @override
-  List<Object> get props => [];
-}
-
-class TopHeadlinesLoading extends ArticlesState {
-  @override
-  List<Object> get props => [];
-}
-
-class TopHeadlinesLoaded extends ArticlesState {
-  final List<TopHeadlineViewState> topHeadlines;
-
-  const TopHeadlinesLoaded(this.topHeadlines);
-
-  @override
-  List<Object> get props => [topHeadlines];
-}
-
-class TopHeadlinesError extends ArticlesState {
-  @override
-  List<Object> get props => [];
+@freezed
+class ArticlesState with _$ArticlesState {
+  const factory ArticlesState.initial() = _Initial;
+  const factory ArticlesState.loading() = _Loading;
+  const factory ArticlesState.loaded({
+    required List<TopHeadlineViewState> viewState,
+  }) = Loaded;
+  const factory ArticlesState.error() = _Error;
 }
