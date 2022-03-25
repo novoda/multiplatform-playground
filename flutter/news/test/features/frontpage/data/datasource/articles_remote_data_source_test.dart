@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -8,6 +9,7 @@ import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/datasource/articles_remote_data_source.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/domain/entities/base_news_response.dart';
+
 import '../../../../core/fixtures/fixture_reader.dart';
 import 'articles_remote_data_source_test.mocks.dart';
 
@@ -42,9 +44,10 @@ void main() {
       final result = await remoteDataSource.topHeadLines();
 
       expect(
-          result,
-          const ServerFailure(message: "Unable to read news from API")
-              .asFailure<List<Article>>());
+        result,
+        const ServerFailure(message: "Unable to read news from API")
+            .asFailure<List<Article>>(),
+      );
     },
   );
 }

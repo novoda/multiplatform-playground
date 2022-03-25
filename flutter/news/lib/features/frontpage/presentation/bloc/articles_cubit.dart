@@ -15,7 +15,8 @@ class ArticlesCubit extends Cubit<ArticlesState> {
     final result = await repository.topHeadlines();
     result.when(
       success: (data) => {
-        emit(ArticlesState.loaded(
+        emit(
+          ArticlesState.loaded(
             viewState: data
                 .take(10)
                 .map(
@@ -25,7 +26,9 @@ class ArticlesCubit extends Cubit<ArticlesState> {
                     imageUrl: article.urlToImage,
                   ),
                 )
-                .toList()))
+                .toList(),
+          ),
+        )
       },
       failure: (failure) => emit(const ArticlesState.error()),
     );

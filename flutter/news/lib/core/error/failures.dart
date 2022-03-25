@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 part 'failures.freezed.dart';
 
 abstract class InternalFailure {}

@@ -17,14 +17,15 @@ void main() {
 
   final articles = [
     const Article(
-        source: Source(id: "id", name: "local"),
-        author: "author",
-        title: "title",
-        description: "description",
-        url: "url",
-        urlToImage: "urlToImage",
-        publishedAt: "publishedAt",
-        content: "content")
+      source: Source(id: "id", name: "local"),
+      author: "author",
+      title: "title",
+      description: "description",
+      url: "url",
+      urlToImage: "urlToImage",
+      publishedAt: "publishedAt",
+      content: "content",
+    )
   ];
 
   test(
@@ -47,9 +48,10 @@ void main() {
       var result = await localDataSource.topHeadLines();
 
       expect(
-          result,
-          const CacheFailure(message: "No headlines saved")
-              .asFailure<List<Article>>());
+        result,
+        const CacheFailure(message: "No headlines saved")
+            .asFailure<List<Article>>(),
+      );
     },
   );
 
@@ -64,9 +66,10 @@ void main() {
       var result = await localDataSource.topHeadLines();
 
       expect(
-          result,
-          const CacheFailure(message: "Error decoding stored headlines")
-              .asFailure<List<Article>>());
+        result,
+        const CacheFailure(message: "Error decoding stored headlines")
+            .asFailure<List<Article>>(),
+      );
     },
   );
 }
