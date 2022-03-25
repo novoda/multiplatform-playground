@@ -38,23 +38,27 @@ void main() {
     'GIVEN getting everything about will succeed WHEN calling use case THEN returns matching articles ',
     () async {
       when(articlesRepository.everythingAbout(query))
-          .thenAnswer((_) async => Result.success(matchingArticles));
+          .thenAnswer((_) async => matchingArticles.asSuccess());
 
       final result = await usecase.everythingAbout(query);
 
-      expect(result.data, matchingArticles);
+      expect(result, matchingArticles.asSuccess());
     },
   );
 
   test(
     'GIVEN getting everything about will fail WHEN calling use case THEN returns failure ',
     () async {
-      when(articlesRepository.everythingAbout(query)).thenAnswer(
-          (_) async => Result.failure(const ServerFailure("Error on server")));
+      when(articlesRepository.everythingAbout(query)).thenAnswer((_) async =>
+          const ServerFailure(message: "Error on server")
+              .asFailure<List<Article>>());
 
       final result = await usecase.everythingAbout(query);
 
-      expect(result.failure, const ServerFailure("Error on server"));
+      expect(
+          result,
+          const ServerFailure(message: "Error on server")
+              .asFailure<List<Article>>());
     },
   );
 }

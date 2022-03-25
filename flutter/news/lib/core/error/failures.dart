@@ -1,9 +1,14 @@
-import 'package:news/core/result.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+part 'failures.freezed.dart';
 
-class ServerFailure extends Failure {
-  const ServerFailure(String message) : super(message);
+abstract class InternalFailure {}
+
+@freezed
+class ServerFailure with _$ServerFailure implements InternalFailure {
+  const factory ServerFailure({required String message}) = _ServerFailure;
 }
 
-class CacheFailure extends Failure {
-  const CacheFailure(String message) : super(message);
+@freezed
+class CacheFailure with _$CacheFailure implements InternalFailure {
+  const factory CacheFailure({required String message}) = _CacheFailure;
 }

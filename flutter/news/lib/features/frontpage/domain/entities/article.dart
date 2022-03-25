@@ -1,43 +1,20 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:news/features/frontpage/domain/entities/source.dart';
 
+part 'article.freezed.dart';
 part 'article.g.dart';
 
-@JsonSerializable()
-class Article extends Equatable {
-  final Source source;
-  final String? author;
-  final String title;
-  final String? description;
-  final String url;
-  final String? urlToImage;
-  final String publishedAt;
-  final String? content;
+@freezed
+class Article with _$Article {
+  const factory Article(
+      {required Source source,
+      required String? author,
+      required String title,
+      required String? description,
+      required String url,
+      required String? urlToImage,
+      required String publishedAt,
+      required String? content}) = _Article;
 
-  const Article(
-      {required this.source,
-      required this.author,
-      required this.title,
-      required this.description,
-      required this.url,
-      required this.urlToImage,
-      required this.publishedAt,
-      required this.content});
-
-  factory Article.fromJson(Map<String, dynamic> json) =>
-      _$ArticleFromJson(json);
-  Map<String, dynamic> toJson() => _$ArticleToJson(this);
-
-  @override
-  List<Object?> get props => [
-        source,
-        author,
-        title,
-        description,
-        url,
-        urlToImage,
-        publishedAt,
-        content
-      ];
+  factory Article.fromJson(Map<String, dynamic> json) => _$ArticleFromJson(json);
 }

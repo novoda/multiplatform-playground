@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
+import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/datasource/articles_local_data_source.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/domain/entities/source.dart';
@@ -34,7 +35,7 @@ void main() {
 
       var result = await localDataSource.topHeadLines();
 
-      expect(result.data, articles);
+      expect(result, articles.asSuccess());
     },
   );
 
@@ -45,7 +46,10 @@ void main() {
 
       var result = await localDataSource.topHeadLines();
 
-      expect(result.failure, const CacheFailure("No headlines saved"));
+      expect(
+          result,
+          const CacheFailure(message: "No headlines saved")
+              .asFailure<List<Article>>());
     },
   );
 
@@ -59,8 +63,10 @@ void main() {
 
       var result = await localDataSource.topHeadLines();
 
-      expect(result.failure,
-          const CacheFailure("Error decoding stored headlines"));
+      expect(
+          result,
+          const CacheFailure(message: "Error decoding stored headlines")
+              .asFailure<List<Article>>());
     },
   );
 }

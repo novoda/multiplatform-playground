@@ -26,6 +26,7 @@ dependencies:
   json_annotation: ^4.4.0
   bloc_test: ^9.0.1
   carousel_slider: ^4.0.0
+  freezed_annotation: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,7 @@ dev_dependencies:
   flutter_lints: ^1.0.0
   retrofit_generator: ^3.0.1
   json_serializable: ^6.1.5
+  freezed: ^1.1.0
 
 flutter:
   # The following line ensures that the Material Icons font is

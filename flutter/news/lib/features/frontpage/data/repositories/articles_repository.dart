@@ -1,3 +1,4 @@
+import 'package:news/core/language_extensions.dart';
 import 'package:news/core/result.dart';
 
 import '../../domain/entities/article.dart';
@@ -18,9 +19,11 @@ class ArticlesRepository {
 
   Future<Result<List<Article>>> topHeadlines() async {
     final result = await remoteDataSource.topHeadLines();
-    if (result.isSuccess) {
-      localDataSource.save(topHeadlines: result.data);
-    }
+    result.when(
+      success: (data) => localDataSource.save(topHeadlines: data),
+      failure: (failure) => doNothing(because: "There is nothing to save"),
+    );
+
     return localDataSource.topHeadLines();
   }
 }

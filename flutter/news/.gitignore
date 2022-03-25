@@ -12,6 +12,7 @@
 .svn/
 *.mocks.dart
 *.g.dart
+*.freezed.dart
 
 # IntelliJ related
 *.iml
