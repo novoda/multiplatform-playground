@@ -17,7 +17,7 @@ class ArticlesCubit extends Cubit<ArticlesState> {
       emit(TopHeadlinesLoaded(topHeadlines.data.take(10)
           .map((e) => TopHeadlineViewState(e.title, e.url, e.urlToImage)).toList()));
     } else {
-      emit(TopHeadlinesError());
+      emit(TopHeadlinesError(topHeadlines.failure.message));
     }
   }
 }

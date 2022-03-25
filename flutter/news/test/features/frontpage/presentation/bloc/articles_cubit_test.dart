@@ -34,18 +34,17 @@ void main() {
   );
 
   blocTest<ArticlesCubit, ArticlesState>(
-    'GIVEN topHeadlines is requested '
-    'WHEN response is failure '
-    'THEN emits [TopHeadlinesLoading, TopHeadlinesError]',
-    build: () {
-      when(repository.topHeadlines()).thenAnswer((_) async => Result.failure(
-            const CacheFailure("No headlines saved"),
-          ));
-      return ArticlesCubit(repository: repository);
-    },
-    act: (cubit) => cubit.getTopHeadlines(),
-    expect: () => <ArticlesState>[TopHeadlinesLoading(), TopHeadlinesError()],
-  );
+      'GIVEN topHeadlines is requested '
+      'WHEN response is failure '
+      'THEN emits [TopHeadlinesLoading, TopHeadlinesError]',
+      build: () {
+        when(repository.topHeadlines()).thenAnswer((_) async => Result.failure(
+              const CacheFailure("No headlines saved"),
+            ));
+        return ArticlesCubit(repository: repository);
+      },
+      act: (cubit) => cubit.getTopHeadlines(),
+      expect: () => [isA<TopHeadlinesLoading>(), isA<TopHeadlinesError>()]);
 
   blocTest<ArticlesCubit, ArticlesState>(
     'GIVEN topHeadlines is requested '

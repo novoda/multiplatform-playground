@@ -24,6 +24,10 @@ class TopHeadlinesLoaded extends ArticlesState {
 }
 
 class TopHeadlinesError extends ArticlesState {
+  final String? error;
+
+  const TopHeadlinesError(this.error);
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [error];
 }

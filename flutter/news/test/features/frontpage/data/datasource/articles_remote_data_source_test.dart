@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -6,6 +7,7 @@ import 'package:news/core/error/failures.dart';
 import 'package:news/core/news_api_client.dart';
 import 'package:news/features/frontpage/data/datasource/articles_remote_data_source.dart';
 import 'package:news/features/frontpage/domain/entities/base_news_response.dart';
+
 import '../../../../core/fixtures/fixture_reader.dart';
 import 'articles_remote_data_source_test.mocks.dart';
 
@@ -24,7 +26,7 @@ void main() {
     () async {
       var response =
           BaseNewsResponse.fromJson(json.decode(fixture("articles.json")));
-      when(apiClient.topHeadLines()).thenAnswer((_) async => response);
+      when(apiClient.topHeadLines("us")).thenAnswer((_) async => response);
 
       final result = await remoteDataSource.topHeadLines();
 
@@ -35,7 +37,7 @@ void main() {
   test(
     'GIVEN topHeadlines request is done WHEN request fails THEN response should be ServerFailure',
     () async {
-      when(apiClient.topHeadLines()).thenAnswer((_) async => throw Exception());
+      when(apiClient.topHeadLines("us")).thenAnswer((_) async => throw Exception());
 
       final result = await remoteDataSource.topHeadLines();
 

@@ -9,10 +9,12 @@ class ArticlesRemoteDataSource {
 
   Future<Result<List<Article>>> topHeadLines() async {
     var result = await client
-        .topHeadLines()
-        .then((value) => Result<List<Article>>.success(value.articles))
+        .topHeadLines("us")
+        .then((value) {
+          return Result<List<Article>>.success(value.articles);
+        })
         .catchError((error) => Result<List<Article>>.failure(
-            const ServerFailure("Unable to read news from API")));
+             ServerFailure(error.toString())));
 
     return result;
   }
