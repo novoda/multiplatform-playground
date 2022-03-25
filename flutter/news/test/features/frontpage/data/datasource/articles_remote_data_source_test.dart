@@ -39,13 +39,14 @@ void main() {
   test(
     'GIVEN topHeadlines request is done WHEN request fails THEN response should be ServerFailure',
     () async {
-      when(apiClient.topHeadLines("us")).thenAnswer((_) async => throw Exception());
+      when(apiClient.topHeadLines("us"))
+          .thenAnswer((_) async => throw Exception());
 
       final result = await remoteDataSource.topHeadLines();
 
       expect(
         result,
-        const ServerFailure(message: "Unable to read news from API")
+        ServerFailure(message: "Unable to read news from API")
             .asFailure<List<Article>>(),
       );
     },

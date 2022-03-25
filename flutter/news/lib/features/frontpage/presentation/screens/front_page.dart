@@ -4,6 +4,7 @@ import 'package:news/features/frontpage/presentation/bloc/articles_cubit.dart';
 import 'package:news/features/frontpage/presentation/widgets/loading_widget.dart';
 
 import '../../../../dependencies_injection.dart';
+import '../bloc/top_headlines_state.dart';
 import '../widgets/horizontal_list_top_headlines.dart';
 
 class FrontPage extends StatelessWidget {
@@ -19,17 +20,16 @@ class FrontPage extends StatelessWidget {
         create: (context) => getIt<ArticlesCubit>(),
         child: BlocBuilder<ArticlesCubit, ArticlesState>(
           builder: (context, state) {
-            if (state is TopHeadlinesLoaded) {
-              return HorizontalListTopHeadlines(
-                  topHeadlines: state.topHeadlines);
-            } else if (state is TopHeadlinesLoading) {
-              return const LoadingWidget();
-            } else if (state is TopHeadlinesError) {
-              return Text(state.error ?? "Unknown error");
-            } else {
-              context.read<ArticlesCubit>().getTopHeadlines();
-              return const LoadingWidget();
-            }
+            return state.when(
+              initial: () {
+                context.read<ArticlesCubit>().getTopHeadlines();
+                return const LoadingWidget();
+              },
+              loading: () => const LoadingWidget(),
+              loaded: (topHeadlines) =>
+                  HorizontalListTopHeadlines(topHeadlines: topHeadlines),
+              error: (error) => Text(error),
+            );
           },
         ),
       ),

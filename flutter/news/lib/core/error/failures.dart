@@ -6,7 +6,7 @@ abstract class InternalFailure {}
 
 @freezed
 class ServerFailure with _$ServerFailure implements InternalFailure {
-  const factory ServerFailure({required String message}) = _ServerFailure;
+  factory ServerFailure({required String? message}) = _ServerFailure;
 }
 
 @freezed

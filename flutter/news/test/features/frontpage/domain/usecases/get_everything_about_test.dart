@@ -51,7 +51,7 @@ void main() {
     'GIVEN getting everything about will fail WHEN calling use case THEN returns failure ',
     () async {
       when(articlesRepository.everythingAbout(query)).thenAnswer(
-        (_) async => const ServerFailure(message: "Error on server")
+        (_) async => ServerFailure(message: "Error on server")
             .asFailure<List<Article>>(),
       );
 
@@ -59,7 +59,7 @@ void main() {
 
       expect(
         result,
-        const ServerFailure(message: "Error on server")
+        ServerFailure(message: "Error on server")
             .asFailure<List<Article>>(),
       );
     },

@@ -56,10 +56,7 @@ void main() {
       return ArticlesCubit(repository: repository);
     },
     act: (cubit) => cubit.getTopHeadlines(),
-    expect: () => <ArticlesState>[
-      const ArticlesState.loading(),
-      const ArticlesState.error(),
-    ],
+    expect: () => [isA<Loading>(), isA<Error>()],
   );
 
   blocTest<ArticlesCubit, ArticlesState>(

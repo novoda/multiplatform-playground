@@ -78,7 +78,7 @@ void main() {
     () async {
       when(remoteDataSource.topHeadLines()).thenAnswer(
         (realInvocation) async =>
-            const ServerFailure(message: "Failure reading from server")
+            ServerFailure(message: "Failure reading from server")
                 .asFailure<List<Article>>(),
       );
       when(localDataSource.topHeadLines())

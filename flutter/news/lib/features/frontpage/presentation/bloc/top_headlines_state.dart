@@ -5,9 +5,9 @@ part 'top_headlines_state.freezed.dart';
 
 @freezed
 class ArticlesState with _$ArticlesState {
-  const factory ArticlesState.initial() = _Initial;
+  const factory ArticlesState.initial() = Initial;
 
-  const factory ArticlesState.loading() = _Loading;
+  const factory ArticlesState.loading() = Loading;
 
   const factory ArticlesState.loaded({
     required List<TopHeadlineViewState> viewState,
@@ -15,5 +15,5 @@ class ArticlesState with _$ArticlesState {
 
   const factory ArticlesState.error({
     required String error,
-  }) = _Error;
+  }) = Error;
 }
