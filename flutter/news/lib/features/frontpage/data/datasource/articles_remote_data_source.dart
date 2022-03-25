@@ -11,8 +11,11 @@ class ArticlesRemoteDataSource {
     var result = await client
         .topHeadLines("us")
         .then((value) => Result<List<Article>>.success(data: value.articles))
-        .catchError((error) => const Result<List<Article>>.failure(
-            failure: ServerFailure(message: error.toString())));
+        .catchError(
+          (error) => const Result<List<Article>>.failure(
+            failure: ServerFailure(message: error.toString()),
+          ),
+        );
 
     return result;
   }

@@ -21,14 +21,15 @@ void main() {
     usecase = GetTopHeadlines(articlesRepository);
     topArticles = [
       const Article(
-          source: Source(id: "id", name: "name"),
-          author: "author",
-          title: "title",
-          description: "description",
-          url: "url",
-          urlToImage: "urlToImage",
-          publishedAt: "publishedAt",
-          content: "content")
+        source: Source(id: "id", name: "name"),
+        author: "author",
+        title: "title",
+        description: "description",
+        url: "url",
+        urlToImage: "urlToImage",
+        publishedAt: "publishedAt",
+        content: "content",
+      )
     ];
   });
 
@@ -47,16 +48,18 @@ void main() {
   test(
     'GIVEN reading top headlines will faill WHEN reading top articles THEN returns failure',
     () async {
-      when(articlesRepository.topHeadlines()).thenAnswer((_) async =>
-          const ServerFailure(message: "Error reading from server")
-              .asFailure<List<Article>>());
+      when(articlesRepository.topHeadlines()).thenAnswer(
+        (_) async => const ServerFailure(message: "Error reading from server")
+            .asFailure<List<Article>>(),
+      );
 
       final result = await usecase.topHeadlines();
 
       expect(
-          result,
-          const ServerFailure(message: "Error reading from server")
-              .asFailure<List<Article>>());
+        result,
+        const ServerFailure(message: "Error reading from server")
+            .asFailure<List<Article>>(),
+      );
     },
   );
 }

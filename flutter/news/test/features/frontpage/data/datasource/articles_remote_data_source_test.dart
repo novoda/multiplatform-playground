@@ -44,9 +44,10 @@ void main() {
       final result = await remoteDataSource.topHeadLines();
 
       expect(
-          result,
-          const ServerFailure(message: "Unable to read news from API")
-              .asFailure<List<Article>>());
+        result,
+        const ServerFailure(message: "Unable to read news from API")
+            .asFailure<List<Article>>(),
+      );
     },
   );
 }
