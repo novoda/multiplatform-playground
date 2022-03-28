@@ -25,6 +25,7 @@ dependencies:
   json_annotation: ^4.4.0
   bloc_test: ^9.0.1
   freezed_annotation: ^1.1.0
+  rxdart: ^0.27.3
 
 dev_dependencies:
   flutter_test:
@@ -49,7 +50,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - .secrets_env  
+    - .secrets_env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
