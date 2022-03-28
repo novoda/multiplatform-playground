@@ -17,4 +17,24 @@ extension FutureExtension<T> on Future<Result<T>> {
           failure: (theFailure) => failure(theFailure),
         ),
       );
+
+  Future<Result<R>> mapSuccess<R>(
+    FutureOr<Result<R>> Function(T value) success,
+  ) =>
+      then(
+        (value) => value.when(
+          success: (data) => success(data),
+          failure: (failure) => failure.asFailure<R>(),
+        ),
+      );
+
+  Future<Result<T>> mapFailure(
+    FutureOr<Result<T>> Function(InternalFailure failure) failure,
+  ) =>
+      then(
+        (value) => value.when(
+          success: (data) => data.asSuccess(),
+          failure: (theFailure) => failure(theFailure),
+        ),
+      );
 }

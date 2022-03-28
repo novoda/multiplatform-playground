@@ -2,7 +2,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'failures.freezed.dart';
 
-abstract class InternalFailure {}
+abstract class InternalFailure {
+  final String message = "";
+}
 
 @freezed
 class ServerFailure with _$ServerFailure implements InternalFailure {

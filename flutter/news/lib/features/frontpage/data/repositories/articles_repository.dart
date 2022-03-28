@@ -17,8 +17,7 @@ class ArticlesRepository {
 
   Stream<List<Article>> topHeadlines() => _localDataSource.topHeadLines();
 
-  Future<Result<void>> sync() => _remoteDataSource.topHeadLines().when(
-        success: (data) => _localDataSource.save(data),
-        failure: (failure) => failure.asFailure<void>(),
-      );
+  Future<Result<void>> sync() => _remoteDataSource
+      .topHeadLines()
+      .mapSuccess((data) => _localDataSource.save(data));
 }
