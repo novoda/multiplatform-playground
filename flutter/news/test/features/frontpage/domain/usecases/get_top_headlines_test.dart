@@ -13,12 +13,12 @@ import 'get_top_headlines_test.mocks.dart';
 @GenerateMocks([ArticlesRepository])
 void main() {
   late GetTopHeadlines usecase;
-  late MockArticlesRepository articlesRepository;
+  late MockArticlesRepository repository;
   late List<Article> topArticles;
 
   setUp(() {
-    articlesRepository = MockArticlesRepository();
-    usecase = GetTopHeadlines(articlesRepository);
+    repository = MockArticlesRepository();
+    usecase = GetTopHeadlines(repository);
     topArticles = [
       const Article(
         source: Source(id: "id", name: "name"),
@@ -34,32 +34,42 @@ void main() {
   });
 
   test(
-    'GIVEN reading top headlines will succeed WHEN reading top articles THEN returns top articles',
+    'GIVEN repository sync will succeed WHEN syncing THEN succeeds',
     () async {
-      when(articlesRepository.topHeadlines())
-          .thenAnswer((_) async => topArticles.asSuccess());
+      when(repository.sync()).thenAnswer((_) async => Result.completed());
 
-      final result = await usecase.topHeadlines();
+      final result = await usecase.sync();
 
-      expect(result, topArticles.asSuccess());
+      expect(result, Result.completed());
     },
   );
 
   test(
-    'GIVEN reading top headlines will faill WHEN reading top articles THEN returns failure',
+    'GIVEN repository sync will fail WHEN syncing THEN fails',
     () async {
-      when(articlesRepository.topHeadlines()).thenAnswer(
-        (_) async => const ServerFailure(message: "Error reading from server")
-            .asFailure<List<Article>>(),
+      when(repository.sync()).thenAnswer(
+        (_) async => const ServerFailure(message: "Unable to load news")
+            .asFailure<void>(),
       );
 
-      final result = await usecase.topHeadlines();
+      final result = await usecase.sync();
 
       expect(
         result,
-        const ServerFailure(message: "Error reading from server")
-            .asFailure<List<Article>>(),
+        const ServerFailure(message: "Unable to load news").asFailure<void>(),
       );
+    },
+  );
+
+  test(
+    'GIVEN articles will be returned from database WHEN requesting articles THEN returns articles',
+    () async {
+      when(repository.topHeadlines())
+          .thenAnswer((_) => Stream.value(topArticles));
+
+      var result = usecase.topHeadlines();
+
+      expect(result, emits(topArticles));
     },
   );
 }

@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
+import 'package:news/core/news_database_client.dart';
 import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/data/datasource/articles_local_data_source.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
@@ -11,7 +10,7 @@ import 'package:news/features/frontpage/domain/entities/source.dart';
 
 import 'articles_local_data_source_test.mocks.dart';
 
-@GenerateMocks([ArticlesLocalDataSource, JsonCodec])
+@GenerateMocks([DB])
 void main() {
   late ArticlesLocalDataSource localDataSource;
 
@@ -31,44 +30,42 @@ void main() {
   test(
     'GIVEN articles list successfully saved WHEN getting articles THEN returns correct list of articles ',
     () async {
-      localDataSource = ArticlesLocalDataSource(const JsonCodec());
-      localDataSource.save(topHeadlines: articles);
+      localDataSource = ArticlesLocalDataSource(DummyDB());
+      await localDataSource.save(articles);
 
-      var result = await localDataSource.topHeadLines();
+      var result = localDataSource.topHeadLines();
 
-      expect(result, articles.asSuccess());
+      expect(result, emits(articles));
     },
   );
 
   test(
-    'GIVEN nothing is saved in cache WHEN getting articles THEN returns CacheFailure ',
+    'GIVEN nothing is saved in cache WHEN getting articles THEN returns empty list ',
     () async {
-      localDataSource = ArticlesLocalDataSource(const JsonCodec());
+      localDataSource = ArticlesLocalDataSource(DummyDB());
 
-      var result = await localDataSource.topHeadLines();
+      var result = localDataSource.topHeadLines();
 
-      expect(
-        result,
-        const CacheFailure(message: "No headlines saved")
-            .asFailure<List<Article>>(),
-      );
+      expect(result, emits([]));
     },
   );
 
   test(
-    'GIVEN will fail to decode list from json WHEN getting articles THEN returns CacheFailure ',
+    'GIVEN will fail to decode list from json WHEN saving articles THEN returns CacheFailure ',
     () async {
-      var jsonCodec = MockJsonCodec();
-      localDataSource = ArticlesLocalDataSource(jsonCodec);
-      when(jsonCodec.decode(any))
-          .thenThrow(JsonUnsupportedObjectError("Error"));
+      var db = MockDB();
+      when(db.save(any)).thenAnswer((_) async {
+        throw Exception();
+      });
+      localDataSource = ArticlesLocalDataSource(db);
 
-      var result = await localDataSource.topHeadLines();
+      var result = await localDataSource.save(articles);
 
       expect(
         result,
-        const CacheFailure(message: "Error decoding stored headlines")
-            .asFailure<List<Article>>(),
+        const CacheFailure(
+          message: "Unable to save news on database",
+        ).asFailure<void>(),
       );
     },
   );

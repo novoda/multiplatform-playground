@@ -53,62 +53,76 @@ void main() {
     remoteDataSource = MockArticlesRemoteDataSource();
     localDataSource = MockArticlesLocalDataSource();
     repository = ArticlesRepository(
-      remoteDataSource: remoteDataSource,
-      localDataSource: localDataSource,
+      localDataSource,
+      remoteDataSource,
     );
   });
 
   test(
-    'GIVEN remote fetch will succeed WHEN getting top articles THEN saves articles on local AND returns local articles',
+    'GIVEN remote fetch will succeed WHEN syncing THEN saves articles on local AND returns success',
     () async {
       when(remoteDataSource.topHeadLines())
           .thenAnswer((realInvocation) async => remoteArticles.asSuccess());
-      when(localDataSource.topHeadLines())
-          .thenAnswer((realInvocation) async => localArticles.asSuccess());
+      when(localDataSource.save(any))
+          .thenAnswer((realInvocation) async => Result.completed());
 
-      var result = await repository.topHeadlines();
+      var result = await repository.sync();
 
-      verify(localDataSource.save(topHeadlines: remoteArticles));
-      expect(result, localArticles.asSuccess());
+      verify(localDataSource.save(remoteArticles));
+      expect(result, Result.completed());
     },
   );
 
   test(
-    'GIVEN remote fetch will fail WHEN getting top articles THEN does not saves articles on local AND returns local articles',
+    'GIVEN remote fetch will succeed AND saving into local store will fail WHEN syncing THEN returns failure',
+    () async {
+      when(remoteDataSource.topHeadLines())
+          .thenAnswer((realInvocation) async => remoteArticles.asSuccess());
+      when(localDataSource.save(any)).thenAnswer(
+        (realInvocation) async =>
+            const CacheFailure(message: "Unable to save in repository")
+                .asFailure<void>(),
+      );
+
+      var result = await repository.sync();
+
+      expect(
+        result,
+        const CacheFailure(message: "Unable to save in repository")
+            .asFailure<void>(),
+      );
+    },
+  );
+
+  test(
+    'GIVEN remote fetch will fail WHEN syncing THEN does not saves articles on local AND returns a failure',
     () async {
       when(remoteDataSource.topHeadLines()).thenAnswer(
         (realInvocation) async =>
             const ServerFailure(message: "Failure reading from server")
                 .asFailure<List<Article>>(),
       );
-      when(localDataSource.topHeadLines())
-          .thenAnswer((realInvocation) async => localArticles.asSuccess());
 
-      var result = await repository.topHeadlines();
+      var result = await repository.sync();
 
-      verifyNever(localDataSource.save(topHeadlines: remoteArticles));
-      expect(result, localArticles.asSuccess());
+      verifyNever(localDataSource.save(any));
+      expect(
+        result,
+        const ServerFailure(message: "Failure reading from server")
+            .asFailure<void>(),
+      );
     },
   );
 
   test(
-    'GIVEN local fetch will fail WHEN getting top articles THEN returns failure',
+    'GIVEN articles will be returned from database WHEN requesting articles from repository THEN returns articles',
     () async {
-      when(remoteDataSource.topHeadLines())
-          .thenAnswer((realInvocation) async => remoteArticles.asSuccess());
-      when(localDataSource.topHeadLines()).thenAnswer(
-        (realInvocation) async =>
-            const CacheFailure(message: "Error reading from cache")
-                .asFailure<List<Article>>(),
-      );
+      when(localDataSource.topHeadLines())
+          .thenAnswer((_) => Stream.value(localArticles));
 
-      var result = await repository.topHeadlines();
+      var result = repository.topHeadlines();
 
-      expect(
-        result,
-        const CacheFailure(message: 'Error reading from cache')
-            .asFailure<List<Article>>(),
-      );
+      expect(result, emits(localArticles));
     },
   );
 }

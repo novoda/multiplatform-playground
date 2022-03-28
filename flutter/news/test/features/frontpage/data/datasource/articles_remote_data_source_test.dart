@@ -20,7 +20,7 @@ void main() {
 
   setUp(() {
     apiClient = MockNewsApiClient();
-    remoteDataSource = ArticlesRemoteDataSource(client: apiClient);
+    remoteDataSource = ArticlesRemoteDataSource(apiClient);
   });
 
   test(

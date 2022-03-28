@@ -1,61 +1,49 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news/core/error/failures.dart';
 import 'package:news/core/result.dart';
-import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
+import 'package:news/features/frontpage/domain/usecases/get_top_headlines.dart';
 import 'package:news/features/frontpage/presentation/bloc/articles_cubit.dart';
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_state.dart';
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_viewstate.dart';
 
 import '../../../../core/utils/extensions.dart';
-import '../../domain/usecases/get_everything_about_test.mocks.dart';
+import 'articles_cubit_test.mocks.dart';
 
-@GenerateMocks([ArticlesRepository])
+@GenerateMocks([GetTopHeadlines])
 void main() {
-  final ArticlesRepository repository = MockArticlesRepository();
-
+  final GetTopHeadlines useCase = MockGetTopHeadlines();
+  final articles = List.generate(15, (index) => Stub.article(title: "$index"));
   blocTest<ArticlesCubit, ArticlesState>(
-    'GIVEN topHeadlines is requested '
-    'WHEN response is successful '
-    'THEN emits [Loading, Loaded]',
+    'GIVEN sync will succeed'
+    'WHEN syncing is triggered'
+    'THEN emits [Loading]',
     build: () {
-      when(repository.topHeadlines()).thenAnswer(
-        (_) async => [
-          Stub.article(title: "title", url: "url", imageUrl: "image")
-        ].asSuccess(),
+      when(useCase.sync()).thenAnswer(
+        (_) async => Result.completed(),
       );
-      return ArticlesCubit(repository: repository);
+      return ArticlesCubit(useCase);
     },
-    act: (cubit) => cubit.getTopHeadlines(),
+    act: (cubit) => cubit.sync(),
     expect: () => <ArticlesState>[
       const ArticlesState.loading(),
-      const ArticlesState.loaded(
-        viewState: [
-          TopHeadlineViewState(
-            title: "title",
-            url: "url",
-            imageUrl: "image",
-          )
-        ],
-      )
     ],
   );
 
   blocTest<ArticlesCubit, ArticlesState>(
-    'GIVEN topHeadlines is requested '
-    'WHEN response is failure '
+    'GIVEN syncing will fail'
+    'WHEN syncing is triggered'
     'THEN emits [Loading, Error]',
     build: () {
-      when(repository.topHeadlines()).thenAnswer(
+      when(useCase.sync()).thenAnswer(
         (_) async => const CacheFailure(message: "No headlines saved")
             .asFailure<List<Article>>(),
       );
-      return ArticlesCubit(repository: repository);
+      return ArticlesCubit(useCase);
     },
-    act: (cubit) => cubit.getTopHeadlines(),
+    act: (cubit) => cubit.sync(),
     expect: () => <ArticlesState>[
       const ArticlesState.loading(),
       const ArticlesState.error(),
@@ -63,22 +51,23 @@ void main() {
   );
 
   blocTest<ArticlesCubit, ArticlesState>(
-    'GIVEN topHeadlines is requested '
-    'WHEN response is successful '
-    'THEN verify View State is limited to the first 10 elements',
+    'GIVEN will return articles'
+    'WHEN response is successful'
+    'THEN emits Loaded with data limited to 10 items',
     build: () {
-      when(repository.topHeadlines()).thenAnswer(
-        (_) async => List.generate(15, (index) => Stub.article(title: "$index"))
-            .asSuccess(),
+      when(useCase.topHeadlines()).thenAnswer(
+        (_) => Stream.value(articles),
       );
-      return ArticlesCubit(repository: repository);
+      return ArticlesCubit(useCase);
     },
-    act: (cubit) => cubit.getTopHeadlines(),
-    verify: (cubit) {
-      final cubitState = cubit.state as Loaded;
-      expect(cubitState.viewState.length, 10);
-      expect(cubitState.viewState.first.title, "0");
-      expect(cubitState.viewState.last.title, "9");
-    },
+    act: (cubit) => cubit.init(),
+    expect: () => <ArticlesState>[
+      ArticlesState.loaded(
+        viewState: articles
+            .getRange(0, 10)
+            .map((article) => TopHeadlineViewState.from(article: article))
+            .toList(),
+      )
+    ],
   );
 }
