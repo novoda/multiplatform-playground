@@ -8,13 +8,13 @@ part 'article.g.dart';
 class Article with _$Article {
   const factory Article({
     required Source source,
-    required String author,
+    String? author,
     required String title,
-    required String description,
-    required String url,
-    required String urlToImage,
+    String? description,
+    String? url,
+    String? urlToImage,
     required String publishedAt,
-    required String content,
+    String? content,
   }) = _Article;
 
   factory Article.fromJson(Map<String, dynamic> json) =>
