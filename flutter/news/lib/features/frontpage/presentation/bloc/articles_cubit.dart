@@ -1,38 +1,33 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:news/core/error/failures.dart';
 import 'package:news/core/language_extensions.dart';
 import 'package:news/features/frontpage/domain/usecases/get_top_headlines.dart';
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_state.dart';
 import 'package:rxdart/rxdart.dart';
 
+enum ActionStatus { idle, loading, error }
+
 class ArticlesCubit extends Cubit<ArticlesState> {
   final GetTopHeadlines _useCase;
   late final StreamSubscription<ArticlesState> _subscription;
-  final BehaviorSubject<bool> _isLoading = BehaviorSubject()..add(false);
-  final BehaviorSubject<InternalFailure?> _error = BehaviorSubject()..add(null);
+  final BehaviorSubject<ActionStatus> _status = BehaviorSubject()
+    ..add(ActionStatus.idle);
 
   ArticlesCubit(this._useCase) : super(const ArticlesState.initial());
 
-  //command
   void sync() async {
-    _isLoading.add(true);
-    await _useCase
-        .sync()
-        .when(
-          success: (_) => _error.add(null),
-          failure: (failure) => _error.add(failure),
-        )
-        .whenComplete(() => _isLoading.add(false));
+    _status.add(ActionStatus.loading);
+    await _useCase.sync().when(
+          success: (_) => _status.add(ActionStatus.idle),
+          failure: (failure) => _status.add(ActionStatus.error),
+        );
   }
 
-  //query
   void init() {
-    _subscription = Rx.combineLatest3(
+    _subscription = Rx.combineLatest2(
       _useCase.topHeadlines(),
-      _isLoading.stream,
-      _error.stream,
+      _status.stream,
       ArticlesState.from,
     ).listen(emit);
   }
