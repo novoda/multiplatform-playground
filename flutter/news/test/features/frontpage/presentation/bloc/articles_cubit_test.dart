@@ -17,8 +17,8 @@ void main() {
   final GetTopHeadlines useCase = MockGetTopHeadlines();
   final articles = List.generate(15, (index) => Stub.article(title: "$index"));
   blocTest<ArticlesCubit, ArticlesState>(
-    'GIVEN sync will succeed'
-    'WHEN syncing is triggered'
+    'GIVEN sync will succeed '
+    'WHEN syncing is triggered '
     'THEN emits [Loading]',
     build: () {
       when(useCase.sync()).thenAnswer(
@@ -33,8 +33,8 @@ void main() {
   );
 
   blocTest<ArticlesCubit, ArticlesState>(
-    'GIVEN syncing will fail'
-    'WHEN syncing is triggered'
+    'GIVEN syncing will fail '
+    'WHEN syncing is triggered '
     'THEN emits [Loading, Error]',
     build: () {
       when(useCase.sync()).thenAnswer(
@@ -51,8 +51,8 @@ void main() {
   );
 
   blocTest<ArticlesCubit, ArticlesState>(
-    'GIVEN will return articles'
-    'WHEN response is successful'
+    'GIVEN will return articles '
+    'WHEN response is successful '
     'THEN emits Loaded with data limited to 10 items',
     build: () {
       when(useCase.topHeadlines()).thenAnswer(

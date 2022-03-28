@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
           ..init()
           ..sync(),
         child: const MyHomePage(),
-      ), //const MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
     );
   }
 }
