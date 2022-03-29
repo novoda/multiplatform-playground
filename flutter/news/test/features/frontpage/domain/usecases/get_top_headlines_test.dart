@@ -49,7 +49,7 @@ void main() {
     'GIVEN reading top headlines will faill WHEN reading top articles THEN returns failure',
     () async {
       when(articlesRepository.topHeadlines()).thenAnswer(
-        (_) async => ServerFailure(message: "Error reading from server")
+        (_) async => const ServerFailure(message: "Error reading from server")
             .asFailure<List<Article>>(),
       );
 
@@ -57,7 +57,7 @@ void main() {
 
       expect(
         result,
-        ServerFailure(message: "Error reading from server")
+        const ServerFailure(message: "Error reading from server")
             .asFailure<List<Article>>(),
       );
     },
