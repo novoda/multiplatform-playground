@@ -35,7 +35,7 @@ void main() {
             .whenComplete(() => controller.add(newArticles)),
       );
     },
-    build: () => ArticlesCubit(useCase),
+    build: () => ArticlesCubit(useCase: useCase),
     act: (cubit) => cubit
       ..init()
       ..sync(),
@@ -70,7 +70,7 @@ void main() {
             .asFailure<void>(),
       );
     },
-    build: () => ArticlesCubit(useCase),
+    build: () => ArticlesCubit(useCase: useCase),
     act: (cubit) => cubit
       ..init()
       ..sync(),
@@ -82,7 +82,7 @@ void main() {
             .toList(),
       ),
       const ArticlesState.loading(),
-      const ArticlesState.error()
+      const ArticlesState.error(message: "Unable to read API")
     ],
   );
 }

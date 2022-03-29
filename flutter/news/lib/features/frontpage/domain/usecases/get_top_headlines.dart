@@ -3,11 +3,11 @@ import 'package:news/features/frontpage/data/repositories/articles_repository.da
 import 'package:news/features/frontpage/domain/entities/article.dart';
 
 class GetTopHeadlines {
-  final ArticlesRepository _repository;
+  final ArticlesRepository repository;
 
-  GetTopHeadlines(this._repository);
+  GetTopHeadlines({required this.repository});
 
-  Stream<List<Article>> topHeadlines() => _repository.topHeadlines();
+  Stream<List<Article>> topHeadlines() => repository.topHeadlines();
 
-  Future<Result<void>> sync() => _repository.sync();
+  Future<Result<void>> sync() => repository.sync();
 }

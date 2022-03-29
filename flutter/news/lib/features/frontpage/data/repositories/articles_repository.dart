@@ -5,19 +5,22 @@ import 'package:news/features/frontpage/data/datasource/articles_remote_data_sou
 import 'package:news/features/frontpage/domain/entities/article.dart';
 
 class ArticlesRepository {
-  final ArticlesLocalDataSource _localDataSource;
-  final ArticlesRemoteDataSource _remoteDataSource;
+  final ArticlesLocalDataSource localDataSource;
+  final ArticlesRemoteDataSource remoteDataSource;
 
-  ArticlesRepository(this._localDataSource, this._remoteDataSource);
+  ArticlesRepository({
+    required this.localDataSource,
+    required this.remoteDataSource,
+  });
 
   Future<Result<List<Article>>> everythingAbout(String query) {
     // TODO: implement getEverythingAbout
     throw UnimplementedError();
   }
 
-  Stream<List<Article>> topHeadlines() => _localDataSource.topHeadLines();
+  Stream<List<Article>> topHeadlines() => localDataSource.topHeadLines();
 
-  Future<Result<void>> sync() => _remoteDataSource
+  Future<Result<void>> sync() => remoteDataSource
       .topHeadLines()
-      .mapSuccess((data) => _localDataSource.save(data));
+      .mapSuccess((data) => localDataSource.save(data));
 }

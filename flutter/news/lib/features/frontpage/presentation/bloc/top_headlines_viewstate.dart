@@ -7,8 +7,8 @@ part 'top_headlines_viewstate.freezed.dart';
 class TopHeadlineViewState with _$TopHeadlineViewState {
   const factory TopHeadlineViewState({
     required String title,
-    String? url,
-    String? imageUrl,
+    required String url,
+    required String? imageUrl,
   }) = _TopHeadLineViewState;
 
   factory TopHeadlineViewState.from({required Article article}) =>

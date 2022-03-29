@@ -9,24 +9,24 @@ import 'package:rxdart/rxdart.dart';
 // TODO to include a real persistence layer, something like a database using something like https://drift.simonbinder.eu
 class ArticlesLocalDataSource {
   BehaviorSubject<List<Article>>? _subject;
-  final DB _db;
+  final DB db;
 
-  ArticlesLocalDataSource(this._db);
+  ArticlesLocalDataSource({required this.db});
 
   Stream<List<Article>> topHeadLines() {
     _subject ??= BehaviorSubject(
-      onListen: () => _db.read().then((articles) => _subject!.add(articles)),
+      onListen: () => db.read().then((articles) => _subject!.add(articles)),
     );
     return _subject!.stream;
   }
 
-  Future<Result<void>> save(List<Article> topHeadlines) => _db
+  Future<Result<void>> save(List<Article> topHeadlines) => db
       .save(topHeadlines)
       .then((value) => _subject?.add(topHeadlines))
       .then((result) => Result<void>.completed())
       .catchError(
-        (error) => const Result<void>.failure(
-          failure: CacheFailure(message: "Unable to save news on database"),
-        ),
+        (error) => CacheFailure(
+          message: error?.toString() ?? "Unable to save news on database",
+        ).asFailure<void>(),
       );
 }

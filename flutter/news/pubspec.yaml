@@ -22,8 +22,10 @@ dependencies:
   flutter_dotenv: ^5.0.2
   retrofit: ^3.0.1+1
   dio: ^4.0.4
+  dio_logging_interceptor: ^1.0.1
   json_annotation: ^4.4.0
   bloc_test: ^9.0.1
+  carousel_slider: ^4.0.0
   freezed_annotation: ^1.1.0
   rxdart: ^0.27.3
 

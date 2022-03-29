@@ -53,8 +53,8 @@ void main() {
     remoteDataSource = MockArticlesRemoteDataSource();
     localDataSource = MockArticlesLocalDataSource();
     repository = ArticlesRepository(
-      localDataSource,
-      remoteDataSource,
+      localDataSource: localDataSource,
+      remoteDataSource: remoteDataSource,
     );
   });
 
