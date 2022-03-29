@@ -56,9 +56,9 @@ void main() {
       return ArticlesCubit(repository: repository);
     },
     act: (cubit) => cubit.getTopHeadlines(),
-    expect: () => <ArticlesState>[
+    expect: () => [
       const ArticlesState.loading(),
-      const ArticlesState.error(),
+      const ArticlesState.error(error: 'No headlines saved')
     ],
   );
 

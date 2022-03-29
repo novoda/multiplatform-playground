@@ -7,6 +7,6 @@ class TopHeadlineViewState with _$TopHeadlineViewState {
   const factory TopHeadlineViewState({
     required String title,
     required String url,
-    required String imageUrl,
+    required String? imageUrl,
   }) = _TopHeadLineViewState;
 }

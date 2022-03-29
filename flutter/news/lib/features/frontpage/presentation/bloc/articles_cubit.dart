@@ -30,7 +30,7 @@ class ArticlesCubit extends Cubit<ArticlesState> {
           ),
         )
       },
-      failure: (failure) => emit(const ArticlesState.error()),
+      failure: (failure) => emit(ArticlesState.error(error: failure.message)),
     );
   }
 }

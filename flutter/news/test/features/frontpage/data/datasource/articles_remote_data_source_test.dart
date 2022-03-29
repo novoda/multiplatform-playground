@@ -28,7 +28,7 @@ void main() {
     () async {
       var response =
           BaseNewsResponse.fromJson(json.decode(fixture("articles.json")));
-      when(apiClient.topHeadLines()).thenAnswer((_) async => response);
+      when(apiClient.topHeadLines("us")).thenAnswer((_) async => response);
 
       final result = await remoteDataSource.topHeadLines();
 
@@ -39,14 +39,15 @@ void main() {
   test(
     'GIVEN topHeadlines request is done WHEN request fails THEN response should be ServerFailure',
     () async {
-      when(apiClient.topHeadLines()).thenAnswer((_) async => throw Exception());
+      when(apiClient.topHeadLines("us"))
+          .thenAnswer((_) async => throw Exception("exception test"));
 
       final result = await remoteDataSource.topHeadLines();
 
       expect(
-        result,
-        const ServerFailure(message: "Unable to read news from API")
+        const ServerFailure(message: "Exception: exception test")
             .asFailure<List<Article>>(),
+        result,
       );
     },
   );
