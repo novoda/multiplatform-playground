@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_viewstate.dart';
 
 class HorizontalListTopHeadlines extends StatelessWidget {
-  const HorizontalListTopHeadlines({Key? key, required this.topHeadlines}) : super(key: key);
+  const HorizontalListTopHeadlines({Key? key, required this.topHeadlines})
+      : super(key: key);
 
   final List<TopHeadlineViewState> topHeadlines;
 

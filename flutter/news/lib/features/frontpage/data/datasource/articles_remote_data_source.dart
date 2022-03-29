@@ -5,18 +5,21 @@ import 'package:news/features/frontpage/domain/entities/article.dart';
 
 class ArticlesRemoteDataSource {
   final NewsApiClient client;
+
   ArticlesRemoteDataSource({required this.client});
 
-  Future<Result<List<Article>>> topHeadLines() async {
+  Future<Result<List<Article>>> topHeadLines({country = "us"}) async {
     var result = await client
-        .topHeadLines("us")
+        .topHeadLines(country)
         .then((value) => Result<List<Article>>.success(data: value.articles))
         .catchError(
-          (error) => Result<List<Article>>.failure(
-            failure: ServerFailure(message: "Unable to read news from API"),
-          ),
+      (error) {
+        var message = (error as Exception).toString();
+        return Result<List<Article>>.failure(
+          failure: ServerFailure(message: message),
         );
-
+      },
+    );
     return result;
   }
 

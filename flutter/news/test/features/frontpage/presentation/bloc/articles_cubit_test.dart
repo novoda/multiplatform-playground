@@ -56,7 +56,10 @@ void main() {
       return ArticlesCubit(repository: repository);
     },
     act: (cubit) => cubit.getTopHeadlines(),
-    expect: () => [isA<Loading>(), isA<Error>()],
+    expect: () => [
+      const ArticlesState.loading(),
+      const ArticlesState.error(error: 'No headlines saved')
+    ],
   );
 
   blocTest<ArticlesCubit, ArticlesState>(

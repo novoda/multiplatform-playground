@@ -31,7 +31,7 @@ void main() {
   test(
     'GIVEN articles list successfully saved WHEN getting articles THEN returns correct list of articles ',
     () async {
-      localDataSource = ArticlesLocalDataSource(const JsonCodec());
+      localDataSource = ArticlesLocalDataSource(jsonCodec: const JsonCodec());
       localDataSource.save(topHeadlines: articles);
 
       var result = await localDataSource.topHeadLines();
@@ -43,7 +43,7 @@ void main() {
   test(
     'GIVEN nothing is saved in cache WHEN getting articles THEN returns CacheFailure ',
     () async {
-      localDataSource = ArticlesLocalDataSource(const JsonCodec());
+      localDataSource = ArticlesLocalDataSource(jsonCodec: const JsonCodec());
 
       var result = await localDataSource.topHeadLines();
 
@@ -59,7 +59,7 @@ void main() {
     'GIVEN will fail to decode list from json WHEN getting articles THEN returns CacheFailure ',
     () async {
       var jsonCodec = MockJsonCodec();
-      localDataSource = ArticlesLocalDataSource(jsonCodec);
+      localDataSource = ArticlesLocalDataSource(jsonCodec: jsonCodec);
       when(jsonCodec.decode(any))
           .thenThrow(JsonUnsupportedObjectError("Error"));
 

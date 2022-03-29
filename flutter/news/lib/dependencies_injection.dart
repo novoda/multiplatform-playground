@@ -6,7 +6,6 @@ import 'package:news/features/frontpage/data/datasource/articles_remote_data_sou
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
 import 'package:news/features/frontpage/presentation/bloc/articles_cubit.dart';
 
-import 'core/http_client.dart';
 import 'core/news_api_client.dart';
 
 final getIt = GetIt.instance;
@@ -19,13 +18,12 @@ Future<void> init() async {
         ArticlesRepository(localDataSource: getIt(), remoteDataSource: getIt()),
   );
 
-  getIt.registerLazySingleton(() => ArticlesLocalDataSource(getIt()));
+  getIt
+      .registerLazySingleton(() => ArticlesLocalDataSource(jsonCodec: getIt()));
 
   getIt.registerLazySingleton(() => ArticlesRemoteDataSource(client: getIt()));
 
   getIt.registerLazySingleton(() => const JsonCodec());
 
-  getIt.registerLazySingleton(() => NewsApiClient(getIt()));
-
-  getIt.registerLazySingleton(() => createDio());
+  getIt.registerLazySingleton(() => NewsApiClient.create());
 }

@@ -7,13 +7,13 @@ import 'package:news/features/frontpage/domain/entities/article.dart';
 // TODO to include a real persistence layer, something like a database using something like https://drift.simonbinder.eu
 class ArticlesLocalDataSource {
   String _topHeadlinesJson = "[]";
-  final JsonCodec _codec;
+  final JsonCodec jsonCodec;
 
-  ArticlesLocalDataSource(this._codec);
+  ArticlesLocalDataSource({required this.jsonCodec});
 
   Future<Result<List<Article>>> topHeadLines() {
     try {
-      var jsonMap = _codec.decode(_topHeadlinesJson);
+      var jsonMap = jsonCodec.decode(_topHeadlinesJson);
 
       List<Article> articles =
           List<Article>.from(jsonMap.map((model) => Article.fromJson(model)));
@@ -38,7 +38,7 @@ class ArticlesLocalDataSource {
 
   Future<void> save({required List<Article> topHeadlines}) async {
     if (topHeadlines.isNotEmpty) {
-      _topHeadlinesJson = _codec.encode(topHeadlines);
+      _topHeadlinesJson = jsonCodec.encode(topHeadlines);
     }
   }
 }
