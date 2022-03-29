@@ -30,7 +30,7 @@ void main() {
   test(
     'GIVEN articles list successfully saved WHEN getting articles THEN returns correct list of articles ',
     () async {
-      localDataSource = ArticlesLocalDataSource(DummyDB());
+      localDataSource = ArticlesLocalDataSource(db: DummyDB());
       await localDataSource.save(articles);
 
       var result = localDataSource.topHeadLines();
@@ -42,7 +42,7 @@ void main() {
   test(
     'GIVEN nothing is saved in cache WHEN getting articles THEN returns empty list ',
     () async {
-      localDataSource = ArticlesLocalDataSource(DummyDB());
+      localDataSource = ArticlesLocalDataSource(db: DummyDB());
 
       var result = localDataSource.topHeadLines();
 
@@ -51,13 +51,13 @@ void main() {
   );
 
   test(
-    'GIVEN will fail to decode list from json WHEN saving articles THEN returns CacheFailure ',
+    'GIVEN will fail to save articles WHEN saving articles THEN returns CacheFailure ',
     () async {
       var db = MockDB();
       when(db.save(any)).thenAnswer((_) async {
         throw Exception();
       });
-      localDataSource = ArticlesLocalDataSource(db);
+      localDataSource = ArticlesLocalDataSource(db: db);
 
       var result = await localDataSource.save(articles);
 

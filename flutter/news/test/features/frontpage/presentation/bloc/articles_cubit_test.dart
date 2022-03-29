@@ -24,7 +24,7 @@ void main() {
       when(useCase.sync()).thenAnswer(
         (_) async => Result.completed(),
       );
-      return ArticlesCubit(useCase);
+      return ArticlesCubit(useCase: useCase);
     },
     act: (cubit) => cubit.sync(),
     expect: () => <ArticlesState>[
@@ -41,12 +41,12 @@ void main() {
         (_) async => const CacheFailure(message: "No headlines saved")
             .asFailure<List<Article>>(),
       );
-      return ArticlesCubit(useCase);
+      return ArticlesCubit(useCase: useCase);
     },
     act: (cubit) => cubit.sync(),
     expect: () => <ArticlesState>[
       const ArticlesState.loading(),
-      const ArticlesState.error(),
+      const ArticlesState.error(error: 'No headlines saved')
     ],
   );
 
@@ -58,7 +58,7 @@ void main() {
       when(useCase.topHeadlines()).thenAnswer(
         (_) => Stream.value(articles),
       );
-      return ArticlesCubit(useCase);
+      return ArticlesCubit(useCase: useCase);
     },
     act: (cubit) => cubit.init(),
     expect: () => <ArticlesState>[

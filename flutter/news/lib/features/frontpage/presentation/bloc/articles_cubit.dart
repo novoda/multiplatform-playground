@@ -7,23 +7,24 @@ import 'package:news/features/frontpage/presentation/bloc/top_headlines_state.da
 import 'package:news/features/frontpage/presentation/bloc/top_headlines_viewstate.dart';
 
 class ArticlesCubit extends Cubit<ArticlesState> {
-  final GetTopHeadlines _useCase;
+  final GetTopHeadlines useCase;
   StreamSubscription<ArticlesState>? _subscription;
 
-  ArticlesCubit(this._useCase) : super(const ArticlesState.initial());
+  ArticlesCubit({required this.useCase}) : super(const ArticlesState.initial());
 
   void sync() async {
     emit(const ArticlesState.loading());
-    await _useCase.sync().when(
+    await useCase.sync().when(
           success: (_) => doNothing(
             because: "On this case we'll receive items on the subscription",
           ),
-          failure: (failure) => emit(const ArticlesState.error()),
+          failure: (failure) =>
+              emit(ArticlesState.error(error: failure.message)),
         );
   }
 
   void init() {
-    _subscription = _useCase
+    _subscription = useCase
         .topHeadlines()
         .map(
           (data) => data

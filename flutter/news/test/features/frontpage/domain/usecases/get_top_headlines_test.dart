@@ -18,7 +18,7 @@ void main() {
 
   setUp(() {
     repository = MockArticlesRepository();
-    usecase = GetTopHeadlines(repository);
+    usecase = GetTopHeadlines(repository: repository);
     topArticles = [
       const Article(
         source: Source(id: "id", name: "name"),

@@ -8,18 +8,18 @@ import 'package:news/features/frontpage/domain/entities/article.dart';
 // TODO to include a real persistence layer, something like a database using something like https://drift.simonbinder.eu
 class ArticlesLocalDataSource {
   StreamController<List<Article>>? _controller;
-  final DB _db;
+  final DB db;
 
-  ArticlesLocalDataSource(this._db);
+  ArticlesLocalDataSource({required this.db});
 
   Stream<List<Article>> topHeadLines() {
     _controller ??= StreamController(
-      onListen: () => _db.read().then((articles) => _controller!.add(articles)),
+      onListen: () => db.read().then((articles) => _controller!.add(articles)),
     );
     return _controller!.stream;
   }
 
-  Future<Result<void>> save(List<Article> topHeadlines) => _db
+  Future<Result<void>> save(List<Article> topHeadlines) => db
       .save(topHeadlines)
       .then((value) => _controller?.add(topHeadlines))
       .then((result) => Result<void>.completed())
