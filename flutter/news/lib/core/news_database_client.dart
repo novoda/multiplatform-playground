@@ -1,19 +1,19 @@
 import 'package:news/features/frontpage/domain/entities/article.dart';
 
-abstract class DB {
-  Future<void> save(List<Article> articles);
-  Future<List<Article>> read();
+abstract class DB<T> {
+  Future<void> save(T data);
+  Future<T> read();
 }
 
-class DummyDB implements DB {
-  List<Article> articles = [];
+class ArticlesDummyDB implements DB<List<Article>> {
+  List<Article> data = [];
 
   @override
   Future<void> save(List<Article> articles) async {
-    this.articles.clear();
-    this.articles.addAll(articles);
+    data.clear();
+    data.addAll(articles);
   }
 
   @override
-  Future<List<Article>> read() async => articles;
+  Future<List<Article>> read() async => data;
 }
