@@ -8,7 +8,7 @@ import 'package:news/features/frontpage/domain/entities/article.dart';
 // TODO to include a real persistence layer, something like a database using something like https://drift.simonbinder.eu
 class ArticlesLocalDataSource {
   StreamController<List<Article>>? _controller;
-  final DB db;
+  final DB<List<Article>> db;
 
   ArticlesLocalDataSource({required this.db});
 
