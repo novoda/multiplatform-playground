@@ -53,7 +53,7 @@ void main() {
   test(
     'GIVEN will fail to save articles WHEN saving articles THEN returns CacheFailure ',
     () async {
-      var db = MockDB();
+      var db = MockDB<List<Article>>();
       when(db.save(any)).thenAnswer((_) async {
         throw Exception("Unable to save news on database");
       });

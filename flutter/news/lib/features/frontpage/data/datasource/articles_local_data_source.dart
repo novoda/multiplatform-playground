@@ -9,7 +9,7 @@ import 'package:rxdart/rxdart.dart';
 // TODO to include a real persistence layer, something like a database using something like https://drift.simonbinder.eu
 class ArticlesLocalDataSource {
   BehaviorSubject<List<Article>>? _subject;
-  final DB db;
+  final DB<List<Article>> db;
 
   ArticlesLocalDataSource({required this.db});
 
