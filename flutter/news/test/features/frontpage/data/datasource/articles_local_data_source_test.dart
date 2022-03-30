@@ -55,7 +55,7 @@ void main() {
     () async {
       var db = MockDB();
       when(db.save(any)).thenAnswer((_) async {
-        throw Exception();
+        throw Exception("Unable to save news on database");
       });
       localDataSource = ArticlesLocalDataSource(db: db);
 
@@ -64,7 +64,7 @@ void main() {
       expect(
         result,
         const CacheFailure(
-          message: "Unable to save news on database",
+          message: "Exception: Unable to save news on database",
         ).asFailure<void>(),
       );
     },

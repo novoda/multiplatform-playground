@@ -24,8 +24,10 @@ class ArticlesLocalDataSource {
       .then((value) => _controller?.add(topHeadlines))
       .then((result) => Result<void>.completed())
       .catchError(
-        (error) => const Result<void>.failure(
-          failure: CacheFailure(message: "Unable to save news on database"),
+        (error) => Result<void>.failure(
+          failure: CacheFailure(
+            message: error?.toString() ?? "Unable to save news on database",
+          ),
         ),
       );
 }
