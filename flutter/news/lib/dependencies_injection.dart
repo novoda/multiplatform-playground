@@ -3,6 +3,7 @@ import 'package:news/core/news_database_client.dart';
 import 'package:news/features/frontpage/data/datasource/articles_local_data_source.dart';
 import 'package:news/features/frontpage/data/datasource/articles_remote_data_source.dart';
 import 'package:news/features/frontpage/data/repositories/articles_repository.dart';
+import 'package:news/features/frontpage/domain/entities/article.dart';
 import 'package:news/features/frontpage/domain/usecases/get_top_headlines.dart';
 import 'package:news/features/frontpage/presentation/bloc/articles_cubit.dart';
 
@@ -24,7 +25,7 @@ Future<void> init() async {
 
   getIt.registerLazySingleton(() => ArticlesRemoteDataSource(client: getIt()));
 
-  getIt.registerLazySingleton<DB>(() => DummyDB());
+  getIt.registerLazySingleton<DB<List<Article>>>(() => ArticlesDummyDB());
 
   getIt.registerLazySingleton(() => NewsApiClient.create());
 }

@@ -30,7 +30,7 @@ void main() {
   test(
     'GIVEN articles list successfully saved WHEN getting articles THEN returns correct list of articles ',
     () async {
-      localDataSource = ArticlesLocalDataSource(db: DummyDB());
+      localDataSource = ArticlesLocalDataSource(db: ArticlesDummyDB());
       await localDataSource.save(articles);
 
       var result = localDataSource.topHeadLines();
@@ -42,7 +42,7 @@ void main() {
   test(
     'GIVEN nothing is saved in cache WHEN getting articles THEN returns empty list ',
     () async {
-      localDataSource = ArticlesLocalDataSource(db: DummyDB());
+      localDataSource = ArticlesLocalDataSource(db: ArticlesDummyDB());
 
       var result = localDataSource.topHeadLines();
 
