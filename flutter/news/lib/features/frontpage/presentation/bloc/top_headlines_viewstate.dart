@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:news/features/frontpage/domain/entities/article.dart';
 
 part 'top_headlines_viewstate.freezed.dart';
 
@@ -9,4 +10,11 @@ class TopHeadlineViewState with _$TopHeadlineViewState {
     required String url,
     required String? imageUrl,
   }) = _TopHeadLineViewState;
+
+  factory TopHeadlineViewState.from({required Article article}) =>
+      _TopHeadLineViewState(
+        title: article.title,
+        url: article.url,
+        imageUrl: article.urlToImage,
+      );
 }

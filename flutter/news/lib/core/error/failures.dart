@@ -3,9 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'failures.freezed.dart';
 
 abstract class InternalFailure {
-  final String message;
-
-  InternalFailure(this.message);
+  final String message = "";
 }
 
 @freezed

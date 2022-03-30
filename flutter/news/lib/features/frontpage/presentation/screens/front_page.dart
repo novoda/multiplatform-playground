@@ -19,18 +19,18 @@ class FrontPage extends StatelessWidget {
       body: BlocProvider<ArticlesCubit>(
         create: (context) => getIt<ArticlesCubit>(),
         child: BlocBuilder<ArticlesCubit, ArticlesState>(
-          builder: (context, state) {
-            return state.when(
-              initial: () {
-                context.read<ArticlesCubit>().getTopHeadlines();
-                return const LoadingWidget();
-              },
-              loading: () => const LoadingWidget(),
-              loaded: (topHeadlines) =>
-                  HorizontalListTopHeadlines(topHeadlines: topHeadlines),
-              error: (error) => Text(error),
-            );
-          },
+          builder: (context, state) => state.when(
+            initial: () {
+              context.read<ArticlesCubit>()
+                ..init()
+                ..sync();
+              return const LoadingWidget();
+            },
+            loading: () => const LoadingWidget(),
+            loaded: (topHeadlines) =>
+                HorizontalListTopHeadlines(topHeadlines: topHeadlines),
+            error: (error) => Text(error),
+          ),
         ),
       ),
     );

@@ -5,9 +5,9 @@ import 'package:news/features/frontpage/domain/entities/article.dart';
 class GetTopHeadlines {
   final ArticlesRepository repository;
 
-  GetTopHeadlines(this.repository);
+  GetTopHeadlines({required this.repository});
 
-  Future<Result<List<Article>>> topHeadlines() async {
-    return await repository.topHeadlines();
-  }
+  Stream<List<Article>> topHeadlines() => repository.topHeadlines();
+
+  Future<Result<void>> sync() => repository.sync();
 }

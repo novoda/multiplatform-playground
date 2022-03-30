@@ -1,44 +1,33 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:news/core/error/failures.dart';
+import 'package:news/core/news_database_client.dart';
 import 'package:news/core/result.dart';
 import 'package:news/features/frontpage/domain/entities/article.dart';
 
 // TODO to include a real persistence layer, something like a database using something like https://drift.simonbinder.eu
 class ArticlesLocalDataSource {
-  String _topHeadlinesJson = "[]";
-  final JsonCodec jsonCodec;
+  StreamController<List<Article>>? _controller;
+  final DB<List<Article>> db;
 
-  ArticlesLocalDataSource({required this.jsonCodec});
+  ArticlesLocalDataSource({required this.db});
 
-  Future<Result<List<Article>>> topHeadLines() {
-    try {
-      var jsonMap = jsonCodec.decode(_topHeadlinesJson);
+  Stream<List<Article>> topHeadLines() {
+    _controller ??= StreamController(
+      onListen: () => db.read().then((articles) => _controller!.add(articles)),
+    );
+    return _controller!.stream;
+  }
 
-      List<Article> articles =
-          List<Article>.from(jsonMap.map((model) => Article.fromJson(model)));
-
-      if (articles.isNotEmpty) {
-        return Future.value(Result<List<Article>>.success(data: articles));
-      } else {
-        return Future.value(
-          const Result<List<Article>>.failure(
-            failure: CacheFailure(message: "No headlines saved"),
+  Future<Result<void>> save(List<Article> topHeadlines) => db
+      .save(topHeadlines)
+      .then((value) => _controller?.add(topHeadlines))
+      .then((result) => Result<void>.completed())
+      .catchError(
+        (error) => Result<void>.failure(
+          failure: CacheFailure(
+            message: error?.toString() ?? "Unable to save news on database",
           ),
-        );
-      }
-    } catch (e) {
-      return Future.value(
-        const Result<List<Article>>.failure(
-          failure: CacheFailure(message: "Error decoding stored headlines"),
         ),
       );
-    }
-  }
-
-  Future<void> save({required List<Article> topHeadlines}) async {
-    if (topHeadlines.isNotEmpty) {
-      _topHeadlinesJson = jsonCodec.encode(topHeadlines);
-    }
-  }
 }

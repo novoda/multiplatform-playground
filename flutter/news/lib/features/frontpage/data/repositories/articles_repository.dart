@@ -18,13 +18,10 @@ class ArticlesRepository {
     throw UnimplementedError();
   }
 
-  Future<Result<List<Article>>> topHeadlines() async {
-    final result = await remoteDataSource.topHeadLines();
-    result.when(
-      success: (data) => localDataSource.save(topHeadlines: data),
-      failure: (failure) => doNothing(because: "There is nothing to save"),
-    );
+  Stream<List<Article>> topHeadlines() => localDataSource.topHeadLines();
 
-    return localDataSource.topHeadLines();
-  }
+  Future<Result<void>> sync() => remoteDataSource.topHeadLines().when(
+        success: (data) => localDataSource.save(data),
+        failure: (failure) => failure.asFailure<void>(),
+      );
 }
