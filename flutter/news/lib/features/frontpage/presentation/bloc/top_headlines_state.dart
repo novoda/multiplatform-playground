@@ -11,7 +11,7 @@ class ArticlesState with _$ArticlesState {
 
   const factory ArticlesState.loaded({
     required List<TopHeadlineViewState> viewState,
-  }) = Loaded;
+  }) = _Loaded;
 
   const factory ArticlesState.error({
     required String error,

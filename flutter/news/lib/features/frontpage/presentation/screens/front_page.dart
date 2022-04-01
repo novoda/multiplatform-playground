@@ -12,14 +12,27 @@ class FrontPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider<ArticlesCubit>(
+      create: (context) {
+        return getIt<ArticlesCubit>();
+      },
+      child: const FrontPageView(),
+    );
+  }
+}
+
+class FrontPageView extends StatelessWidget {
+  const FrontPageView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your News"),
       ),
-      body: BlocProvider<ArticlesCubit>(
-        create: (context) => getIt<ArticlesCubit>(),
-        child: BlocBuilder<ArticlesCubit, ArticlesState>(
-          builder: (context, state) => state.when(
+      body: BlocBuilder<ArticlesCubit, ArticlesState>(
+        builder: (context, state) {
+          return state.when(
             initial: () {
               context.read<ArticlesCubit>()
                 ..init()
@@ -30,8 +43,8 @@ class FrontPage extends StatelessWidget {
             loaded: (topHeadlines) =>
                 HorizontalListTopHeadlines(topHeadlines: topHeadlines),
             error: (error) => Text(error),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

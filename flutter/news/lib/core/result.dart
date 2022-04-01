@@ -4,7 +4,7 @@ import 'package:news/core/error/failures.dart';
 part 'result.freezed.dart';
 
 @freezed
-abstract class Result<S> with _$Result<S> {
+class Result<S> with _$Result<S> {
   const factory Result.success({required S data}) = _Success<S>;
   const factory Result.failure({required InternalFailure failure}) = _Failure;
   factory Result.completed() => Result.success(data: (() {})()) as _Success<S>;

@@ -28,6 +28,7 @@ class ArticlesCubit extends Cubit<ArticlesState> {
         .topHeadlines()
         .map(
           (data) => data
+              .where((article) => article.urlToImage != null)
               .take(10)
               .map((article) => TopHeadlineViewState.from(article: article))
               .toList(),
