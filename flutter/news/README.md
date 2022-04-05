@@ -38,8 +38,8 @@ We are trying to give this project a sense of real project by:
 * We are currently using `GitHub Actions` for the CI
 
 Ideally soon we'll be using:
-* `RxDart` as a way of extending the native [Dart Streams](https://api.dart.dev/stable/dart-async/Stream-class.html): https://pub.dev/packages/rxdart
-* `Drift` for the data persistency: https://pub.dev/packages/drift
+* `Hive` for the data persistency: https://pub.dev/packages/hive , or...
+* `Drift`: https://pub.dev/packages/drift
 * ...
 
 More to be added here as we advance on this project
