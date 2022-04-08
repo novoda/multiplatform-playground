@@ -18,8 +18,6 @@ void main() {
       'WHEN loading article'
       'THEN shows correct title and description', (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      // Build our app and trigger a frame.
-
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(

@@ -18,8 +18,6 @@ void main() {
       'WHEN loading articles'
       'THEN shows 3 VISIBLE articles', (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      // Build our app and trigger a frame.
-
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
           body: HorizontalListTopHeadlines(
