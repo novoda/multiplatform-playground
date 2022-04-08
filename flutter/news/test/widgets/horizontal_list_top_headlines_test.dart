@@ -18,13 +18,15 @@ void main() {
       'WHEN loading articles'
       'THEN shows 3 VISIBLE articles', (WidgetTester tester) async {
     mockNetworkImagesFor(() async {
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: HorizontalListTopHeadlines(
-            topHeadlines: topHeadlines,
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: HorizontalListTopHeadlines(
+              topHeadlines: topHeadlines,
+            ),
           ),
         ),
-      ));
+      );
 
       expect(find.byType(ArticleCard), findsNWidgets(3));
       expect(find.text('0'), findsOneWidget);
