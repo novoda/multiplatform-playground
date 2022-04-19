@@ -24,6 +24,7 @@ class ArticlesState with _$ArticlesState {
         loading: () => const ArticlesState.loading(),
         idle: () => ArticlesState.loaded(
           viewState: articles
+              .where((article) => article.urlToImage != null)
               .map((e) => TopHeadlineViewState.from(article: e))
               .take(10)
               .toList(),
