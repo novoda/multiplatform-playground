@@ -49,6 +49,7 @@ const config = {
     },
     Welcome: "welcome",
     About: "about",
+    Playground: "playground",
     Demo: {
       screens: {
         DemoShowroom: {
