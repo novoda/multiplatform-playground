@@ -10,6 +10,16 @@ const en = {
     readyForLaunch: "Your app, almost ready for launch!",
     exciting: "(ohh, this is exciting!)",
   },
+  aboutScreen: {
+    postscript: "All about us, WYSIWYG",
+    readyForLaunch: "Whaats next?",
+    exciting: "What You See Is what You Get"
+  },
+  playgroundScreen: {
+    postscript: "Here we play!",
+    readyForLaunch: "Content",
+    exciting: "So what's next?"
+  },
   errorScreen: {
     title: "Something went wrong!",
     friendlySubtitle:
