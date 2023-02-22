@@ -15,7 +15,7 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
 import {
-  WelcomeScreen, AboutScreen
+  WelcomeScreen, AboutScreen, PlaygroundScreen,
 } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
@@ -35,6 +35,7 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 export type NavigatorParamList = {
   Welcome: undefined,
   About: undefined,
+  Playground: undefined,
   // 🔥 Your screens go here
 }
 
@@ -47,6 +48,7 @@ function AppTabs() {
           initialRouteName="Welcome">
               <Tab.Screen name="Welcome" component={WelcomeScreen} options={{title: "Home"}} />
               <Tab.Screen name="About" component={AboutScreen} options={{title: "About"}} />
+              <Tab.Screen name="Playground" component={PlaygroundScreen} options={{title: "Playground"}} />
           </Tab.Navigator>
     );
 }
