@@ -18,6 +18,7 @@ import {
   WelcomeScreen, AboutScreen, PlaygroundScreen,
 } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -42,15 +43,45 @@ export type NavigatorParamList = {
 const Tab = createMaterialBottomTabNavigator<NavigatorParamList>()
 
 function AppTabs() {
-    return (
-        <Tab.Navigator
-          screenOptions={{ headerShown: false }}
-          initialRouteName="Welcome">
-              <Tab.Screen name="Welcome" component={WelcomeScreen} options={{title: "Home"}} />
-              <Tab.Screen name="About" component={AboutScreen} options={{title: "About"}} />
-              <Tab.Screen name="Playground" component={PlaygroundScreen} options={{title: "Playground"}} />
-          </Tab.Navigator>
-    );
+  const iconSize = 24
+  return (
+    <Tab.Navigator
+      initialRouteName="Welcome">
+      <Tab.Screen
+        name="Welcome"
+        component={WelcomeScreen}
+        options={{
+          title: "Home",
+          tabBarIcon: icon('home', 'home-outline'),
+        }}
+      />
+      <Tab.Screen
+        name="About"
+        component={AboutScreen}
+        options={{
+          title: "About",
+          tabBarIcon: icon('information', 'information-outline'),
+        }}
+      />
+      <Tab.Screen
+        name="Playground"
+        component={PlaygroundScreen}
+        options={{
+          title: "Playground",
+          tabBarIcon: icon('kite', 'kite-outline'),
+        }}
+      />
+    </Tab.Navigator>
+  );
+
+  function icon(focusedIcon: string, unfocusedIcon: string) {
+    return ({ color, focused }) => (
+      <MaterialCommunityIcons
+        name={focused ? focusedIcon : unfocusedIcon}
+        color={color}
+        size={iconSize} />
+    )
+  }
 }
 
 /**
@@ -59,7 +90,7 @@ function AppTabs() {
  */
 const exitRoutes = Config.exitRoutes
 
-interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
+interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> { }
 
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
   const colorScheme = useColorScheme()
