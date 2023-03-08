@@ -9,14 +9,13 @@ import {
   DefaultTheme,
   NavigationContainer,
 } from "@react-navigation/native"
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { StackScreenProps } from "@react-navigation/stack"
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs"
 import { observer } from "mobx-react-lite"
 import React from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
 import {
-  WelcomeScreen,
+  WelcomeScreen, AboutScreen, PlaygroundScreen,
 } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
@@ -33,9 +32,25 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  *   https://reactnavigation.org/docs/typescript/#organizing-types
  */
-export type AppStackParamList = {
-  Welcome: undefined
+export type NavigatorParamList = {
+  Welcome: undefined,
+  About: undefined,
+  Playground: undefined,
   // 🔥 Your screens go here
+}
+
+const Tab = createMaterialBottomTabNavigator<NavigatorParamList>()
+
+function AppTabs() {
+    return (
+        <Tab.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="Welcome">
+              <Tab.Screen name="Welcome" component={WelcomeScreen} options={{title: "Home"}} />
+              <Tab.Screen name="About" component={AboutScreen} options={{title: "About"}} />
+              <Tab.Screen name="Playground" component={PlaygroundScreen} options={{title: "Playground"}} />
+          </Tab.Navigator>
+    );
 }
 
 /**
@@ -43,25 +58,6 @@ export type AppStackParamList = {
  * is pressed while in that screen. Only affects Android.
  */
 const exitRoutes = Config.exitRoutes
-
-export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreenProps<
-  AppStackParamList,
-  T
->
-
-// Documentation: https://reactnavigation.org/docs/stack-navigator/
-const Stack = createNativeStackNavigator<AppStackParamList>()
-
-const AppStack = observer(function AppStack() {
-  return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-    >
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      {/** 🔥 Your screens go here */}
-    </Stack.Navigator>
-  )
-})
 
 interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
 
@@ -76,7 +72,7 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
       {...props}
     >
-      <AppStack />
+      <AppTabs />
     </NavigationContainer>
   )
 })

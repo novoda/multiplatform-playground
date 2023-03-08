@@ -48,6 +48,8 @@ const config = {
       path: "",
     },
     Welcome: "welcome",
+    About: "about",
+    Playground: "playground",
     Demo: {
       screens: {
         DemoShowroom: {
