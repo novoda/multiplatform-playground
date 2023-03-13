@@ -9,7 +9,7 @@ import {
   DefaultTheme,
   NavigationContainer,
 } from "@react-navigation/native"
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs"
+import { createMaterialBottomTabNavigator, MaterialBottomTabScreenProps } from "@react-navigation/material-bottom-tabs"
 import { observer } from "mobx-react-lite"
 import React from "react"
 import { useColorScheme } from "react-native"
@@ -41,6 +41,8 @@ export type NavigatorParamList = {
 }
 
 const Tab = createMaterialBottomTabNavigator<NavigatorParamList>()
+
+export type BaseScreenProps<T extends keyof NavigatorParamList> = MaterialBottomTabScreenProps<NavigatorParamList, T>
 
 function AppTabs() {
   const iconSize = 24
