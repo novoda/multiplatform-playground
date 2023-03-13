@@ -1,16 +1,12 @@
 import * as React from "react"
 import { observer } from "mobx-react-lite"
 import { BaseScreenProps } from "../navigators"
-import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
-import { Text, Screen, Button } from "../components"
-import { isRTL } from "../i18n"
+import { TextStyle, View, ViewStyle } from "react-native"
+import { Text, Button } from "../components"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { useFocusEffect, useIsFocused } from "@react-navigation/core"
-import { action, makeAutoObservable, observable, when } from "mobx"
+import { useFocusEffect } from "@react-navigation/core"
 import { useStores } from "../models"
-import { EdgeInsets } from "react-native-safe-area-context"
-
 
 interface PlaygroundScreenProps extends BaseScreenProps<"Playground"> {
 }
