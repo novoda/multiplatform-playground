@@ -1,108 +1,147 @@
 import * as React from "react"
 import { observer } from "mobx-react-lite"
 import { BaseScreenProps } from "../navigators"
-import { TextStyle, View, ViewStyle } from "react-native"
+import { FlatList, View, Image, ImageBackground, ScrollView } from "react-native"
 import { Text, Button } from "../components"
 import { colors, spacing } from "../theme"
-import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useFocusEffect } from "@react-navigation/core"
 import { useStores } from "../models"
+import { Content, ErrorState, Photo, PlaygroundStore, PlaygroundUiState } from "../models/PlaygroundStore"
+import { Card, Appbar } from "react-native-paper"
 
 interface PlaygroundScreenProps extends BaseScreenProps<"Playground"> {
+  playgroundStore: PlaygroundStore
 }
 
-export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer((props) => {
-  const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
+export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer(() => {
   const { playgroundStore } = useStores()
 
-  useFocusEffect(
-    React.useCallback(() => {
-      playgroundStore.startCounter()
-      return () => playgroundStore.stopCounter()
-    }, [playgroundStore])
+  React.useEffect(
+    () => { playgroundStore.load() }, [playgroundStore]
   )
 
-  return <View style={$container}>
-    {
-      StateComponent(
-        $bottomContainerInsets,
-        playgroundStore.uiState,
-        () => playgroundStore.resetCounter()
-      )
-    }
-  </View>
+  return (
+    <View style={{
+      backgroundColor: colors.background,
+      flex: 1,
+    }}>
+      <Header />
+      {
+        StateComponent(
+          playgroundStore.uiState,
+          playgroundStore.load,
+          playgroundStore.nextPage
+        )
+      }
+
+    </View>
+  )
 })
 
-function StateComponent(insets, uiState, onResetClicked) {
+const Header = () => (
+  <Appbar.Header
+    style={{
+      backgroundColor: colors.palette.accent100,
+    }}
+    elevated={true}
+    mode='medium'
+  >
+    <Appbar.Content title={<HeaderTitle />} />
+  </Appbar.Header>
+)
+
+const HeaderTitle = () => (
+  <View>
+    <Text
+      testID="welcome-heading"
+      tx="playgroundScreen.readyForLaunch"
+      preset="heading"
+    />
+  </View>
+)
+
+function StateComponent(
+  uiState: PlaygroundUiState,
+  onResetClicked: () => {},
+  loadNext: () => {}
+) {
   const { loading, error, content } = uiState
+
   if (loading) {
-    return LoadingComponent(insets)
+    return <LoadingComponent />
   } else if (error) {
-    return ErrorComponent(insets, error, onResetClicked)
+    return <ErrorComponent
+      error={error}
+      onResetClicked={onResetClicked} />
   } else if (content) {
-    return ContentComponent(insets, content, onResetClicked)
+    return <ContentComponent
+      content={content}
+      loadNext={loadNext}
+    />
   }
   throw new Error(`UiState type is not handled ${JSON.stringify(uiState)}`)
 }
 
-function ContentComponent(insets, content, onResetClicked) {
-  return <View>
-    <View style={$topContainer}>
-      <Text
-        testID="welcome-heading"
-        style={$welcomeHeading}
-        tx="playgroundScreen.readyForLaunch"
-        preset="heading"
-      />
-      <Text tx="playgroundScreen.postscript" preset="subheading" />
-    </View>
-
-    <View style={[$bottomContainer, insets]}>
-      <Text tx="playgroundScreen.exciting" size="md" />
-      <Text text={`Value is: ${content.number}`} size="md" />
-      <Button text="Reset" onPress={onResetClicked} />
-    </View>
-  </View>
+type ContentComponentProps = {
+  content: Content
+  loadNext: () => {}
 }
 
-function ErrorComponent(insets, error, onResetClicked) {
-  return <View style={[insets]}>
+type ItemProps = { photo: Photo }
+const Item = ({ photo }: ItemProps) => {
+  return <Card
+    style={
+      {
+        backgroundColor: photo.color,
+        marginVertical: spacing.extraSmall,
+        marginHorizontal: spacing.medium,
+      }
+    }
+    elevation={0}
+  >
+    <Image
+      style={
+        {
+          width: null,
+          flex: 1,
+          height: 300,
+          borderRadius: 16
+        }
+      }
+      source={{
+        uri: photo.urls.regular
+      }}
+    />
+  </Card>
+}
+
+const ContentComponent = (props: ContentComponentProps) => (
+  <FlatList
+    style={{
+      backgroundColor: colors.palette.neutral100,
+
+    }}
+    data={props.content.photos}
+    renderItem={({ item }) => <Item photo={item as Photo} />}
+    keyExtractor={item => item.id}
+    onEndReached={props.loadNext}
+  />
+)
+
+type ErrorComponentProps = {
+  error: ErrorState,
+  onResetClicked: () => {}
+}
+
+const ErrorComponent = ({ error, onResetClicked }: ErrorComponentProps) => (
+  <ScrollView>
     <Text text={`ERROR: ${error.message}`} size="md" />
     <Button text="Refresh" onPress={onResetClicked} />
-  </View>
-}
+  </ScrollView>
+)
 
-function LoadingComponent(insets) {
-  return <View style={[insets, { justifyContent: "space-around", flexGrow: 1 }]}>
+const LoadingComponent = () => (
+  <View style={[{ justifyContent: "space-around", flexGrow: 1 }]}>
     <Text text={`LOADING`} size="md" style={{ textAlign: "center" }} />
   </View>
-}
-
-const $container: ViewStyle = {
-  flex: 1,
-  backgroundColor: colors.background,
-}
-
-const $topContainer: ViewStyle = {
-  flexShrink: 1,
-  flexGrow: 1,
-  flexBasis: "57%",
-  justifyContent: "center",
-  paddingHorizontal: spacing.large,
-}
-
-const $bottomContainer: ViewStyle = {
-  flexShrink: 1,
-  flexGrow: 0,
-  flexBasis: "43%",
-  backgroundColor: colors.palette.neutral100,
-  borderTopLeftRadius: 16,
-  borderTopRightRadius: 16,
-  paddingHorizontal: spacing.large,
-  justifyContent: "space-around",
-}
-
-const $welcomeHeading: TextStyle = {
-  marginBottom: spacing.medium,
-}
-
+)
