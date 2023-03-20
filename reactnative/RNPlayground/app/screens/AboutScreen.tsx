@@ -1,7 +1,7 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
 import { StackScreenProps } from "@react-navigation/stack"
-import { AppStackScreenProps } from "../navigators"
+import { BaseScreenProps } from "../navigators"
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import {
   Text, Screen
@@ -10,26 +10,26 @@ import { isRTL } from "../i18n"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 
-export const AboutScreen: FC<StackScreenProps<AppStackScreenProps, "About">> = observer(function AboutScreen() {
-    const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
+export const AboutScreen: FC<BaseScreenProps<"About">> = observer(function AboutScreen() {
+  const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
-    return (
-      <View style={$container}>
-        <View style={$topContainer}>
-          <Text
-            testID="welcome-heading"
-            style={$welcomeHeading}
-            tx="aboutScreen.readyForLaunch"
-            preset="heading"
-          />
-          <Text tx="aboutScreen.postscript" preset="subheading" />
-        </View>
-
-        <View style={[$bottomContainer, $bottomContainerInsets]}>
-          <Text tx="aboutScreen.exciting" size="md" />
-        </View>
+  return (
+    <View style={$container}>
+      <View style={$topContainer}>
+        <Text
+          testID="welcome-heading"
+          style={$welcomeHeading}
+          tx="aboutScreen.readyForLaunch"
+          preset="heading"
+        />
+        <Text tx="aboutScreen.postscript" preset="subheading" />
       </View>
-    )
+
+      <View style={[$bottomContainer, $bottomContainerInsets]}>
+        <Text tx="aboutScreen.exciting" size="md" />
+      </View>
+    </View>
+  )
 })
 
 const $container: ViewStyle = {

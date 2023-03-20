@@ -5,6 +5,7 @@ import {
   Text,
 } from "../components"
 import { isRTL } from "../i18n"
+import { BaseScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 
@@ -12,7 +13,7 @@ const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")
 
 
-export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(
+export const WelcomeScreen: FC<BaseScreenProps<"Welcome">> = observer(function WelcomeScreen(
 ) {
 
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
