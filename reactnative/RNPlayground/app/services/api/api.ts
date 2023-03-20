@@ -6,13 +6,16 @@
  * documentation for more details.
  */
 import {
+  ApiResponse,
   ApisauceInstance,
   create,
 } from "apisauce"
 import Config from "../../config"
+import { PhotoPage, PhotoSnapshotIn } from "../../models/Photo"
 import type {
-  ApiConfig,
+  ApiConfig, ApiPhotosResponse,
 } from "./api.types"
+import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem"
 
 /**
  * Configuring the apisauce instance.
@@ -20,6 +23,7 @@ import type {
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
   timeout: 10000,
+  apiKey: 'qTfGrUwhF1Uy6XDhkMEqcM_UuHJhx89Hem6oBY1a_U4'
 }
 
 /**
@@ -40,11 +44,50 @@ export class Api {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
+        Authorization: `Client-ID ${this.config.apiKey}`
       },
     })
   }
 
+  async getPhotos(page: number): Promise<ApiResult<PhotoPage>> {
+    const pageSize = 20
+    const config = { page: page, per_page: pageSize }
+    const mapper = function (response: ApiResponse<ApiPhotosResponse>) {
+      const totalItems = Number(response.headers['x-total'])
+      return ({
+        photos: response.data.map((raw) => ({
+          localId: raw.id + page,
+          ...raw
+        })),
+        currentPage: page,
+        totalPages: Math.ceil(totalItems / pageSize)
+      })
+    }
+
+    const response: ApiResponse<ApiPhotosResponse> = await this.apisauce.get('/photos', config)
+
+    return handleResponse(response, mapper)
+  }
+
 }
 
+function handleResponse<ApiIn, DomainOut>(
+  response: ApiResponse<ApiIn>,
+  mapSuccess: (response: ApiResponse<ApiIn>) => DomainOut
+): ApiResult<DomainOut> {
+  if (!response.ok) {
+    console.log(response)
+    const problem = getGeneralApiProblem(response)
+    if (problem) return problem
+  }
+  try {
+    return { kind: "ok", data: mapSuccess(response) }
+  } catch (e) {
+    console.log(`Bad data: ${e.message}\n${response.data}`, e.stack)
+    return { kind: "bad-data" }
+  }
+}
+
+export type ApiResult<T> = { kind: "ok"; data: T } | GeneralApiProblem
 // Singleton instance of the API for convenience
 export const api = new Api()

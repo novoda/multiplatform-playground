@@ -1,102 +1,79 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree";
-import { create } from 'apisauce';
-
-const unsplashApi = create({
-    baseURL: 'https://api.unsplash.com/',
-    headers: ({
-        Authorization: `Client-ID qTfGrUwhF1Uy6XDhkMEqcM_UuHJhx89Hem6oBY1a_U4`
-    })
-})
-
-const photos = (page) => unsplashApi.get('/photos', { page: page, per_page: 20, order_by: 'latest' })
-    .then(response => {
-        if (response.problem) {
-            return Promise.reject(response.originalError)
-        }
-        return (response.data as typeof PhotoModel[])
-    })
-
-const UrlsModel = types.model({
-    raw: types.string,
-    full: types.string,
-    small: types.string,
-    thumb: types.string,
-    regular: types.string,
-})
-
-const PhotoModel = types.model({
-    id: types.string,
-    color: types.string,
-    description: types.maybeNull(types.string),
-    urls: UrlsModel
-})
+import { api } from "../services/api";
+import { PhotoModel, PhotoPage } from "./Photo";
 
 const ContentModel = types.model("Content", {
-    pageNumber: 0,
+    currentPage: 1,
+    totalPages: 0,
     photos: types.array(PhotoModel)
 })
 const ErrorModel = types.model("Error", { message: "" })
 const PlaygroundUiState = types
     .model('PlaygroundUiState', {
-        loading: types.boolean,
+        isLoading: false,
         error: types.maybe(ErrorModel),
-        content: types.maybe(ContentModel)
+        content: types.optional(ContentModel, () => ContentModel.create({ photos: [] }))
     })
+    .views((self) => ({
+        get fullScreenLoading() {
+            return self.isLoading && !self.error && (!self.content || self.content.photos.length == 0)
+        }
+    }))
     .actions((self) => {
         function clear() {
-            self.content = undefined
+            self.content = ContentModel.create({ photos: [] })
             self.error = undefined
-            self.loading = false
+            self.isLoading = false
         }
         function setLoading() {
-            self.loading = true
+            self.isLoading = true
         }
         function setError(error: string) {
             clear()
             self.error = ErrorModel.create({ message: error })
         }
-        function setContent(page: number, photos: typeof PhotoModel[]) {
-            self.loading = false
+        function setContent(photoPage: PhotoPage) {
+            self.isLoading = false
             self.error = undefined
-            if (!self.content) {
-                self.content = ContentModel.create({ photos: photos, pageNumber: page })
-            } else {
-                if (self.content.pageNumber < page) {
-                    self.content.pageNumber = page
-                    self.content.photos.push(...photos)
-                }
-            }
+            self.content.currentPage++
+            self.content.photos.push(...photoPage.photos)
+            self.content.totalPages = photoPage.totalPages
         }
         return {
             setLoading, setError, setContent, clear
         }
     })
 
-const initialLoading = () => PlaygroundUiState.create({ loading: true })
-
 export const PlaygroundStoreModel = types
     .model("PlaygroundStore")
     .props({
-        uiState: types.optional(PlaygroundUiState, initialLoading)
+        uiState: types.optional(PlaygroundUiState, () => PlaygroundUiState.create({}))
     })
     .actions((store) => {
         async function load() {
             store.uiState.clear()
-            store.uiState.setLoading()
             await loadPage(1)
         }
 
         async function nextPage() {
+            if (store.uiState.isLoading) return
             let content = store.uiState.content
-            await loadPage(content ? content.pageNumber + 1 : 1)
+            if (content.currentPage < content.totalPages) {
+                console.log(`Fetching page: ${content.currentPage} out of ${content.totalPages}`)
+                await loadPage(content.currentPage)
+            } else {
+                console.log('Fetched all content')
+            }
         }
 
         async function loadPage(page: number) {
-            try {
-                const data = await photos(page)
-                store.uiState.setContent(page, data)
-            } catch (e) {
-                store.uiState.setError(e.message)
+            store.uiState.setLoading()
+            const response = await api.getPhotos(page)
+            if (response.kind === "ok") {
+                store.uiState.setContent(response.data)
+            } else {
+                store.uiState.setError(response.kind)
+                console.log(`Error fetching episodes: ${JSON.stringify(response)}`, [])
             }
         }
 
@@ -106,7 +83,6 @@ export const PlaygroundStoreModel = types
     })
 
 export interface Content extends SnapshotOut<typeof ContentModel> { }
-export interface ErrorState extends SnapshotOut<typeof ErrorModel> { }
-export interface Photo extends SnapshotOut<typeof PhotoModel> { }
-export interface PlaygroundUiState extends SnapshotOut<typeof PlaygroundUiState> { }
+export interface ErrorState extends Instance<typeof ErrorModel> { }
+export interface PlaygroundUiState extends Instance<typeof PlaygroundUiState> { }
 export interface PlaygroundStore extends Instance<typeof PlaygroundStoreModel> { }

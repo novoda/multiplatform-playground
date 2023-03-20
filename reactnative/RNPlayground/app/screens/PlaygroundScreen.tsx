@@ -4,10 +4,10 @@ import { BaseScreenProps } from "../navigators"
 import { FlatList, View, Image, ImageBackground, ScrollView } from "react-native"
 import { Text, Button } from "../components"
 import { colors, spacing } from "../theme"
-import { useFocusEffect } from "@react-navigation/core"
 import { useStores } from "../models"
-import { Content, ErrorState, Photo, PlaygroundStore, PlaygroundUiState } from "../models/PlaygroundStore"
+import { Content, ErrorState, PlaygroundStore, PlaygroundUiState } from "../models/PlaygroundStore"
 import { Card, Appbar } from "react-native-paper"
+import { Photo, PhotoSnapshotOut } from "../models/Photo"
 
 interface PlaygroundScreenProps extends BaseScreenProps<"Playground"> {
   playgroundStore: PlaygroundStore
@@ -19,7 +19,6 @@ export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer(() => 
   React.useEffect(
     () => { playgroundStore.load() }, [playgroundStore]
   )
-
   return (
     <View style={{
       backgroundColor: colors.background,
@@ -65,9 +64,9 @@ function StateComponent(
   onResetClicked: () => {},
   loadNext: () => {}
 ) {
-  const { loading, error, content } = uiState
+  const { fullScreenLoading, error, content } = uiState
 
-  if (loading) {
+  if (fullScreenLoading) {
     return <LoadingComponent />
   } else if (error) {
     return <ErrorComponent
@@ -76,6 +75,7 @@ function StateComponent(
   } else if (content) {
     return <ContentComponent
       content={content}
+      isLoading={uiState.isLoading}
       loadNext={loadNext}
     />
   }
@@ -84,6 +84,7 @@ function StateComponent(
 
 type ContentComponentProps = {
   content: Content
+  isLoading: boolean
   loadNext: () => {}
 }
 
@@ -119,12 +120,16 @@ const ContentComponent = (props: ContentComponentProps) => (
   <FlatList
     style={{
       backgroundColor: colors.palette.neutral100,
-
     }}
     data={props.content.photos}
-    renderItem={({ item }) => <Item photo={item as Photo} />}
-    keyExtractor={item => item.id}
+    renderItem={({ item }) => <Item photo={item} />}
+    keyExtractor={item => item.localId}
+    onEndReachedThreshold={0.1}
     onEndReached={props.loadNext}
+    ListFooterComponent= {
+      props.isLoading ? <LoadingComponent/> : null
+    }
+    
   />
 )
 
