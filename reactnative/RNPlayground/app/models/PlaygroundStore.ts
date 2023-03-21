@@ -2,13 +2,13 @@ import { Instance, SnapshotOut, types } from "mobx-state-tree";
 import { api } from "../services/api";
 import { PhotoModel, PhotoPage } from "./Photo";
 
-const ContentModel = types.model("Content", {
-    currentPage: 1,
+export const ContentModel = types.model("Content", {
+    nextPage: 1,
     totalPages: 0,
     photos: types.array(PhotoModel)
 })
-const ErrorModel = types.model("Error", { message: "" })
-const PlaygroundUiState = types
+export const ErrorModel = types.model("Error", { message: "" })
+export const PlaygroundUiStateModel = types
     .model('PlaygroundUiState', {
         isLoading: false,
         error: types.maybe(ErrorModel),
@@ -35,7 +35,7 @@ const PlaygroundUiState = types
         function setContent(photoPage: PhotoPage) {
             self.isLoading = false
             self.error = undefined
-            self.content.currentPage++
+            self.content.nextPage = photoPage.currentPage + 1
             self.content.photos.push(...photoPage.photos)
             self.content.totalPages = photoPage.totalPages
         }
@@ -47,7 +47,7 @@ const PlaygroundUiState = types
 export const PlaygroundStoreModel = types
     .model("PlaygroundStore")
     .props({
-        uiState: types.optional(PlaygroundUiState, () => PlaygroundUiState.create({}))
+        uiState: types.optional(PlaygroundUiStateModel, () => PlaygroundUiStateModel.create({}))
     })
     .actions((store) => {
         async function load() {
@@ -58,9 +58,9 @@ export const PlaygroundStoreModel = types
         async function nextPage() {
             if (store.uiState.isLoading) return
             let content = store.uiState.content
-            if (content.currentPage < content.totalPages) {
-                console.log(`Fetching page: ${content.currentPage} out of ${content.totalPages}`)
-                await loadPage(content.currentPage)
+            if (content.nextPage <= content.totalPages) {
+                console.log(`Fetching page: ${content.nextPage} out of ${content.totalPages}`)
+                await loadPage(content.nextPage)
             } else {
                 console.log('Fetched all content')
             }
@@ -84,5 +84,5 @@ export const PlaygroundStoreModel = types
 
 export interface Content extends SnapshotOut<typeof ContentModel> { }
 export interface ErrorState extends Instance<typeof ErrorModel> { }
-export interface PlaygroundUiState extends Instance<typeof PlaygroundUiState> { }
+export interface PlaygroundUiState extends Instance<typeof PlaygroundUiStateModel> { }
 export interface PlaygroundStore extends Instance<typeof PlaygroundStoreModel> { }
