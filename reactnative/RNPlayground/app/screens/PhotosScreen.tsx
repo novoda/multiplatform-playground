@@ -1,12 +1,12 @@
 import * as React from "react"
 import { observer } from "mobx-react-lite"
 import { PlaygroundTabScreenProps } from "../navigators"
-import { FlatList, View, Image, ImageBackground, ScrollView } from "react-native"
-import { Text, Button } from "../components"
+import { FlatList, Image, ScrollView, View } from "react-native"
+import { Button, Text } from "../components"
 import { colors, spacing } from "../theme"
 import { useStores } from "../models"
-import { Content, ErrorState, PhotosScreenStore, PhotosScreenUiState } from "../models/PhotosScreenStore"
-import { Card, Appbar } from "react-native-paper"
+import { Content, ErrorState, PhotosScreenUiState } from "../models/PhotosScreenStore"
+import { Card } from "react-native-paper"
 import { Photo } from "../models/Photo"
 
 interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Photos"> {
@@ -15,9 +15,9 @@ interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Photos"> {
 export const PhotosScreen: React.FC<PlaygroundScreenProps> = observer(() => {
   const { photosScreenStore: store } = useStores()
 
-  React.useEffect(
-    () => { store.load() }, [store]
-  )
+  React.useEffect(() => {
+    store.load()
+  }, [store])
   return (
     <View style={{
       backgroundColor: colors.background,
@@ -27,7 +27,7 @@ export const PhotosScreen: React.FC<PlaygroundScreenProps> = observer(() => {
         StateComponent(
           store.uiState,
           store.load,
-          store.nextPage
+          store.nextPage,
         )
       }
 
@@ -38,7 +38,7 @@ export const PhotosScreen: React.FC<PlaygroundScreenProps> = observer(() => {
 function StateComponent(
   uiState: PhotosScreenUiState,
   onResetClicked: () => {},
-  loadNext: () => {}
+  loadNext: () => {},
 ) {
   const { fullScreenLoading, error, content } = uiState
 
@@ -82,11 +82,11 @@ const Item = ({ photo }: ItemProps) => {
           width: null,
           flex: 1,
           height: 300,
-          borderRadius: 16
+          borderRadius: 16,
         }
       }
       source={{
-        uri: photo.urls.regular
+        uri: photo.urls.regular,
       }}
     />
   </Card>
@@ -102,10 +102,9 @@ const ContentComponent = (props: ContentComponentProps) => (
     keyExtractor={item => item.localId}
     onEndReachedThreshold={0.1}
     onEndReached={props.loadNext}
-    ListFooterComponent= {
-      props.isLoading ? <LoadingComponent/> : null
+    ListFooterComponent={
+      props.isLoading ? <LoadingComponent /> : null
     }
-    
   />
 )
 
