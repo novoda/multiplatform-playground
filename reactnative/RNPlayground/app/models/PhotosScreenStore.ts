@@ -8,8 +8,8 @@ export const ContentModel = types.model("Content", {
     photos: types.array(PhotoModel)
 })
 export const ErrorModel = types.model("Error", { message: "" })
-export const PlaygroundUiStateModel = types
-    .model('PlaygroundUiState', {
+export const PhotosScreenUiStateModel = types
+    .model('PhotosScreenUiState', {
         isLoading: false,
         error: types.maybe(ErrorModel),
         content: types.optional(ContentModel, () => ContentModel.create({ photos: [] }))
@@ -44,10 +44,10 @@ export const PlaygroundUiStateModel = types
         }
     })
 
-export const PlaygroundStoreModel = types
-    .model("PlaygroundStore")
+export const PhotosScreenStoreModel = types
+    .model("PhotosScreenStore")
     .props({
-        uiState: types.optional(PlaygroundUiStateModel, () => PlaygroundUiStateModel.create({}))
+        uiState: types.optional(PhotosScreenUiStateModel, () => PhotosScreenUiStateModel.create({}))
     })
     .actions((store) => {
         async function load() {
@@ -84,5 +84,5 @@ export const PlaygroundStoreModel = types
 
 export interface Content extends SnapshotOut<typeof ContentModel> { }
 export interface ErrorState extends Instance<typeof ErrorModel> { }
-export interface PlaygroundUiState extends Instance<typeof PlaygroundUiStateModel> { }
-export interface PlaygroundStore extends Instance<typeof PlaygroundStoreModel> { }
+export interface PhotosScreenUiState extends Instance<typeof PhotosScreenUiStateModel> { }
+export interface PhotosScreenStore extends Instance<typeof PhotosScreenStoreModel> { }

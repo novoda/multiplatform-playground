@@ -15,10 +15,11 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
 import {
-  WelcomeScreen, AboutScreen, PlaygroundScreen,
+  WelcomeScreen, AboutScreen
 } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { PlaygroundNavigator } from "./PlaygroundNavigator"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -36,7 +37,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 export type NavigatorParamList = {
   Welcome: undefined,
   About: undefined,
-  Playground: undefined,
+  PlaygroundTab: undefined,
   // 🔥 Your screens go here
 }
 
@@ -66,12 +67,13 @@ function AppTabs() {
         }}
       />
       <Tab.Screen
-        name="Playground"
-        component={PlaygroundScreen}
+        name="PlaygroundTab"
+        component={PlaygroundNavigator}
         options={{
           title: "Playground",
           tabBarIcon: icon('kite', 'kite-outline'),
         }}
+        
       />
     </Tab.Navigator>
   );

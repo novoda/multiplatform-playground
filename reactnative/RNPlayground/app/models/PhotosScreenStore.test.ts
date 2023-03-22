@@ -1,6 +1,6 @@
 import { mocked } from "ts-jest/utils"
 import { getSnapshot, applySnapshot, onSnapshot, ModelCreationType } from "mobx-state-tree"
-import { ContentModel, ErrorModel, PlaygroundStoreModel, PlaygroundUiState, PlaygroundUiStateModel } from "./PlaygroundStore"
+import { ContentModel, ErrorModel, PhotosScreenStoreModel, PhotosScreenUiState, PhotosScreenUiStateModel } from "./PhotosScreenStore"
 import { api } from "../services/api"
 
 jest.mock('../services/api')
@@ -13,12 +13,12 @@ describe("PlaygroundStoreModel", () => {
     })
 
     it("creates a new instance of PlaygroundStore", () => {
-        const store = PlaygroundStoreModel.create()
+        const store = PhotosScreenStoreModel.create()
         expect(store).toBeDefined()
     })
 
     it("load fetches first page", async () => {
-        const store = PlaygroundStoreModel.create();
+        const store = PhotosScreenStoreModel.create();
 
         await store.load();
 
@@ -26,9 +26,9 @@ describe("PlaygroundStoreModel", () => {
     })
 
     it("shows loading followed by error when photo fetching fails", async () => {
-        const store = PlaygroundStoreModel.create();
-        let states: PlaygroundUiState[] = []
-        onSnapshot(store, ({ uiState }) => states.push(uiState as PlaygroundUiState))
+        const store = PhotosScreenStoreModel.create();
+        let states: PhotosScreenUiState[] = []
+        onSnapshot(store, ({ uiState }) => states.push(uiState as PhotosScreenUiState))
 
         mockApi.getPhotos.mockResolvedValue({ kind: 'bad-data' })
         await store.load();
@@ -40,9 +40,9 @@ describe("PlaygroundStoreModel", () => {
     })
 
     it("shows loading followed by content when photo fetching succeeds", async () => {
-        const store = PlaygroundStoreModel.create();
-        let states: PlaygroundUiState[] = []
-        onSnapshot(store, ({ uiState }) => states.push(uiState as PlaygroundUiState))
+        const store = PhotosScreenStoreModel.create();
+        let states: PhotosScreenUiState[] = []
+        onSnapshot(store, ({ uiState }) => states.push(uiState as PhotosScreenUiState))
 
         mockApi.getPhotos.mockResolvedValue({ kind: 'ok', data: { photos: [], totalPages: 2, currentPage: 1 }})
         await store.load();
@@ -54,9 +54,9 @@ describe("PlaygroundStoreModel", () => {
     })
 
     it("loads next page until all available pages are fetched", async () => {
-        const store = PlaygroundStoreModel.create();
-        let states: PlaygroundUiState[] = []
-        onSnapshot(store, ({ uiState }) => states.push(uiState as PlaygroundUiState))
+        const store = PhotosScreenStoreModel.create();
+        let states: PhotosScreenUiState[] = []
+        onSnapshot(store, ({ uiState }) => states.push(uiState as PhotosScreenUiState))
 
         mockApi.getPhotos.mockResolvedValue({ kind: 'ok', data: { photos: [], totalPages: 2, currentPage: 1 }})
         await store.load();
@@ -74,6 +74,6 @@ describe("PlaygroundStoreModel", () => {
     })
 })
 
-function uiState(snapshot: ModelCreationType<PlaygroundUiState>) {
-    return PlaygroundUiStateModel.create(snapshot)
+function uiState(snapshot: ModelCreationType<PhotosScreenUiState>) {
+    return PhotosScreenUiStateModel.create(snapshot)
 }
