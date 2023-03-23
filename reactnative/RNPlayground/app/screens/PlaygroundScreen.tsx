@@ -1,11 +1,6 @@
 import * as React from "react"
 import { observer } from "mobx-react-lite"
-import {
-  Alert,
-  FlatList,
-  Platform,
-  ToastAndroid,
-} from "react-native"
+import { Alert, FlatList, Platform, ToastAndroid } from "react-native"
 import { Text } from "../components"
 import { colors, spacing } from "../theme"
 import { Card } from "react-native-paper"
@@ -28,7 +23,8 @@ export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer(({ nav
     {
       title: "I do nothing",
       color: "forestgreen",
-      onPress: () => {},
+      onPress: () => {
+      },
     },
   ]
 
@@ -81,11 +77,20 @@ function PlaygroundCard(props: PlaygroundItem) {
         backgroundColor: props.color,
         marginVertical: spacing.extraSmall,
         marginHorizontal: spacing.medium,
-        padding: spacing.medium,
+      }}
+      theme={{
+        mode: "adaptive",
       }}
       onPress={props.onPress}
     >
-      <Text text={props.title} preset="bold" size="lg" />
+      <Text
+        text={props.title}
+        style={{
+          padding: spacing.medium,
+        }}
+        preset="bold"
+        size="lg"
+      />
     </Card>
   )
 }
