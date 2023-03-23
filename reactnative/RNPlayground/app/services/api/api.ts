@@ -33,8 +33,6 @@ export class Api {
    */
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config
-    console.log(`API KEY: ${this.config.apiKey}`)
-    console.log(`ENV: ${JSON.stringify(process.env["UNSPLASH_API_KEY"])}`)
     this.apisauce = create({
       baseURL: this.config.url,
       timeout: this.config.timeout,
