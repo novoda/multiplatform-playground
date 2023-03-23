@@ -1,9 +1,7 @@
 import en, { Translations } from "./en"
 
 const ar: Translations = {
-  aboutScreen: en.aboutScreen,
-  photosScreen: en.photosScreen,
-  playgroundScreen: en.playgroundScreen,
+  ...en,
   common: {
     ok: "نعم",
     cancel: "حذف",

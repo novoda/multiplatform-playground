@@ -1,9 +1,7 @@
 import en, { Translations } from "./en"
 
 const ko: Translations = {
-  aboutScreen: en.aboutScreen,
-  photosScreen: en.photosScreen,
-  playgroundScreen: en.playgroundScreen,
+  ...en,
   common: {
     ok: "확인!",
     cancel: "취소",
