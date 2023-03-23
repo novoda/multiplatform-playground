@@ -1,6 +1,9 @@
-import { Translations } from "./en"
+import en, { Translations } from "./en"
 
 const ko: Translations = {
+  aboutScreen: en.aboutScreen,
+  photosScreen: en.photosScreen,
+  playgroundScreen: en.playgroundScreen,
   common: {
     ok: "확인!",
     cancel: "취소",
@@ -24,7 +27,7 @@ const ko: Translations = {
       content: "데이터가 없습니다. 버튼을 눌러서 리프레쉬 하시거나 앱을 리로드하세요.",
       button: "다시 시도해봅시다",
     },
-  },
+  }
 }
 
 export default ko

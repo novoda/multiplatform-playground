@@ -1,6 +1,9 @@
-import { Translations } from "./en"
+import en, { Translations } from "./en"
 
 const ar: Translations = {
+  aboutScreen: en.aboutScreen,
+  photosScreen: en.photosScreen,
+  playgroundScreen: en.playgroundScreen,
   common: {
     ok: "نعم",
     cancel: "حذف",
@@ -24,7 +27,7 @@ const ar: Translations = {
       content: "لا توجد بيانات حتى الآن. حاول النقر فوق الزر لتحديث التطبيق او اعادة تحميله.",
       button: "لنحاول هذا مرّة أخرى",
     },
-  },
+  }
 }
 
 export default ar
