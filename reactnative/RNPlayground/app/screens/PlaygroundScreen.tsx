@@ -10,14 +10,8 @@ import { translate } from "../i18n"
 export interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Playground"> {
 }
 
-type PlaygroundItem = {
-  title: string,
-  onPress: () => void,
-  color: string
-}
-
 export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer(({ navigation }) => {
-  const items: PlaygroundItem[] = [
+  const items: PlaygroundCardProps[] = [
     photosItem(navigation),
     clickMeItem,
     {
@@ -70,7 +64,13 @@ const clickMeItem = {
   },
 }
 
-function PlaygroundCard(props: PlaygroundItem) {
+type PlaygroundCardProps = {
+  title: string,
+  onPress: () => void,
+  color: string
+}
+
+function PlaygroundCard(props: PlaygroundCardProps) {
   return (
     <Card
       style={{
