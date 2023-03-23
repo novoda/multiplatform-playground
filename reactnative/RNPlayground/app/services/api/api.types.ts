@@ -69,6 +69,5 @@ export interface ApiConfig {
    */
   timeout: number
 
-  // TODO is this the right place?
   apiKey: string
 }
