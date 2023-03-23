@@ -7,4 +7,5 @@
  */
 export default {
   API_URL: "https://api.unsplash.com/",
+  API_KEY: process.env.UNSPLASH_API_KEY
 }

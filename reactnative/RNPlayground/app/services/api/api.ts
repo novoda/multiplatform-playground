@@ -17,7 +17,7 @@ import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem"
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
   timeout: 10000,
-  apiKey: process.env.UNSPLASH_API_KEY,
+  apiKey: Config.API_KEY,
 }
 
 /**
