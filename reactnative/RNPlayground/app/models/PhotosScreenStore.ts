@@ -72,7 +72,13 @@ export const PhotosScreenStoreModel = types
             if (response.kind === "ok") {
                 store.uiState.setContent(response.data)
             } else {
-                store.uiState.setError(response.kind)
+                switch (response.kind) {
+                    case "unauthorized":
+                    store.uiState.setError("Unauthorized, make sure you have a valid key in .env file")
+                        break
+                    default:
+                        store.uiState.setError(response.kind)
+                }
                 console.log(`Error fetching episodes: ${JSON.stringify(response)}`, [])
             }
         }
