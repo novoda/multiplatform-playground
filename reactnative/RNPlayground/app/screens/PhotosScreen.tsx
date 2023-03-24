@@ -9,7 +9,7 @@ import { Content, ErrorState } from "../models/PhotosScreenStore"
 import { Card } from "react-native-paper"
 import { Photo } from "../models/Photo"
 
-interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Photos"> {
+interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"PhotosMobxStateTree"> {
 }
 
 export const PhotosScreen: React.FC<PlaygroundScreenProps> = observer(() => {

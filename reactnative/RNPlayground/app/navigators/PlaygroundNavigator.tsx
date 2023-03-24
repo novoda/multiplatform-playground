@@ -15,7 +15,7 @@ import { Screen } from "../components"
 
 type PlaygroundTabParamList = {
   Playground: undefined,
-  Photos: undefined
+  PhotosMobxStateTree: undefined
 }
 
 /**
@@ -57,7 +57,7 @@ export function PlaygroundNavigator() {
 
         />
         <Stack.Screen
-          name="Photos"
+          name="PhotosMobxStateTree"
           component={PhotosScreen}
           options={{
             title: translate("photosScreen.headerTitle"),
