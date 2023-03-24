@@ -48,7 +48,7 @@ const photosItemWithMobxStateTree = (navigation) => ({
 
 const photosItemWithMobx = (navigation) => ({
   title: "Photos with just mobx",
-  onPress: () => navigation.navigate("About"),
+  onPress: () => navigation.navigate("PhotosMobx"),
   color: 'darksalmon',
 })
 
