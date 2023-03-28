@@ -12,12 +12,12 @@ import { Text } from "../components"
 import { getHeaderTitle } from "@react-navigation/elements"
 import { translate } from "../i18n"
 import { Screen } from "../components"
-import { PhotosMobxScreen } from "../screens/PhotosMobxScreen"
+import { PhotosReduxScreen } from "../screens/PhotosReduxScreen"
 
 export type PlaygroundTabParamList = {
   Playground: undefined,
   PhotosMobxStateTree: undefined
-  PhotosMobx: undefined
+  PhotosRedux: undefined
 }
 
 /**
@@ -68,8 +68,8 @@ export function PlaygroundNavigator() {
           }}
         />
         <Stack.Screen
-          name="PhotosMobx"
-          component={PhotosMobxScreen}
+          name="PhotosRedux"
+          component={PhotosReduxScreen}
           options={{
             title: translate("photosScreen.headerTitle"),
             headerTintColor: 'darksalmon',

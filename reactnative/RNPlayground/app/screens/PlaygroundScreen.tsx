@@ -13,7 +13,7 @@ export interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Playgro
 export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer(({ navigation }) => {
   const items: PlaygroundCardProps[] = [
     photosItemWithMobxStateTree(navigation),
-    photosItemWithMobx(navigation),
+    photosItemWithRedux(navigation),
     clickMeItem,
     {
       title: "I do nothing",
@@ -46,9 +46,9 @@ const photosItemWithMobxStateTree = (navigation) => ({
   color: colors.palette.accent200,
 })
 
-const photosItemWithMobx = (navigation) => ({
-  title: "Photos with just mobx",
-  onPress: () => navigation.navigate("PhotosMobx"),
+const photosItemWithRedux = (navigation) => ({
+  title: "Photos with Redux",
+  onPress: () => navigation.navigate("PhotosRedux"),
   color: 'darksalmon',
 })
 

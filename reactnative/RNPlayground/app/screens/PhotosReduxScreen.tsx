@@ -1,39 +1,40 @@
 import * as React from "react"
-import { observer } from "mobx-react-lite"
+import { useAppDispatch, useAppSelector } from "../hooks"
 import { PlaygroundTabScreenProps } from "../navigators"
 import { FlatList, Image, ScrollView, View } from "react-native"
 import { Button, Text } from "../components"
 import { colors, spacing } from "../theme"
-import { useStores } from "../models"
 import { Content, ErrorState } from "../models/PhotosScreenStore"
 import { Card } from "react-native-paper"
 import { Photo } from "../models/Photo"
+import { fullScreenLoading, load, nextPage, photosState } from "../models/photosSlice"
 
-interface PhotosMobxScreenProps extends PlaygroundTabScreenProps<"PhotosMobx"> {
+interface PhotosReduxScreenProps extends PlaygroundTabScreenProps<"PhotosRedux"> {
 }
 
-export const PhotosMobxScreen: React.FC<PhotosMobxScreenProps> = observer(() => {
-  const { photosScreenStore: store } = useStores()
+export const PhotosReduxScreen: React.FC<PhotosReduxScreenProps> = () => {
+  const state = useAppSelector(photosState)
+  const dispatch = useAppDispatch()
   React.useEffect(() => {
-    store.load()
-  }, [store])
+    dispatch(load())
+  }, [])
 
-  const { fullScreenLoading, error, content } = store.uiState
+  const { error, content } = state
   let renderedContent
-  if (fullScreenLoading) {
+  if (fullScreenLoading(state)) {
     renderedContent = <LoadingComponent />
   } else if (error) {
     renderedContent = <ErrorComponent
       error={error}
-      onResetClicked={store.load} />
+      onResetClicked={() => dispatch(load())} />
   } else if (content) {
     renderedContent = <ContentComponent
       content={content}
-      isLoading={store.uiState.isLoading}
-      loadNext={store.nextPage}
+      isLoading={state.isLoading}
+      loadNext={() => dispatch(nextPage())}
     />
   } else {
-    throw new Error(`UiState type is not handled ${JSON.stringify(store.uiState)}`)
+    throw new Error(`UiState type is not handled ${JSON.stringify(state)}`)
   }
   return (
     <View style={{
@@ -43,12 +44,12 @@ export const PhotosMobxScreen: React.FC<PhotosMobxScreenProps> = observer(() => 
       {renderedContent}
     </View>
   )
-})
+}
 
 type ContentComponentProps = {
   content: Content
   isLoading: boolean
-  loadNext: () => {}
+  loadNext: () => void
 }
 
 type ItemProps = { photo: Photo }
@@ -97,7 +98,7 @@ const ContentComponent = (props: ContentComponentProps) => (
 
 type ErrorComponentProps = {
   error: ErrorState,
-  onResetClicked: () => {}
+  onResetClicked: () => void
 }
 
 const ErrorComponent = ({ error, onResetClicked }: ErrorComponentProps) => (
