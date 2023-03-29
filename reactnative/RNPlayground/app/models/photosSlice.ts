@@ -1,9 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice, isFulfilled, isRejectedWithValue } from "@reduxjs/toolkit"
 import { Photo, PhotoPage } from "./Photo"
-import { api } from "../services/api"
-import { AppThunk, RootState } from "../store"
-import { GeneralApiProblem } from "../services/api/apiProblem"
-import { delay } from "../utils/delay"
+import { api, ApiResult } from "../services/api"
+import { RootState } from "../store"
 
 type ReduxContent = {
   nextPage: number
@@ -31,79 +29,90 @@ export function fullScreenLoading(state: ReduxPhotosState) {
   return state.isLoading && !state.error && (!state.content || state.content.photos.length == 0)
 }
 
-const initialState: ReduxPhotosState = {
-  isLoading: false,
-  error: null,
-  content: emptyContent,
-}
-
 const photosSlice = createSlice({
   name: "photosSlice",
-  initialState: initialState,
-  reducers: {
-    initialLoad(state) {
-      state.isLoading = true
-      state.error = null
-      state.content = emptyContent
-    },
-    fetchNextPage(state) {
-      console.log("NEXT PAGE")
-      state.isLoading = true
-      state.error = null
-    },
-    fetchPhotosSuccess(state, action: PayloadAction<PhotoPage>) {
-      console.log("SUCCESS")
-      state.isLoading = false
-      state.error = null
-      state.content = {
-        nextPage: action.payload.currentPage + 1,
-        totalPages: action.payload.totalPages,
-        photos: [...state.content.photos, ...action.payload.photos],
-      }
-    },
-    fetchPhotosFailure(state, action: PayloadAction<GeneralApiProblem>) {
-      console.log("FAILURE")
-      console.log(`Error fetching episodes: ${JSON.stringify(action.payload)}`, [])
-      state.isLoading = false
-      state.content = emptyContent
-      switch (action.payload.kind) {
-        case "unauthorized":
-          state.error = { message: "Unauthorized, make sure you have a valid key in .env file" }
-          break
-        default:
-          state.error = { message: action.payload.kind }
-      }
-    },
+  initialState: {
+    isLoading: false,
+    error: null,
+    content: emptyContent,
+  },
+  reducers: {},
+  extraReducers: builder => {
+    builder
+      .addCase(load.pending, state => {
+        state.isLoading = true
+        state.error = null
+        state.content = emptyContent
+      })
+      .addCase(nextPage.pending, state => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addMatcher(isFulfilled(load, nextPage), (state, action) => {
+        state.isLoading = false
+        state.error = null
+        state.content = {
+          nextPage: action.payload.currentPage + 1,
+          totalPages: action.payload.totalPages,
+          photos: [...state.content.photos, ...action.payload.photos],
+        }
+      })
+      .addMatcher<typeof load | typeof nextPage>(isRejectedWithValue(load, nextPage), (state, action) => {
+        console.log(`Error fetching episodes: ${JSON.stringify(action)}`)
+        state.isLoading = false
+        state.content = emptyContent
+        switch (action.payload.kind) {
+          case "unauthorized":
+            state.error = { message: "Unauthorized, make sure you have a valid key in .env file" }
+            break
+          default:
+            state.error = { message: action.payload.kind }
+        }
+        state.error = { message: JSON.stringify(action.payload) }
+      })
   },
 })
 
+export const load = createAsyncThunk(
+  `${photosSlice.name}/load`,
+  async (_, thunkAPI) => {
+    const { photosReducer } = thunkAPI.getState() as RootState
 
-export const load: AppThunk = () => async (dispatch, getState) => {
-  console.log("STARTED LOAD")
-  dispatch(photosSlice.actions.initialLoad())
-  await loadPage(dispatch, getState().photosReducer.content.nextPage)
-}
-
-export const nextPage: AppThunk = () => async (dispatch, getState) => {
-  const state = getState().photosReducer
-  if (state.isLoading) return
-  dispatch(photosSlice.actions.fetchNextPage())
-  await loadPage(dispatch, state.content.nextPage)
-}
-
-async function loadPage(dispatch, page: number) {
-  try {
-    console.log("API CALL")
-    await delay(2000)
-    const response = await api.getPhotos(page)
-    if (response.kind === "ok") {
-      dispatch(photosSlice.actions.fetchPhotosSuccess(response.data))
-    } else {
-      dispatch(photosSlice.actions.fetchPhotosFailure(response))
+    try {
+      return await loadPage(photosReducer.content.nextPage)
+    } catch (e) {
+      throw thunkAPI.rejectWithValue(e)
     }
+  },
+)
+
+export const nextPage = createAsyncThunk(
+  `${photosSlice.name}/nextPage`,
+  async (_, thunkAPI) => {
+    const { photosReducer } = thunkAPI.getState() as RootState
+    try {
+      return await loadPage(photosReducer.content.nextPage)
+    } catch (e) {
+      throw thunkAPI.rejectWithValue(e)
+    }
+  },
+  {
+    condition: (_, thunkAPI) => !(thunkAPI.getState() as RootState).photosReducer.isLoading,
+  },
+)
+
+async function loadPage(page: number) {
+  let response: ApiResult<PhotoPage>
+  try {
+    console.log(`Fetching page ${page}`)
+    response = await api.getPhotos(page)
   } catch (e) {
-    const failure: GeneralApiProblem = { kind: "unknown", temporary: true, cause: e.message }
-    dispatch(photosSlice.actions.fetchPhotosFailure(failure))
+    throw { kind: "unknown", temporary: true, cause: e.message }
+  }
+  if (response.kind === "ok") {
+    return response.data
+  } else {
+    throw response
   }
 }
 
