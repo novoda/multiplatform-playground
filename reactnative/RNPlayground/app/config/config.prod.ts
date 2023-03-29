@@ -6,5 +6,6 @@
  * https://reactnative.dev/docs/security#storing-sensitive-info
  */
 export default {
-  API_URL: "CHANGEME",
+  API_URL: "https://api.unsplash.com/",
+  API_KEY: process.env.UNSPLASH_API_KEY
 }

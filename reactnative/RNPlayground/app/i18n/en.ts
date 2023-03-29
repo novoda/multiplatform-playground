@@ -16,9 +16,11 @@ const en = {
     exciting: "What You See Is what You Get"
   },
   playgroundScreen: {
-    postscript: "Here we play!",
-    readyForLaunch: "Content",
-    exciting: "So what's next?"
+    headerTitle: "Playground",
+    photos: "Photos"
+  },
+  photosScreen: {
+    headerTitle: "Photos",
   },
   errorScreen: {
     title: "Something went wrong!",

@@ -1,11 +1,11 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
-import { PlaygroundStoreModel } from "./PlaygroundStore"
+import { PhotosScreenStoreModel } from "./PhotosScreenStore"
 
 /**
  * A RootStore model.
  */
 export const RootStoreModel = types.model("RootStore").props({
-    playgroundStore: types.optional(PlaygroundStoreModel, {})
+    photosScreenStore: types.optional(PhotosScreenStoreModel, {})
 })
 
 /**

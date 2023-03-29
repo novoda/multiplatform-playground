@@ -1,108 +1,96 @@
 import * as React from "react"
 import { observer } from "mobx-react-lite"
-import { BaseScreenProps } from "../navigators"
-import { TextStyle, View, ViewStyle } from "react-native"
-import { Text, Button } from "../components"
+import { Alert, FlatList, Platform, ToastAndroid } from "react-native"
+import { Text } from "../components"
 import { colors, spacing } from "../theme"
-import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { useFocusEffect } from "@react-navigation/core"
-import { useStores } from "../models"
+import { Card } from "react-native-paper"
+import { PlaygroundTabScreenProps } from "../navigators"
+import { translate } from "../i18n"
 
-interface PlaygroundScreenProps extends BaseScreenProps<"Playground"> {
+export interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Playground"> {
 }
 
-export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer((props) => {
-  const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
-  const { playgroundStore } = useStores()
-
-  useFocusEffect(
-    React.useCallback(() => {
-      playgroundStore.startCounter()
-      return () => playgroundStore.stopCounter()
-    }, [playgroundStore])
-  )
-
-  return <View style={$container}>
+export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer(({ navigation }) => {
+  const items: PlaygroundCardProps[] = [
+    photosItem(navigation),
+    clickMeItem,
     {
-      StateComponent(
-        $bottomContainerInsets,
-        playgroundStore.uiState,
-        () => playgroundStore.resetCounter()
-      )
+      title: "I do nothing",
+      color: "forestgreen",
+      onPress: () => {
+      },
+    },
+  ]
+
+  return <FlatList
+    style={{
+      backgroundColor: colors.background,
+      flex: 1,
+    }}
+    data={items}
+    renderItem={({ item }) =>
+      <PlaygroundCard
+        title={item.title}
+        color={item.color}
+        onPress={item.onPress}
+      />
     }
-  </View>
+  >
+  </FlatList>
 })
 
-function StateComponent(insets, uiState, onResetClicked) {
-  const { loading, error, content } = uiState
-  if (loading) {
-    return LoadingComponent(insets)
-  } else if (error) {
-    return ErrorComponent(insets, error, onResetClicked)
-  } else if (content) {
-    return ContentComponent(insets, content, onResetClicked)
-  }
-  throw new Error(`UiState type is not handled ${JSON.stringify(uiState)}`)
+const photosItem = (navigation) => ({
+  title: translate("playgroundScreen.photos"),
+  onPress: () => navigation.navigate("Photos"),
+  color: colors.palette.accent200,
+})
+
+const clickMeItem = {
+  title: "Click me",
+  color: colors.palette.accent300,
+  onPress: () => {
+    if (Platform.OS == "android") {
+      ToastAndroid.show("You're Android, here's a toast to you", ToastAndroid.SHORT)
+    } else {
+      Alert.alert(
+        "Alert",
+        "You're not on Android",
+        [{
+          text: "Duh",
+          style: "cancel",
+        }],
+      )
+    }
+  },
 }
 
-function ContentComponent(insets, content, onResetClicked) {
-  return <View>
-    <View style={$topContainer}>
+type PlaygroundCardProps = {
+  title: string,
+  onPress: () => void,
+  color: string
+}
+
+function PlaygroundCard(props: PlaygroundCardProps) {
+  return (
+    <Card
+      style={{
+        backgroundColor: props.color,
+        marginVertical: spacing.extraSmall,
+        marginHorizontal: spacing.medium,
+      }}
+      theme={{
+        mode: "adaptive",
+      }}
+      onPress={props.onPress}
+    >
       <Text
-        testID="welcome-heading"
-        style={$welcomeHeading}
-        tx="playgroundScreen.readyForLaunch"
-        preset="heading"
+        text={props.title}
+        style={{
+          padding: spacing.medium,
+        }}
+        preset="bold"
+        size="lg"
       />
-      <Text tx="playgroundScreen.postscript" preset="subheading" />
-    </View>
-
-    <View style={[$bottomContainer, insets]}>
-      <Text tx="playgroundScreen.exciting" size="md" />
-      <Text text={`Value is: ${content.number}`} size="md" />
-      <Button text="Reset" onPress={onResetClicked} />
-    </View>
-  </View>
+    </Card>
+  )
 }
-
-function ErrorComponent(insets, error, onResetClicked) {
-  return <View style={[insets]}>
-    <Text text={`ERROR: ${error.message}`} size="md" />
-    <Button text="Refresh" onPress={onResetClicked} />
-  </View>
-}
-
-function LoadingComponent(insets) {
-  return <View style={[insets, { justifyContent: "space-around", flexGrow: 1 }]}>
-    <Text text={`LOADING`} size="md" style={{ textAlign: "center" }} />
-  </View>
-}
-
-const $container: ViewStyle = {
-  flex: 1,
-  backgroundColor: colors.background,
-}
-
-const $topContainer: ViewStyle = {
-  flexShrink: 1,
-  flexGrow: 1,
-  flexBasis: "57%",
-  justifyContent: "center",
-  paddingHorizontal: spacing.large,
-}
-
-const $bottomContainer: ViewStyle = {
-  flexShrink: 1,
-  flexGrow: 0,
-  flexBasis: "43%",
-  backgroundColor: colors.palette.neutral100,
-  borderTopLeftRadius: 16,
-  borderTopRightRadius: 16,
-  paddingHorizontal: spacing.large,
-  justifyContent: "space-around",
-}
-
-const $welcomeHeading: TextStyle = {
-  marginBottom: spacing.medium,
-}
-
