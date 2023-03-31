@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit"
-import photosReducer from "./models/photosSlice"
+import photoReducer from "./models/photoSlice"
 
 export const store = configureStore({
   reducer: {
-    photosReducer: photosReducer,
+    photo: photoReducer,
   },
 })
 

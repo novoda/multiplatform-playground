@@ -7,7 +7,7 @@ import { colors, spacing } from "../theme"
 import { Content, ErrorState } from "../models/PhotosScreenStore"
 import { Card } from "react-native-paper"
 import { Photo } from "../models/Photo"
-import { fullScreenLoading, load, nextPage, photosState } from "../models/photosSlice"
+import { clear, fullScreenLoading, load, photosState } from "../models/photoSlice"
 
 interface PhotosReduxScreenProps extends PlaygroundTabScreenProps<"PhotosRedux"> {
 }
@@ -16,6 +16,7 @@ export const PhotosReduxScreen: React.FC<PhotosReduxScreenProps> = () => {
   const state = useAppSelector(photosState)
   const dispatch = useAppDispatch()
   React.useEffect(() => {
+    dispatch(clear())
     dispatch(load())
   }, [])
 
@@ -31,7 +32,7 @@ export const PhotosReduxScreen: React.FC<PhotosReduxScreenProps> = () => {
     renderedContent = <ContentComponent
       content={content}
       isLoading={state.isLoading}
-      loadNext={() => dispatch(nextPage())}
+      loadNext={() => dispatch(load())}
     />
   } else {
     throw new Error(`UiState type is not handled ${JSON.stringify(state)}`)

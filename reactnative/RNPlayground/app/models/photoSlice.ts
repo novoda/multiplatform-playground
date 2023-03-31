@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, isFulfilled, isRejectedWithValue } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice, isRejectedWithValue } from "@reduxjs/toolkit"
 import { Photo, PhotoPage } from "./Photo"
 import { api, ApiResult } from "../services/api"
 import { RootState } from "../store"
@@ -29,26 +29,27 @@ export function fullScreenLoading(state: ReduxPhotosState) {
   return state.isLoading && !state.error && (!state.content || state.content.photos.length == 0)
 }
 
-const photosSlice = createSlice({
+const photoSlice = createSlice({
   name: "photosSlice",
   initialState: {
     isLoading: false,
     error: null,
     content: emptyContent,
   },
-  reducers: {},
+  reducers: {
+    clear(state) {
+      state.isLoading = false
+      state.error = null
+      state.content = emptyContent
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(load.pending, state => {
         state.isLoading = true
         state.error = null
-        state.content = emptyContent
       })
-      .addCase(nextPage.pending, state => {
-        state.isLoading = true
-        state.error = null
-      })
-      .addMatcher(isFulfilled(load, nextPage), (state, action) => {
+      .addCase(load.fulfilled, (state, action) => {
         state.isLoading = false
         state.error = null
         state.content = {
@@ -57,7 +58,7 @@ const photosSlice = createSlice({
           photos: [...state.content.photos, ...action.payload.photos],
         }
       })
-      .addMatcher<typeof load | typeof nextPage>(isRejectedWithValue(load, nextPage), (state, action) => {
+      .addMatcher<typeof load>(isRejectedWithValue(load), (state, action) => {
         console.log(`Error fetching episodes: ${JSON.stringify(action)}`)
         state.isLoading = false
         state.content = emptyContent
@@ -74,30 +75,17 @@ const photosSlice = createSlice({
 })
 
 export const load = createAsyncThunk(
-  `${photosSlice.name}/load`,
+  `${photoSlice.name}/load`,
   async (_, thunkAPI) => {
-    const { photosReducer } = thunkAPI.getState() as RootState
-
     try {
-      return await loadPage(photosReducer.content.nextPage)
-    } catch (e) {
-      throw thunkAPI.rejectWithValue(e)
-    }
-  },
-)
-
-export const nextPage = createAsyncThunk(
-  `${photosSlice.name}/nextPage`,
-  async (_, thunkAPI) => {
-    const { photosReducer } = thunkAPI.getState() as RootState
-    try {
-      return await loadPage(photosReducer.content.nextPage)
+      const { photo } = thunkAPI.getState() as RootState
+      return await loadPage(photo.content.nextPage)
     } catch (e) {
       throw thunkAPI.rejectWithValue(e)
     }
   },
   {
-    condition: (_, thunkAPI) => !(thunkAPI.getState() as RootState).photosReducer.isLoading,
+    condition: (_, { getState }) => !(getState() as RootState).photo.isLoading,
   },
 )
 
@@ -116,5 +104,6 @@ async function loadPage(page: number) {
   }
 }
 
-export const photosState = (state: RootState) => state.photosReducer
-export default photosSlice.reducer
+export const { clear } = photoSlice.actions
+export const photosState = (state: RootState) => state.photo
+export default photoSlice.reducer
