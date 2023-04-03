@@ -1,5 +1,5 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
-import { PhotosScreenStoreModel } from "./PhotosScreenStore"
+import { PhotosScreenStoreModel } from "../features/playground/PhotosScreenStore"
 
 /**
  * A RootStore model.

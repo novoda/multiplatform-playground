@@ -1,6 +1,6 @@
-import { PhotoPage } from "../../models/Photo"
+import { PhotoPage } from "./Photo"
 import { ApiResponse } from "apisauce"
-import { Api, ApiResult } from "./api"
+import { Api, ApiResult } from "../../services/api"
 
 export class PhotoApi extends Api {
 

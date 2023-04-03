@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit"
-import photoReducer from "./models/photoSlice"
+import photoReducer from "./features/playground/photoSlice"
 
 export const store = configureStore({
   reducer: {

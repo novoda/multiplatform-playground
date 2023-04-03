@@ -1,13 +1,13 @@
 import * as React from "react"
 import { observer } from "mobx-react-lite"
-import { PlaygroundTabScreenProps } from "../navigators"
+import { PlaygroundTabScreenProps } from "../../navigators"
 import { FlatList, Image, ScrollView, View } from "react-native"
-import { Button, Text } from "../components"
-import { colors, spacing } from "../theme"
-import { useStores } from "../models"
-import { Content, ErrorState } from "../models/PhotosScreenStore"
+import { Button, Text } from "../../components"
+import { colors, spacing } from "../../theme"
+import { useStores } from "../../models"
+import { Content, ErrorState } from "./PhotosScreenStore"
 import { Card } from "react-native-paper"
-import { Photo } from "../models/Photo"
+import { Photo } from "./Photo"
 
 interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"PhotosMobxStateTree"> {
 }

@@ -1,11 +1,11 @@
 import * as React from "react"
 import { observer } from "mobx-react-lite"
 import { Alert, FlatList, Platform, ToastAndroid } from "react-native"
-import { Text } from "../components"
-import { colors, spacing } from "../theme"
+import { Text } from "../../components"
+import { colors, spacing } from "../../theme"
 import { Card } from "react-native-paper"
-import { PlaygroundTabScreenProps } from "../navigators"
-import { translate } from "../i18n"
+import { PlaygroundTabScreenProps } from "../../navigators"
+import { translate } from "../../i18n"
 
 export interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Playground"> {
 }

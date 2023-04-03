@@ -1,18 +1,18 @@
 import * as React from "react"
-import { BaseScreenProps, NavigatorParamList } from "."
+import { BaseScreenProps, NavigatorParamList } from "../../navigators"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { StackScreenProps } from "@react-navigation/stack"
-import { PhotosScreen } from "../screens/PhotosScreen"
+import { PhotosScreen } from "./PhotosScreen"
 import { CompositeScreenProps } from "@react-navigation/native"
-import { PlaygroundScreen } from "../screens"
+import { PlaygroundScreen } from "./index"
 import { Appbar } from "react-native-paper"
-import { colors } from "../theme"
+import { colors } from "../../theme"
 import { View } from "react-native"
-import { Text } from "../components"
+import { Text } from "../../components"
 import { getHeaderTitle } from "@react-navigation/elements"
-import { translate } from "../i18n"
-import { Screen } from "../components"
-import { PhotosReduxScreen } from "../screens/PhotosReduxScreen"
+import { translate } from "../../i18n"
+import { Screen } from "../../components"
+import { PhotosReduxScreen } from "./PhotosReduxScreen"
 
 export type PlaygroundTabParamList = {
   Playground: undefined,
@@ -72,7 +72,7 @@ export function PlaygroundNavigator() {
           component={PhotosReduxScreen}
           options={{
             title: translate("photosScreen.headerTitle"),
-            headerTintColor: 'darksalmon',
+            headerTintColor: "darksalmon",
           }}
         />
       </Stack.Navigator>

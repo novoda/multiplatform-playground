@@ -1,6 +1,6 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree";
 import { PhotoModel, PhotoPage } from "./Photo";
-import { PhotoApi } from "../services/api"
+import { PhotoApi } from "./photoApi"
 
 export const ContentModel = types.model("Content", {
     nextPage: 1,

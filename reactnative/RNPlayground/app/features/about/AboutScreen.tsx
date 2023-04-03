@@ -1,11 +1,11 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
-import { BaseScreenProps } from "../navigators"
+import { BaseScreenProps } from "../../navigators"
 import { ViewStyle } from "react-native"
 import {
   Text, Screen
-} from "../components"
-import { colors } from "../theme"
+} from "../../components"
+import { colors } from "../../theme"
 
 export const AboutScreen: FC<BaseScreenProps<"About">> = observer(function AboutScreen() {
   return (

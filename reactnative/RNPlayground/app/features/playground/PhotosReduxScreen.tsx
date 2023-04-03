@@ -1,13 +1,13 @@
 import * as React from "react"
-import { useAppDispatch, useAppSelector } from "../hooks"
-import { PlaygroundTabScreenProps } from "../navigators"
+import { useAppDispatch, useAppSelector } from "../../hooks"
+import { PlaygroundTabScreenProps } from "../../navigators"
 import { FlatList, Image, ScrollView, View } from "react-native"
-import { Button, Text } from "../components"
-import { colors, spacing } from "../theme"
-import { Content, ErrorState } from "../models/PhotosScreenStore"
+import { Button, Text } from "../../components"
+import { colors, spacing } from "../../theme"
+import { Content, ErrorState } from "./PhotosScreenStore"
 import { Card } from "react-native-paper"
-import { Photo } from "../models/Photo"
-import { clear, fullScreenLoading, load, photosState } from "../models/photoSlice"
+import { Photo } from "./Photo"
+import { clear, fullScreenLoading, load, photosState } from "./photoSlice"
 
 interface PhotosReduxScreenProps extends PlaygroundTabScreenProps<"PhotosRedux"> {
 }

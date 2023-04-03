@@ -1,7 +1,7 @@
 import { mocked } from "ts-jest/utils"
 import { onSnapshot, ModelCreationType } from "mobx-state-tree"
 import { ContentModel, ErrorModel, PhotosScreenStoreModel, PhotosScreenUiState, PhotosScreenUiStateModel } from "./PhotosScreenStore"
-import { PhotoApi } from "../services/api"
+import { PhotoApi } from "../../services/api"
 
 jest.mock('../services/api')
 const mockApi = mocked(new PhotoApi())
