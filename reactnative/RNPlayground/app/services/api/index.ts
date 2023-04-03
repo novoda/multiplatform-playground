@@ -1,2 +1,4 @@
 export * from "./api"
-export * from "./api.types"
+export { PhotoApi } from "./photoApi"
+export { ApiPhotosResponse } from "./photoApi"
+export { ApiPhoto } from "./photoApi"

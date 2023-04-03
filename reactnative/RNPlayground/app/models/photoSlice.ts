@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, isRejectedWithValue } from "@reduxjs/toolkit"
 import { Photo, PhotoPage } from "./Photo"
-import { api, ApiResult } from "../services/api"
+import { ApiResult, PhotoApi } from "../services/api"
 import { RootState } from "../store"
 
 type ReduxContent = {
@@ -89,6 +89,7 @@ export const load = createAsyncThunk(
   },
 )
 
+const api = new PhotoApi()
 async function loadPage(page: number) {
   let response: ApiResult<PhotoPage>
   try {

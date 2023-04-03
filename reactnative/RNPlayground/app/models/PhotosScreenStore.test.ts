@@ -1,10 +1,10 @@
 import { mocked } from "ts-jest/utils"
-import { getSnapshot, applySnapshot, onSnapshot, ModelCreationType } from "mobx-state-tree"
+import { onSnapshot, ModelCreationType } from "mobx-state-tree"
 import { ContentModel, ErrorModel, PhotosScreenStoreModel, PhotosScreenUiState, PhotosScreenUiStateModel } from "./PhotosScreenStore"
-import { api } from "../services/api"
+import { PhotoApi } from "../services/api"
 
 jest.mock('../services/api')
-const mockApi = mocked(api)
+const mockApi = mocked(new PhotoApi())
 
 describe("PlaygroundStoreModel", () => {
 
@@ -63,7 +63,7 @@ describe("PlaygroundStoreModel", () => {
         mockApi.getPhotos.mockResolvedValue({ kind: 'ok', data: { photos: [], totalPages: 2, currentPage: 2 }})
         await store.nextPage();
         await store.nextPage();
-        
+
 
         expect(states).toStrictEqual([
             uiState({ isLoading: true }),

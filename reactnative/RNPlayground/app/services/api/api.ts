@@ -7,9 +7,24 @@
  */
 import { ApiResponse, ApisauceInstance, create } from "apisauce"
 import Config from "../../config"
-import { PhotoPage } from "../../models/Photo"
-import type { ApiConfig, ApiPhotosResponse } from "./api.types"
 import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem"
+
+/**
+ * The options used to configure apisauce.
+ */
+export interface ApiConfig {
+  /**
+   * The URL of the api.
+   */
+  url: string
+
+  /**
+   * Milliseconds before we timeout the request.
+   */
+  timeout: number
+
+  apiKey: string
+}
 
 /**
  * Configuring the apisauce instance.
@@ -43,45 +58,24 @@ export class Api {
     })
   }
 
-  async getPhotos(page: number): Promise<ApiResult<PhotoPage>> {
-    const pageSize = 20
-    const config = { page: page, per_page: pageSize }
-    const mapper = function(response: ApiResponse<ApiPhotosResponse>) {
-      const totalItems = Number(response.headers["x-total"])
-      return ({
-        photos: response.data.map((raw) => ({
-          localId: raw.id + page,
-          ...raw,
-        })),
-        currentPage: page,
-        totalPages: Math.ceil(totalItems / pageSize),
-      })
+  async handleResponse<ApiIn, DomainOut>(
+    request: Promise<ApiResponse<ApiIn>>,
+    mapSuccess: (response: ApiResponse<ApiIn>) => DomainOut,
+  ): Promise<ApiResult<DomainOut>> {
+    try {
+      const response = await request
+      if (!response.ok) {
+        console.log(response)
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      return { kind: "ok", data: mapSuccess(response) }
+    } catch (e) {
+      console.log(`Bad data: ${e.message}`, e.stack)
+      return { kind: "bad-data" }
     }
-
-    const response: ApiResponse<ApiPhotosResponse> = await this.apisauce.get("/photos", config)
-
-    return handleResponse(response, mapper)
   }
 
-}
-
-function handleResponse<ApiIn, DomainOut>(
-  response: ApiResponse<ApiIn>,
-  mapSuccess: (response: ApiResponse<ApiIn>) => DomainOut,
-): ApiResult<DomainOut> {
-  if (!response.ok) {
-    console.log(response)
-    const problem = getGeneralApiProblem(response)
-    if (problem) return problem
-  }
-  try {
-    return { kind: "ok", data: mapSuccess(response) }
-  } catch (e) {
-    console.log(`Bad data: ${e.message}\n${response.data}`, e.stack)
-    return { kind: "bad-data" }
-  }
 }
 
 export type ApiResult<T> = { kind: "ok"; data: T } | GeneralApiProblem
-// Singleton instance of the API for convenience
-export const api = new Api()
