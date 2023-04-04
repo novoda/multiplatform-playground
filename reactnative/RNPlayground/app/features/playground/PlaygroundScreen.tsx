@@ -10,7 +10,7 @@ export interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Playgro
 
 export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = ({ navigation }) => {
   const items: PlaygroundCardProps[] = [
-    photosItemWithRedux(navigation),
+    photosItem(navigation),
     clickMeItem,
     {
       title: "I do nothing",
@@ -37,9 +37,9 @@ export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = ({ navigation }
   </FlatList>
 }
 
-const photosItemWithRedux = (navigation) => ({
-  title: "Photos with Redux",
-  onPress: () => navigation.navigate("PhotosRedux"),
+const photosItem = (navigation) => ({
+  title: "Photos",
+  onPress: () => navigation.navigate("Photos"),
   color: "darksalmon",
 })
 

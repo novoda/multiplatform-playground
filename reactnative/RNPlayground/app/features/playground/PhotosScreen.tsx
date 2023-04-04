@@ -8,10 +8,10 @@ import { Card } from "react-native-paper"
 import { Photo } from "./Photo"
 import { clear, fullScreenLoading, load, photosState, ReduxContent, ReduxError } from "./photoSlice"
 
-interface PhotosReduxScreenProps extends PlaygroundTabScreenProps<"PhotosRedux"> {
+interface PhotosScreenProps extends PlaygroundTabScreenProps<"Photos"> {
 }
 
-export const PhotosReduxScreen: React.FC<PhotosReduxScreenProps> = () => {
+export const PhotosScreen: React.FC<PhotosScreenProps> = () => {
   const state = useAppSelector(photosState)
   const dispatch = useAppDispatch()
   React.useEffect(() => {

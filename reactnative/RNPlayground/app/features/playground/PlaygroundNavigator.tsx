@@ -10,11 +10,11 @@ import { View } from "react-native"
 import { Screen, Text } from "../../components"
 import { getHeaderTitle } from "@react-navigation/elements"
 import { translate } from "../../i18n"
-import { PhotosReduxScreen } from "./PhotosReduxScreen"
+import { PhotosScreen } from "./PhotosScreen"
 
 export type PlaygroundTabParamList = {
   Playground: undefined,
-  PhotosRedux: undefined
+  Photos: undefined
 }
 
 /**
@@ -57,8 +57,8 @@ export function PlaygroundNavigator() {
 
         />
         <Stack.Screen
-          name="PhotosRedux"
-          component={PhotosReduxScreen}
+          name="Photos"
+          component={PhotosScreen}
           options={{
             title: translate("photosScreen.headerTitle"),
             headerTintColor: "darksalmon",
