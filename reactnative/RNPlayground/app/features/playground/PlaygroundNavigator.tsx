@@ -2,21 +2,18 @@ import * as React from "react"
 import { BaseScreenProps, NavigatorParamList } from "../../navigators"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { StackScreenProps } from "@react-navigation/stack"
-import { PhotosScreen } from "./PhotosScreen"
 import { CompositeScreenProps } from "@react-navigation/native"
 import { PlaygroundScreen } from "./index"
 import { Appbar } from "react-native-paper"
 import { colors } from "../../theme"
 import { View } from "react-native"
-import { Text } from "../../components"
+import { Screen, Text } from "../../components"
 import { getHeaderTitle } from "@react-navigation/elements"
 import { translate } from "../../i18n"
-import { Screen } from "../../components"
 import { PhotosReduxScreen } from "./PhotosReduxScreen"
 
 export type PlaygroundTabParamList = {
   Playground: undefined,
-  PhotosMobxStateTree: undefined
   PhotosRedux: undefined
 }
 
@@ -58,14 +55,6 @@ export function PlaygroundNavigator() {
             headerTintColor: colors.tint,
           }}
 
-        />
-        <Stack.Screen
-          name="PhotosMobxStateTree"
-          component={PhotosScreen}
-          options={{
-            title: translate("photosScreen.headerTitle"),
-            headerTintColor: colors.palette.accent200,
-          }}
         />
         <Stack.Screen
           name="PhotosRedux"

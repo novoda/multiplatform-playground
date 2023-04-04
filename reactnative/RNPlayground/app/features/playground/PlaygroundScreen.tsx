@@ -1,18 +1,15 @@
 import * as React from "react"
-import { observer } from "mobx-react-lite"
 import { Alert, FlatList, Platform, ToastAndroid } from "react-native"
 import { Text } from "../../components"
 import { colors, spacing } from "../../theme"
 import { Card } from "react-native-paper"
 import { PlaygroundTabScreenProps } from "../../navigators"
-import { translate } from "../../i18n"
 
 export interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Playground"> {
 }
 
-export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer(({ navigation }) => {
+export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = ({ navigation }) => {
   const items: PlaygroundCardProps[] = [
-    photosItemWithMobxStateTree(navigation),
     photosItemWithRedux(navigation),
     clickMeItem,
     {
@@ -38,18 +35,12 @@ export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = observer(({ nav
     }
   >
   </FlatList>
-})
-
-const photosItemWithMobxStateTree = (navigation) => ({
-  title: translate("playgroundScreen.photos"),
-  onPress: () => navigation.navigate("PhotosMobxStateTree"),
-  color: colors.palette.accent200,
-})
+}
 
 const photosItemWithRedux = (navigation) => ({
   title: "Photos with Redux",
   onPress: () => navigation.navigate("PhotosRedux"),
-  color: 'darksalmon',
+  color: "darksalmon",
 })
 
 const clickMeItem = {

@@ -4,10 +4,9 @@ import { PlaygroundTabScreenProps } from "../../navigators"
 import { FlatList, Image, ScrollView, View } from "react-native"
 import { Button, Text } from "../../components"
 import { colors, spacing } from "../../theme"
-import { Content, ErrorState } from "./PhotosScreenStore"
 import { Card } from "react-native-paper"
 import { Photo } from "./Photo"
-import { clear, fullScreenLoading, load, photosState } from "./photoSlice"
+import { clear, fullScreenLoading, load, photosState, ReduxContent, ReduxError } from "./photoSlice"
 
 interface PhotosReduxScreenProps extends PlaygroundTabScreenProps<"PhotosRedux"> {
 }
@@ -48,7 +47,7 @@ export const PhotosReduxScreen: React.FC<PhotosReduxScreenProps> = () => {
 }
 
 type ContentComponentProps = {
-  content: Content
+  content: ReduxContent
   isLoading: boolean
   loadNext: () => void
 }
@@ -98,7 +97,7 @@ const ContentComponent = (props: ContentComponentProps) => (
 )
 
 type ErrorComponentProps = {
-  error: ErrorState,
+  error: ReduxError,
   onResetClicked: () => void
 }
 

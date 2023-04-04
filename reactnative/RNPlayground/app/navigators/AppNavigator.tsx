@@ -6,7 +6,6 @@
  */
 import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import { createMaterialBottomTabNavigator, MaterialBottomTabScreenProps } from "@react-navigation/material-bottom-tabs"
-import { observer } from "mobx-react-lite"
 import React from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
@@ -92,7 +91,7 @@ const exitRoutes = Config.exitRoutes
 interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {
 }
 
-export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
+export const AppNavigator = (props: NavigationProps) => {
   const colorScheme = useColorScheme()
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
@@ -106,4 +105,4 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
       <AppTabs />
     </NavigationContainer>
   )
-})
+}

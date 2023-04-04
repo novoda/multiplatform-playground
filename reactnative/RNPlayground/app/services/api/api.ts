@@ -65,7 +65,6 @@ export class Api {
     try {
       const response = await request
       if (!response.ok) {
-        console.log(response)
         const problem = getGeneralApiProblem(response)
         if (problem) return problem
       }

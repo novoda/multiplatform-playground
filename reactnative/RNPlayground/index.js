@@ -6,13 +6,9 @@ import App from "./app/app.tsx"
 import React from "react"
 import { AppRegistry } from "react-native"
 import RNBootSplash from "react-native-bootsplash"
-import { Provider } from "react-redux"
-import { store } from "./app/store"
 
 function IgniteApp() {
-  return <Provider store={store}>
-    <App hideSplashScreen={RNBootSplash.hide} />
-  </Provider>
+  return <App hideSplashScreen={RNBootSplash.hide} />
 }
 
 AppRegistry.registerComponent("RNPlayground", () => IgniteApp)

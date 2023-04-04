@@ -4,7 +4,7 @@ import { ApiResult } from "../../services/api"
 import { RootState } from "../../store"
 import { PhotoApi } from "./photoApi"
 
-type ReduxContent = {
+export type ReduxContent = {
   nextPage: number
   totalPages: number
   photos: Photo[]
@@ -16,7 +16,7 @@ const emptyContent: ReduxContent = {
   photos: [],
 }
 
-type ReduxError = {
+export type ReduxError = {
   message: string
 }
 
