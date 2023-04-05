@@ -12,8 +12,8 @@ import {
   View,
   ViewStyle,
 } from "react-native"
-import { colors } from "../theme"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
+import { useAppTheme } from "../theme/theme"
 
 interface BaseScreenProps {
   /**
@@ -57,6 +57,7 @@ interface BaseScreenProps {
 interface FixedScreenProps extends BaseScreenProps {
   preset?: "fixed"
 }
+
 interface ScrollScreenProps extends BaseScreenProps {
   preset?: "scroll"
   /**
@@ -99,7 +100,7 @@ function useAutoPreset(props: AutoScreenProps) {
     if (scrollViewHeight.current === null || scrollViewContentHeight.current === null) return
 
     // check whether content fits the screen then toggle scroll state according to it
-    const contentFitsScreen = (function () {
+    const contentFitsScreen = (function() {
       if (point) {
         return scrollViewContentHeight.current < scrollViewHeight.current - point
       } else {
@@ -188,13 +189,14 @@ function ScreenWithScrolling(props: ScreenProps) {
 }
 
 export function Screen(props: ScreenProps) {
+  const theme = useAppTheme()
   const {
-    backgroundColor = colors.background,
+    backgroundColor = theme.colors.background,
     KeyboardAvoidingViewProps,
     keyboardOffset = 0,
     safeAreaEdges,
     StatusBarProps,
-    statusBarStyle = "dark",
+    statusBarStyle = theme.dark ? "light" : "dark",
   } = props
 
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges)
