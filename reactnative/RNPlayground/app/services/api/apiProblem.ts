@@ -1,9 +1,9 @@
 import { ApiResponse } from "apisauce"
 
 export type GeneralApiProblem =
-  /**
-   * Times up.
-   */
+/**
+ * Times up.
+ */
   | { kind: "timeout"; temporary: true }
   /**
    * Cannot connect to the server for some reason.
@@ -32,7 +32,7 @@ export type GeneralApiProblem =
   /**
    * Something truly unexpected happened. Most likely can try again. This is a catch all.
    */
-  | { kind: "unknown"; temporary: true }
+  | { kind: "unknown"; temporary: true; cause: string | null }
   /**
    * The data we received is not in the expected format.
    */
@@ -54,7 +54,7 @@ export function getGeneralApiProblem(response: ApiResponse<any>): GeneralApiProb
     case "SERVER_ERROR":
       return { kind: "server" }
     case "UNKNOWN_ERROR":
-      return { kind: "unknown", temporary: true }
+      return { kind: "unknown", temporary: true, cause : null }
     case "CLIENT_ERROR":
       switch (response.status) {
         case 401:

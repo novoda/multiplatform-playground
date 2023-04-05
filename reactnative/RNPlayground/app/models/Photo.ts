@@ -1,4 +1,4 @@
-import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree";
+import { types } from "mobx-state-tree"
 
 const UrlsModel = types.model({
     raw: types.string,
@@ -16,12 +16,24 @@ export const PhotoModel = types.model({
     urls: UrlsModel
 })
 
-export interface Photo extends Instance<typeof PhotoModel> { }
-export interface PhotoSnapshotOut extends SnapshotOut<typeof PhotoModel> { }
-export interface PhotoSnapshotIn extends SnapshotIn<typeof PhotoModel> { }
+export type Urls = {
+    raw: string,
+    full: string,
+    small: string,
+    thumb: string,
+    regular: string,
+}
+
+export type Photo = {
+    localId: string,
+    id: string,
+    color: string,
+    description: string|null,
+    urls: Urls
+}
 
 export interface PhotoPage {
-    photos: PhotoSnapshotIn[]
+    photos: Photo[]
     currentPage: number
     totalPages: number
 }

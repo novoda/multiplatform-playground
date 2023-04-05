@@ -12,10 +12,12 @@ import { Text } from "../components"
 import { getHeaderTitle } from "@react-navigation/elements"
 import { translate } from "../i18n"
 import { Screen } from "../components"
+import { PhotosReduxScreen } from "../screens/PhotosReduxScreen"
 
-type PlaygroundTabParamList = {
+export type PlaygroundTabParamList = {
   Playground: undefined,
-  Photos: undefined
+  PhotosMobxStateTree: undefined
+  PhotosRedux: undefined
 }
 
 /**
@@ -27,6 +29,7 @@ export type PlaygroundTabScreenProps<T extends keyof PlaygroundTabParamList> = C
   StackScreenProps<PlaygroundTabParamList, T>,
   BaseScreenProps<keyof NavigatorParamList>
 >
+
 
 const Stack = createNativeStackNavigator<PlaygroundTabParamList>()
 
@@ -57,11 +60,19 @@ export function PlaygroundNavigator() {
 
         />
         <Stack.Screen
-          name="Photos"
+          name="PhotosMobxStateTree"
           component={PhotosScreen}
           options={{
             title: translate("photosScreen.headerTitle"),
             headerTintColor: colors.palette.accent200,
+          }}
+        />
+        <Stack.Screen
+          name="PhotosRedux"
+          component={PhotosReduxScreen}
+          options={{
+            title: translate("photosScreen.headerTitle"),
+            headerTintColor: 'darksalmon',
           }}
         />
       </Stack.Navigator>
