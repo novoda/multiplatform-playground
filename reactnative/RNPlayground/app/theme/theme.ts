@@ -1,7 +1,8 @@
-import { adaptNavigationTheme, MD3DarkTheme, MD3LightTheme, useTheme } from "react-native-paper"
+import { adaptNavigationTheme, configureFonts, MD3DarkTheme, MD3LightTheme, useTheme } from "react-native-paper"
 import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme } from "@react-navigation/native"
 import merge from "deepmerge"
-import { useColorScheme } from "react-native"
+import { ColorSchemeName } from "react-native"
+import { typography } from "./typography"
 
 const colorsLight = {
   "primary": "rgb(121, 89, 0)",
@@ -89,14 +90,20 @@ const colorsDark = {
   "backdrop": "rgba(54, 48, 36, 0.4)",
 }
 
+const fontConfig = {
+  fontFamily: typography.fonts.spaceGrotesk.normal,
+} as const
+
 const materialLightTheme = {
   ...MD3LightTheme,
   colors: colorsLight,
+  fonts: configureFonts({ config: fontConfig }),
 }
 
 const materialDarkTheme = {
   ...MD3DarkTheme,
   colors: colorsDark,
+  fonts: configureFonts({ config: fontConfig }),
 }
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
@@ -106,13 +113,16 @@ const { LightTheme, DarkTheme } = adaptNavigationTheme({
   materialLight: materialLightTheme,
 })
 
-export const AppDefaultTheme = merge(materialLightTheme, LightTheme)
-export const AppDarkTheme = merge(materialDarkTheme, DarkTheme)
-
-export function appTheme(): AppTheme {
-  const colorScheme = useColorScheme()
+/**
+ * The theme object that should only be set to the Provider in the top-level app component.
+ * The theme in components should be accessed via useAppTheme() function.
+ * @param colorScheme
+ */
+export function appTheme(colorScheme: ColorSchemeName): AppTheme {
+  const AppDefaultTheme = merge(materialLightTheme, LightTheme)
+  const AppDarkTheme = merge(materialDarkTheme, DarkTheme)
   return colorScheme === "dark" ? AppDarkTheme : AppDefaultTheme
 }
 
-export type AppTheme = typeof AppDefaultTheme & typeof AppDarkTheme
+export type AppTheme = typeof materialLightTheme & typeof LightTheme
 export const useAppTheme = () => useTheme<AppTheme>()
