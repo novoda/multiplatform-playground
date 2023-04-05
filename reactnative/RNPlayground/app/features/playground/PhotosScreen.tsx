@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks"
 import { PlaygroundTabScreenProps } from "../../navigators"
 import { FlatList, Image, ScrollView, View } from "react-native"
 import { Button, Text } from "../../components"
-import { colors, spacing } from "../../theme"
+import { spacing } from "../../theme"
 import { Card } from "react-native-paper"
 import { Photo } from "./Photo"
 import { clear, fullScreenLoading, load, photosState, ReduxContent, ReduxError } from "./photoSlice"
@@ -37,10 +37,11 @@ export const PhotosScreen: React.FC<PhotosScreenProps> = () => {
     throw new Error(`UiState type is not handled ${JSON.stringify(state)}`)
   }
   return (
-    <View style={{
-      backgroundColor: colors.background,
-      flex: 1,
-    }}>
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
       {renderedContent}
     </View>
   )
@@ -82,9 +83,6 @@ const Item = ({ photo }: ItemProps) => {
 
 const ContentComponent = (props: ContentComponentProps) => (
   <FlatList
-    style={{
-      backgroundColor: colors.palette.neutral100,
-    }}
     data={props.content.photos}
     renderItem={({ item }) => <Item photo={item} />}
     keyExtractor={item => item.localId}

@@ -1,12 +1,10 @@
 import { observer } from "mobx-react-lite"
 import React, { FC } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
-import {
-  Text,
-} from "../../components"
+import { Text } from "../../components"
 import { isRTL } from "../../i18n"
 import { BaseScreenProps } from "../../navigators"
-import { colors, spacing } from "../../theme"
+import { palette, spacing } from "../../theme"
 import { useSafeAreaInsetsStyle } from "../../utils/useSafeAreaInsetsStyle"
 
 const welcomeLogo = require("../../../assets/images/logo.png")
@@ -41,7 +39,6 @@ export const WelcomeScreen: FC<BaseScreenProps<"Welcome">> = observer(function W
 
 const $container: ViewStyle = {
   flex: 1,
-  backgroundColor: colors.background,
 }
 
 const $topContainer: ViewStyle = {
@@ -56,7 +53,7 @@ const $bottomContainer: ViewStyle = {
   flexShrink: 1,
   flexGrow: 0,
   flexBasis: "43%",
-  backgroundColor: colors.palette.neutral100,
+  backgroundColor: palette.neutral100,
   borderTopLeftRadius: 16,
   borderTopRightRadius: 16,
   paddingHorizontal: spacing.large,
