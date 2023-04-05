@@ -22,8 +22,10 @@ import { setupReactotron } from "./services/reactotron"
 import Config from "./config"
 import { ErrorBoundary } from "./features/error"
 import { persistor, store } from "./store"
-import { Provider } from "react-redux"
+import { Provider as StoreProvider } from "react-redux"
+import { Provider as PaperProvider } from "react-native-paper"
 import { PersistGate } from "redux-persist/integration/react"
+import { appTheme } from "./theme/theme"
 
 // Set up Reactotron, which is a free desktop app for inspecting and debugging
 // React Native apps. Learn more here: https://github.com/infinitered/reactotron
@@ -66,8 +68,8 @@ function App(props: AppProps) {
     onNavigationStateChange,
     isRestored: isNavigationStateRestored,
   } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY)
-
   const [areFontsLoaded] = useFonts(customFontsToLoad)
+  const theme = appTheme()
 
   // const { rehydrated } = useInitialRootStore(() => {
   //   // This runs after the root store has been initialized and rehydrated.
@@ -86,33 +88,28 @@ function App(props: AppProps) {
   // In Android: https://stackoverflow.com/a/45838109/204044
   // You can replace with your own loading component if you wish.
   if (!isNavigationStateRestored || !areFontsLoaded) return null
-
-  // React.useEffect(() => {
-  //   persistor.subscribe(() => {
-  //     console.log("PERSISTOR CALLBACK")
-  //   })
-  // })
   setTimeout(hideSplashScreen, 0)
   const linking = {
     prefixes: [prefix],
     config,
   }
-
   // otherwise, we're ready to render the app
   return (
-    <Provider store={store}>
+    <StoreProvider store={store}>
       <PersistGate persistor={persistor}>
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-          <ErrorBoundary catchErrors={Config.catchErrors}>
-            <AppNavigator
-              linking={linking}
-              initialState={initialNavigationState}
-              onStateChange={onNavigationStateChange}
-            />
-          </ErrorBoundary>
-        </SafeAreaProvider>
+        <PaperProvider theme={theme}>
+          <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+            <ErrorBoundary catchErrors={Config.catchErrors}>
+              <AppNavigator
+                linking={linking}
+                initialState={initialNavigationState}
+                onStateChange={onNavigationStateChange}
+              />
+            </ErrorBoundary>
+          </SafeAreaProvider>
+        </PaperProvider>
       </PersistGate>
-    </Provider>
+    </StoreProvider>
   )
 }
 
