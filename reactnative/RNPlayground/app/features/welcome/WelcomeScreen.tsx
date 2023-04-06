@@ -1,8 +1,7 @@
-import { observer } from "mobx-react-lite"
 import React, { FC } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
-import { Text } from "../../components"
-import { isRTL } from "../../i18n"
+import { Text } from "react-native-paper"
+import { isRTL, translate } from "../../i18n"
 import { BaseScreenProps } from "../../navigators"
 import { palette, spacing } from "../../theme"
 import { useSafeAreaInsetsStyle } from "../../utils/useSafeAreaInsetsStyle"
@@ -10,9 +9,7 @@ import { useSafeAreaInsetsStyle } from "../../utils/useSafeAreaInsetsStyle"
 const welcomeLogo = require("../../../assets/images/logo.png")
 const welcomeFace = require("../../../assets/images/welcome-face.png")
 
-
-export const WelcomeScreen: FC<BaseScreenProps<"Welcome">> = observer(function WelcomeScreen(
-) {
+export const WelcomeScreen: FC<BaseScreenProps<"Welcome">> = function WelcomeScreen() {
 
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
@@ -23,19 +20,18 @@ export const WelcomeScreen: FC<BaseScreenProps<"Welcome">> = observer(function W
         <Text
           testID="welcome-heading"
           style={$welcomeHeading}
-          tx="welcomeScreen.readyForLaunch"
-          preset="heading"
-        />
-        <Text tx="welcomeScreen.exciting" preset="subheading" />
+          variant="displaySmall"
+        >{translate("welcomeScreen.readyForLaunch")}</Text>
+        <Text variant="headlineSmall">{translate("welcomeScreen.exciting")}</Text>
         <Image style={$welcomeFace} source={welcomeFace} resizeMode="contain" />
       </View>
 
       <View style={[$bottomContainer, $bottomContainerInsets]}>
-        <Text tx="welcomeScreen.postscript" size="md" />
+        <Text variant={"bodyLarge"}>{translate("welcomeScreen.postscript")}</Text>
       </View>
     </View>
   )
-})
+}
 
 const $container: ViewStyle = {
   flex: 1,

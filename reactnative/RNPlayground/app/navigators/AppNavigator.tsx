@@ -13,7 +13,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { PlaygroundNavigator } from "../features/playground/PlaygroundNavigator"
 import { WelcomeScreen } from "../features/welcome"
 import { AboutScreen } from "../features/about"
-import { useAppTheme } from "../theme/theme"
+import { useAppTheme } from "../theme"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -66,6 +66,7 @@ function AppTabs() {
         options={{
           title: "Playground",
           tabBarIcon: icon("kite", "kite-outline"),
+
         }}
 
       />

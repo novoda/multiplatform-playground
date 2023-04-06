@@ -1,10 +1,9 @@
 import React, { ErrorInfo } from "react"
-import { ScrollView, View, ViewStyle } from "react-native"
-import { Icon, Screen } from "../../components"
+import { Image, ScrollView, View, ViewStyle } from "react-native"
+import { iconRegistry, Screen } from "../../components"
 import { Button, Text } from "react-native-paper"
-import { spacing } from "../../theme"
+import { spacing, useAppTheme } from "../../theme"
 import { translate } from "../../i18n"
-import { useAppTheme } from "../../theme/theme"
 
 export interface ErrorDetailsProps {
   error: Error
@@ -22,7 +21,7 @@ export function ErrorDetails(props: ErrorDetailsProps) {
       contentContainerStyle={$contentContainer}
     >
       <View style={$topSection}>
-        <Icon icon="ladybug" size={64} />
+        <Image source={iconRegistry.ladybug} style={{ width: 64, height: 54 }} />
         <Text
           style={{
             color: colors.error,

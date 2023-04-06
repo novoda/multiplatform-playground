@@ -92,11 +92,7 @@ const colorsDark = {
 
 const appFont = typography.fonts.spaceGrotesk
 const fontConfig = {
-  fontFamily: appFont.normal,
-  labelLarge: {
-    ...MD3LightTheme.fonts.labelLarge,
-    fontFamily: appFont.semiBold,
-  }
+  fontFamily: appFont.semiBold,
 } as const
 
 const materialLightTheme = {

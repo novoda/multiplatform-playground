@@ -13,7 +13,7 @@ import {
   ViewStyle,
 } from "react-native"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { useAppTheme } from "../theme/theme"
+import { useAppTheme } from "../theme"
 
 interface BaseScreenProps {
   /**

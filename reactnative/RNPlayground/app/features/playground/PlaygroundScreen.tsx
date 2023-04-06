@@ -1,8 +1,7 @@
 import * as React from "react"
 import { Alert, FlatList, Platform, ToastAndroid } from "react-native"
-import { Text } from "../../components"
 import { palette, spacing } from "../../theme"
-import { Card } from "react-native-paper"
+import { Card, Text } from "react-native-paper"
 import { PlaygroundTabScreenProps } from "../../navigators"
 
 export interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Playground"> {
@@ -81,13 +80,11 @@ function PlaygroundCard(props: PlaygroundCardProps) {
       onPress={props.onPress}
     >
       <Text
-        text={props.title}
         style={{
           padding: spacing.medium,
         }}
-        preset="bold"
-        size="lg"
-      />
+        variant={"headlineSmall"}
+      >{props.title}</Text>
     </Card>
   )
 }
