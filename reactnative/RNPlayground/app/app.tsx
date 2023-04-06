@@ -17,7 +17,7 @@ import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-c
 import * as Linking from "expo-linking"
 import { AppNavigator, useNavigationPersistence } from "./navigators"
 import * as storage from "./utils/storage"
-import { customFontsToLoad } from "./theme"
+import { appTheme, customFontsToLoad } from "./theme"
 import { setupReactotron } from "./services/reactotron"
 import Config from "./config"
 import { ErrorBoundary } from "./features/error"
@@ -25,7 +25,6 @@ import { persistor, store } from "./store"
 import { Provider as StoreProvider } from "react-redux"
 import { Provider as PaperProvider } from "react-native-paper"
 import { PersistGate } from "redux-persist/integration/react"
-import { appTheme } from "./theme/theme"
 import { useColorScheme } from "react-native"
 
 // Set up Reactotron, which is a free desktop app for inspecting and debugging
