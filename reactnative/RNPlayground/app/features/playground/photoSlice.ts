@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice, isRejectedWithValue } from "@reduxjs/toolkit"
 import { Photo, PhotoPage } from "./Photo"
-import { api, ApiResult } from "../services/api"
-import { RootState } from "../store"
+import { ApiResult } from "../../services/api"
+import { RootState } from "../../store"
+import { PhotoApi } from "./photoApi"
 
-type ReduxContent = {
+export type ReduxContent = {
   nextPage: number
   totalPages: number
   photos: Photo[]
@@ -15,7 +16,7 @@ const emptyContent: ReduxContent = {
   photos: [],
 }
 
-type ReduxError = {
+export type ReduxError = {
   message: string
 }
 
@@ -88,6 +89,8 @@ export const load = createAsyncThunk(
     condition: (_, { getState }) => !(getState() as RootState).photo.isLoading,
   },
 )
+
+const api = new PhotoApi()
 
 async function loadPage(page: number) {
   let response: ApiResult<PhotoPage>

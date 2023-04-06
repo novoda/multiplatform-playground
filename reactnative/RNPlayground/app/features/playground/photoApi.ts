@@ -1,7 +1,31 @@
-/**
- * These types indicate the shape of the data you expect to receive from your
- * API endpoint, assuming it's a JSON object like we have.
- */
+import { PhotoPage } from "./Photo"
+import { ApiResponse } from "apisauce"
+import { Api, ApiResult } from "../../services/api"
+
+export class PhotoApi extends Api {
+
+  async getPhotos(page: number): Promise<ApiResult<PhotoPage>> {
+    return this.handleResponse(
+      this.apisauce.get("/photos", { page: page, per_page: 20 }),
+      photosResponseMapper,
+    )
+  }
+}
+
+const photosResponseMapper = (response: ApiResponse<ApiPhotosResponse>) => {
+  const totalItems = Number(response.headers["x-total"])
+  const { page, per_page } = response.config.params
+  console.log(response)
+  return ({
+    photos: response.data.map((raw) => ({
+      localId: raw.id + page,
+      ...raw,
+    })),
+    currentPage: page,
+    totalPages: Math.ceil(totalItems / per_page),
+  })
+}
+
 export interface ApiPhoto {
   id: string
   created_at: string
@@ -54,20 +78,3 @@ export interface ApiPhoto {
 }
 
 export type ApiPhotosResponse = ApiPhoto[]
-
-/**
- * The options used to configure apisauce.
- */
-export interface ApiConfig {
-  /**
-   * The URL of the api.
-   */
-  url: string
-
-  /**
-   * Milliseconds before we timeout the request.
-   */
-  timeout: number
-
-  apiKey: string
-}

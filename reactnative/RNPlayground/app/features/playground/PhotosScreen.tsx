@@ -1,40 +1,40 @@
 import * as React from "react"
-import { observer } from "mobx-react-lite"
-import { PlaygroundTabScreenProps } from "../navigators"
+import { useAppDispatch, useAppSelector } from "../../hooks"
+import { PlaygroundTabScreenProps } from "../../navigators"
 import { FlatList, Image, ScrollView, View } from "react-native"
-import { Button, Text } from "../components"
-import { colors, spacing } from "../theme"
-import { useStores } from "../models"
-import { Content, ErrorState } from "../models/PhotosScreenStore"
+import { Button, Text } from "../../components"
+import { colors, spacing } from "../../theme"
 import { Card } from "react-native-paper"
-import { Photo } from "../models/Photo"
+import { Photo } from "./Photo"
+import { clear, fullScreenLoading, load, photosState, ReduxContent, ReduxError } from "./photoSlice"
 
-interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"PhotosMobxStateTree"> {
+interface PhotosScreenProps extends PlaygroundTabScreenProps<"Photos"> {
 }
 
-export const PhotosScreen: React.FC<PlaygroundScreenProps> = observer(() => {
-  const { photosScreenStore: store } = useStores()
-
+export const PhotosScreen: React.FC<PhotosScreenProps> = () => {
+  const state = useAppSelector(photosState)
+  const dispatch = useAppDispatch()
   React.useEffect(() => {
-    store.load()
-  }, [store])
+    dispatch(clear())
+    dispatch(load())
+  }, [])
 
-  const { fullScreenLoading, error, content } = store.uiState
+  const { error, content } = state
   let renderedContent
-  if (fullScreenLoading) {
+  if (fullScreenLoading(state)) {
     renderedContent = <LoadingComponent />
   } else if (error) {
     renderedContent = <ErrorComponent
       error={error}
-      onResetClicked={store.load} />
+      onResetClicked={() => dispatch(load())} />
   } else if (content) {
     renderedContent = <ContentComponent
       content={content}
-      isLoading={store.uiState.isLoading}
-      loadNext={store.nextPage}
+      isLoading={state.isLoading}
+      loadNext={() => dispatch(load())}
     />
   } else {
-    throw new Error(`UiState type is not handled ${JSON.stringify(store.uiState)}`)
+    throw new Error(`UiState type is not handled ${JSON.stringify(state)}`)
   }
   return (
     <View style={{
@@ -44,12 +44,12 @@ export const PhotosScreen: React.FC<PlaygroundScreenProps> = observer(() => {
       {renderedContent}
     </View>
   )
-})
+}
 
 type ContentComponentProps = {
-  content: Content
+  content: ReduxContent
   isLoading: boolean
-  loadNext: () => {}
+  loadNext: () => void
 }
 
 type ItemProps = { photo: Photo }
@@ -97,8 +97,8 @@ const ContentComponent = (props: ContentComponentProps) => (
 )
 
 type ErrorComponentProps = {
-  error: ErrorState,
-  onResetClicked: () => {}
+  error: ReduxError,
+  onResetClicked: () => void
 }
 
 const ErrorComponent = ({ error, onResetClicked }: ErrorComponentProps) => (
