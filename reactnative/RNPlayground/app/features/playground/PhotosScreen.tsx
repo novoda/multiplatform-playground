@@ -2,9 +2,8 @@ import * as React from "react"
 import { useAppDispatch, useAppSelector } from "../../hooks"
 import { PlaygroundTabScreenProps } from "../../navigators"
 import { FlatList, Image, ScrollView, View } from "react-native"
-import { Button, Text } from "../../components"
 import { spacing } from "../../theme"
-import { Card } from "react-native-paper"
+import { ActivityIndicator, Button, Card, Text } from "react-native-paper"
 import { Photo } from "./Photo"
 import { clear, fullScreenLoading, load, photosState, ReduxContent, ReduxError } from "./photoSlice"
 
@@ -100,14 +99,26 @@ type ErrorComponentProps = {
 }
 
 const ErrorComponent = ({ error, onResetClicked }: ErrorComponentProps) => (
-  <ScrollView>
-    <Text text={`ERROR: ${error.message}`} size="md" />
-    <Button text="Refresh" onPress={onResetClicked} />
-  </ScrollView>
+  <View
+    style={{
+      flex: 1,
+    }}>
+    <ScrollView
+      contentContainerStyle={{
+        paddingHorizontal: 16,
+        paddingVertical: 16,
+        flex: 1,
+        justifyContent: "space-between",
+      }}
+    >
+      <Text variant="bodyLarge">ERROR: ${error.message}</Text>
+    </ScrollView>
+    <Button style={{ margin: 16 }} mode={"contained"} onPress={onResetClicked}>Refresh</Button>
+  </View>
 )
 
 const LoadingComponent = () => (
   <View style={[{ justifyContent: "space-around", flexGrow: 1 }]}>
-    <Text text={`LOADING`} size="md" style={{ textAlign: "center" }} />
+    <ActivityIndicator animating={true} size={"large"} />
   </View>
 )
