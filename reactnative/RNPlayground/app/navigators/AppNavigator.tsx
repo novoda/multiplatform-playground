@@ -14,6 +14,7 @@ import { PlaygroundNavigator } from "../features/playground/PlaygroundNavigator"
 import { WelcomeScreen } from "../features/welcome"
 import { AboutScreen } from "../features/about"
 import { useAppTheme } from "../theme"
+import { Easing } from "react-native"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -43,7 +44,10 @@ function AppTabs() {
   const iconSize = 24
   return (
     <Tab.Navigator
-      initialRouteName="Welcome">
+      initialRouteName="Welcome"
+      sceneAnimationEnabled={true}
+      sceneAnimationType={'opacity'}
+    >
       <Tab.Screen
         name="Welcome"
         component={WelcomeScreen}
