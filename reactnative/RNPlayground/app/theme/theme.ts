@@ -90,8 +90,13 @@ const colorsDark = {
   "backdrop": "rgba(54, 48, 36, 0.4)",
 }
 
+const appFont = typography.fonts.spaceGrotesk
 const fontConfig = {
-  fontFamily: typography.fonts.spaceGrotesk.normal,
+  fontFamily: appFont.normal,
+  labelLarge: {
+    ...MD3LightTheme.fonts.labelLarge,
+    fontFamily: appFont.semiBold,
+  }
 } as const
 
 const materialLightTheme = {
