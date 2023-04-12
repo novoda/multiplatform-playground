@@ -1,0 +1,8 @@
+appId: com.novoda.rnplayground
+---
+- clearState
+- launchApp
+- runFlow: playground_click_me.yaml
+- assertVisible: Alert
+- assertVisible: You're not on Android
+- tapOn: Duh

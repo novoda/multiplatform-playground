@@ -1,0 +1,8 @@
+appId: com.novoda.rnplayground
+---
+- assertVisible:
+    id: "playground_tab"
+- tapOn:
+    id: "playground_tab"
+- tapOn:
+    text: "Click me"
