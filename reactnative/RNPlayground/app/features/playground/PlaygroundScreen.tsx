@@ -46,7 +46,7 @@ const clickMeItem = {
   color: palette.accent300,
   onPress: () => {
     if (Platform.OS == "android") {
-      ToastAndroid.show("You're Android, here's a toast to you", ToastAndroid.SHORT)
+      ToastAndroid.show("You're Android, here's a toast to you", ToastAndroid.LONG)
     } else {
       Alert.alert(
         "Alert",
