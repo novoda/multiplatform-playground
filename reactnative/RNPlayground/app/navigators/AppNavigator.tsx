@@ -53,6 +53,7 @@ function AppTabs() {
         options={{
           title: "Home",
           tabBarIcon: icon("home", "home-outline"),
+          tabBarTestID: "home_tab",
         }}
       />
       <Tab.Screen
@@ -61,6 +62,7 @@ function AppTabs() {
         options={{
           title: "About",
           tabBarIcon: icon("information", "information-outline"),
+          tabBarTestID: "about_tab",
         }}
       />
       <Tab.Screen
@@ -69,7 +71,7 @@ function AppTabs() {
         options={{
           title: "Playground",
           tabBarIcon: icon("kite", "kite-outline"),
-
+          tabBarTestID: "playground_tab",
         }}
 
       />
