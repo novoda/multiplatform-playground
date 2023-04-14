@@ -1,0 +1,26 @@
+#flow: Photos
+#intent:
+# Open the app, navigate to Playground, open Photos, and ensure next page gets loaded
+
+appId: com.novoda.rnplayground # the app id of the app we want to test
+# You can find the appId of an Ignite app in the `app.json` file
+# as the "package" under the "android" section and "bundleIdentifier" under the "ios" section
+---
+- clearState # clears the state of our app (navigation and authentication)
+- launchApp # launches the app
+- assertVisible:
+    id: "home_tab"
+- assertVisible:
+    id: "about_tab"
+- assertVisible:
+    id: "playground_tab"
+- tapOn:
+    id: "playground_tab"
+- tapOn:
+    text: "Photos"
+- scrollUntilVisible:
+    element:
+      text: 21
+    direction: DOWN
+    speed: 80
+    visibilityPercentage: 10

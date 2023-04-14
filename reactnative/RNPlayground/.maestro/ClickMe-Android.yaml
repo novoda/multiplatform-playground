@@ -1,0 +1,6 @@
+appId: com.novoda.rnplayground
+---
+- clearState
+- launchApp
+- runFlow: playground_click_me.yaml
+- assertVisible: You're Android, here's a toast to you

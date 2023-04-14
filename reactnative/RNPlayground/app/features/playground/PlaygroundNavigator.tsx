@@ -5,12 +5,11 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { CompositeScreenProps } from "@react-navigation/native"
 import { PlaygroundScreen } from "./index"
 import { Appbar } from "react-native-paper"
-import { colors } from "../../theme"
-import { View } from "react-native"
-import { Screen, Text } from "../../components"
+import { Screen } from "../../components"
 import { getHeaderTitle } from "@react-navigation/elements"
 import { translate } from "../../i18n"
 import { PhotosScreen } from "./PhotosScreen"
+import { useAppTheme } from "../../theme"
 
 export type PlaygroundTabParamList = {
   Playground: undefined,
@@ -31,6 +30,7 @@ export type PlaygroundTabScreenProps<T extends keyof PlaygroundTabParamList> = C
 const Stack = createNativeStackNavigator<PlaygroundTabParamList>()
 
 export function PlaygroundNavigator() {
+  const { colors } = useAppTheme()
   return (
     <Screen
       preset="fixed"
@@ -52,9 +52,8 @@ export function PlaygroundNavigator() {
           component={PlaygroundScreen}
           options={{
             title: translate("playgroundScreen.headerTitle"),
-            headerTintColor: colors.tint,
+            headerTintColor: colors.secondaryContainer,
           }}
-
         />
         <Stack.Screen
           name="Photos"
@@ -78,20 +77,10 @@ const Header = ({ navigation, route, options, back }) => {
         backgroundColor: options.headerTintColor,
       }}
       elevated={true}
-      mode="medium"
+      mode="center-aligned"
     >
       {back ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
-      <Appbar.Content title={<HeaderTitle text={title} />} />
+      <Appbar.Content title={title} />
     </Appbar.Header>
   )
 }
-
-const HeaderTitle = ({ text }: { text: string }) => (
-  <View>
-    <Text
-      testID="welcome-heading"
-      text={text}
-      preset="heading"
-    />
-  </View>
-)

@@ -4,16 +4,16 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
-import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native"
+import { NavigationContainer } from "@react-navigation/native"
 import { createMaterialBottomTabNavigator, MaterialBottomTabScreenProps } from "@react-navigation/material-bottom-tabs"
 import React from "react"
-import { useColorScheme } from "react-native"
 import Config from "../config"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import { PlaygroundNavigator } from "../features/playground/PlaygroundNavigator"
 import { WelcomeScreen } from "../features/welcome"
 import { AboutScreen } from "../features/about"
+import { useAppTheme } from "../theme"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -43,13 +43,17 @@ function AppTabs() {
   const iconSize = 24
   return (
     <Tab.Navigator
-      initialRouteName="Welcome">
+      initialRouteName="Welcome"
+      sceneAnimationEnabled={true}
+      sceneAnimationType={"opacity"}
+    >
       <Tab.Screen
         name="Welcome"
         component={WelcomeScreen}
         options={{
           title: "Home",
           tabBarIcon: icon("home", "home-outline"),
+          tabBarTestID: "home_tab",
         }}
       />
       <Tab.Screen
@@ -58,6 +62,7 @@ function AppTabs() {
         options={{
           title: "About",
           tabBarIcon: icon("information", "information-outline"),
+          tabBarTestID: "about_tab",
         }}
       />
       <Tab.Screen
@@ -66,6 +71,7 @@ function AppTabs() {
         options={{
           title: "Playground",
           tabBarIcon: icon("kite", "kite-outline"),
+          tabBarTestID: "playground_tab",
         }}
 
       />
@@ -92,14 +98,11 @@ interface NavigationProps extends Partial<React.ComponentProps<typeof Navigation
 }
 
 export const AppNavigator = (props: NavigationProps) => {
-  const colorScheme = useColorScheme()
-
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
-
   return (
     <NavigationContainer
       ref={navigationRef}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+      theme={useAppTheme()}
       {...props}
     >
       <AppTabs />

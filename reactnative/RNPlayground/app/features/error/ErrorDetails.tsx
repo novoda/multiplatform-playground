@@ -1,15 +1,19 @@
 import React, { ErrorInfo } from "react"
-import { ScrollView, TextStyle, View, ViewStyle } from "react-native"
-import { Button, Icon, Screen, Text } from "../../components"
-import { colors, spacing } from "../../theme"
+import { Image, ScrollView, View, ViewStyle } from "react-native"
+import { iconRegistry, Screen } from "../../components"
+import { Button, Text } from "react-native-paper"
+import { spacing, useAppTheme } from "../../theme"
+import { translate } from "../../i18n"
 
 export interface ErrorDetailsProps {
   error: Error
   errorInfo: ErrorInfo
+
   onReset(): void
 }
 
 export function ErrorDetails(props: ErrorDetailsProps) {
+  const colors = useAppTheme().colors
   return (
     <Screen
       preset="fixed"
@@ -17,25 +21,45 @@ export function ErrorDetails(props: ErrorDetailsProps) {
       contentContainerStyle={$contentContainer}
     >
       <View style={$topSection}>
-        <Icon icon="ladybug" size={64} />
-        <Text style={$heading} preset="subheading" tx="errorScreen.title" />
-        <Text tx="errorScreen.friendlySubtitle" />
+        <Image source={iconRegistry.ladybug} style={{ width: 64, height: 54 }} />
+        <Text
+          style={{
+            color: colors.error,
+            marginBottom: spacing.medium,
+          }}
+          variant="headlineSmall"
+          children={translate("errorScreen.title")} />
+        <Text children={translate("errorScreen.friendlySubtitle")} />
       </View>
 
-      <ScrollView style={$errorSection} contentContainerStyle={$errorSectionContentContainer}>
-        <Text style={$errorContent} weight="bold" text={`${props.error}`.trim()} />
+      <ScrollView
+        style={{
+          flex: 2,
+          backgroundColor: colors.backdrop,
+          marginVertical: spacing.medium,
+          borderRadius: 6,
+        }}
+        contentContainerStyle={$errorSectionContentContainer}>
+        <Text style={{
+          color: colors.error,
+          fontWeight: "bold",
+        }} children={`${props.error}`.trim()} />
         <Text
           selectable
-          style={$errorBacktrace}
-          text={`${props.errorInfo.componentStack}`.trim()}
+          style={{
+            marginTop: spacing.medium,
+            color: colors.onSecondaryContainer,
+          }}
+          children={`${props.errorInfo.componentStack}`.trim()}
         />
       </ScrollView>
 
       <Button
-        preset="reversed"
-        style={$resetButton}
+        mode={"contained"}
+        contentStyle={$resetButton}
+        buttonColor={colors.error}
         onPress={props.onReset}
-        tx="errorScreen.reset"
+        children={translate("errorScreen.reset")}
       />
     </Screen>
   )
@@ -44,7 +68,7 @@ export function ErrorDetails(props: ErrorDetailsProps) {
 const $contentContainer: ViewStyle = {
   alignItems: "center",
   paddingHorizontal: spacing.large,
-  paddingTop: spacing.extraLarge,
+  paddingVertical: spacing.extraLarge,
   flex: 1,
 }
 
@@ -53,32 +77,10 @@ const $topSection: ViewStyle = {
   alignItems: "center",
 }
 
-const $heading: TextStyle = {
-  color: colors.error,
-  marginBottom: spacing.medium,
-}
-
-const $errorSection: ViewStyle = {
-  flex: 2,
-  backgroundColor: colors.separator,
-  marginVertical: spacing.medium,
-  borderRadius: 6,
-}
-
 const $errorSectionContentContainer: ViewStyle = {
   padding: spacing.medium,
 }
 
-const $errorContent: TextStyle = {
-  color: colors.error,
-}
-
-const $errorBacktrace: TextStyle = {
-  marginTop: spacing.medium,
-  color: colors.textDim,
-}
-
 const $resetButton: ViewStyle = {
-  backgroundColor: colors.error,
   paddingHorizontal: spacing.huge,
 }

@@ -1,8 +1,7 @@
 import * as React from "react"
 import { Alert, FlatList, Platform, ToastAndroid } from "react-native"
-import { Text } from "../../components"
-import { colors, spacing } from "../../theme"
-import { Card } from "react-native-paper"
+import { palette, spacing } from "../../theme"
+import { Card, Text } from "react-native-paper"
 import { PlaygroundTabScreenProps } from "../../navigators"
 
 export interface PlaygroundScreenProps extends PlaygroundTabScreenProps<"Playground"> {
@@ -22,7 +21,6 @@ export const PlaygroundScreen: React.FC<PlaygroundScreenProps> = ({ navigation }
 
   return <FlatList
     style={{
-      backgroundColor: colors.background,
       flex: 1,
     }}
     data={items}
@@ -45,10 +43,10 @@ const photosItem = (navigation) => ({
 
 const clickMeItem = {
   title: "Click me",
-  color: colors.palette.accent300,
+  color: palette.accent300,
   onPress: () => {
     if (Platform.OS == "android") {
-      ToastAndroid.show("You're Android, here's a toast to you", ToastAndroid.SHORT)
+      ToastAndroid.show("You're Android, here's a toast to you", ToastAndroid.LONG)
     } else {
       Alert.alert(
         "Alert",
@@ -82,13 +80,11 @@ function PlaygroundCard(props: PlaygroundCardProps) {
       onPress={props.onPress}
     >
       <Text
-        text={props.title}
         style={{
           padding: spacing.medium,
         }}
-        preset="bold"
-        size="lg"
-      />
+        variant={"headlineSmall"}
+      >{props.title}</Text>
     </Card>
   )
 }
