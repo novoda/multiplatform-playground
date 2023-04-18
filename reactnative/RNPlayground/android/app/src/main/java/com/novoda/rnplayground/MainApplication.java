@@ -1,20 +1,18 @@
 package com.novoda.rnplayground;
 
 import android.app.Application;
-import android.content.Context;
+import android.content.res.Configuration;
+
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
-import com.novoda.rnplayground.newarchitecture.MainApplicationReactNativeHost;
-import java.lang.reflect.InvocationTargetException;
+
 import java.util.List;
 
-import android.content.res.Configuration;
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
 
@@ -60,7 +58,7 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
-    new ReactNativeHostWrapper(this, new MainApplicationReactNativeHost(this));
+    new ReactNativeHostWrapper(this, getReactNativeHost());
 
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
