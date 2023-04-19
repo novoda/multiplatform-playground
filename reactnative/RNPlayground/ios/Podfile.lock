@@ -8,15 +8,13 @@ PODS:
     - ExpoModulesCore
   - EXDevice (5.0.0):
     - ExpoModulesCore
-  - EXErrorRecovery (4.0.1):
-    - ExpoModulesCore
   - EXFileSystem (15.1.1):
     - ExpoModulesCore
   - EXFont (11.0.1):
     - ExpoModulesCore
-  - Expo (47.0.13):
+  - Expo (48.0.11):
     - ExpoModulesCore
-  - ExpoKeepAwake (11.0.1):
+  - ExpoKeepAwake (12.0.1):
     - ExpoModulesCore
   - ExpoLocalization (14.0.0):
     - ExpoModulesCore
@@ -493,7 +491,6 @@ DEPENDENCIES:
   - EXApplication (from `../node_modules/expo-application/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXDevice (from `../node_modules/expo-device/ios`)
-  - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
   - Expo (from `../node_modules/expo`)
@@ -595,8 +592,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-constants/ios"
   EXDevice:
     :path: "../node_modules/expo-device/ios"
-  EXErrorRecovery:
-    :path: "../node_modules/expo-error-recovery/ios"
   EXFileSystem:
     :path: "../node_modules/expo-file-system/ios"
   EXFont:
@@ -697,11 +692,10 @@ SPEC CHECKSUMS:
   EXApplication: 034b1c40a8e9fe1bff76a1e511ee90dff64ad834
   EXConstants: 3c86653c422dd77e40d10cbbabb3025003977415
   EXDevice: 734a55d8935ea8e075d12df1919a0497153bf55c
-  EXErrorRecovery: ae43433feb0608a64dc5b1c8363b3e7769a9ea24
   EXFileSystem: 60602b6eefa6873f97172c684b7537c9760b50d6
   EXFont: 319606bfe48c33b5b5063fb0994afdc496befe80
-  Expo: b9fa98bf260992312ee3c424400819fb9beadafe
-  ExpoKeepAwake: 69b59d0a8d2b24de9f82759c39b3821fec030318
+  Expo: 81418098ffb16914b2e190f54e06db923248e4a1
+  ExpoKeepAwake: 69f5f627670d62318410392d03e0b5db0f85759a
   ExpoLocalization: e202d1e2a4950df17ac8d0889d65a1ffd7532d7e
   ExpoModulesCore: faf895df37a73853034d34b7f16c0886741fe361
   EXSplashScreen: 3e989924f61a8dd07ee4ea584c6ba14be9b51949
@@ -759,6 +753,6 @@ SPEC CHECKSUMS:
   Yoga: ba09b6b11e6139e3df8229238aa794205ca6a02a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 7d00e5d8fc40a26954b8115ac2a88f4d7b955899
+PODFILE CHECKSUM: e2e8e52cb6e54e28f58ca80279b1d1ae2620e757
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1
